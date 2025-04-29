@@ -22,6 +22,8 @@ Thumbs.db
 # --- 로그파일 ---
 *.log
 
+# macOS system files
+.DS_Store
 # --- npm/yarn/lock 파일 ---
 # (lock은 너가 사용하는거에 따라 추가/제외 가능)
 # package-lock.json
