@@ -9,7 +9,12 @@ function WargamePage() {
         <div style={{ display: "flex", padding: "1.5rem" }}>
             {/* 왼쪽 메인 */}
             <div style={{ flex: 1.8, paddingRight: "2rem" }}>
-                <h2>워게임</h2>
+                <h2 style={{ fontWeight: 700 }}>
+                    워게임
+                </h2>
+                <h3 style={{ marginTop: "0rem", marginBottom: "1rem", fontWeight: 400, fontSize: "1rem", color: "#666" }}>
+                    😎 취약점을 찾아내고, 문제를 해결하세요!
+                </h3>
                 <SearchBar />
                 <FilterBar />
                 <WargameTable />
@@ -19,7 +24,7 @@ function WargamePage() {
             <div
                 style={{
                     flex: 1,
-                    paddingTop: "4.2rem",
+                    paddingTop: "6.5rem",
                     display: "flex",
                     flexDirection: "column",
                     gap: "1.5rem",

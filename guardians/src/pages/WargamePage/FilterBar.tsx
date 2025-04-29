@@ -147,13 +147,12 @@ function FilterBar() {
                             borderRadius: "9999px",
                             cursor: "pointer",
                             fontSize: "0.5rem",
-                            marginLeft: "1rem",
                         }}
                     >
                         <img
                             src={resetIcon}
                             alt="초기화"
-                            style={{ width: "14px", height: "14px" }}
+                            style={{ width: "18px", height: "18px" }}
                         />
                     </button>
                 )}
