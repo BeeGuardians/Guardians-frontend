@@ -17,13 +17,28 @@ function WargameTable() {
   );
 
   return (
-      <div>
-        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 8px" }}>
+      <div
+          style={{
+            backgroundColor: "white",
+            paddingBottom: "1rem",
+            paddingLeft: "1rem",
+            paddingRight: "1rem",
+            borderRadius: "8px",
+            border: "1px solid #ddd",
+          }}
+      >
+        <table
+            style={{
+              width: "100%",
+              borderCollapse: "separate",
+              borderSpacing: "0 8px",
+            }}
+        >
           <thead>
           <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
-            <th style={{ ...thStyle, width: "80px" }}>상태</th>
-            <th style={{ ...thStyle, width: "45%" }}>문제</th>
-            <th style={{ ...thStyle, width: "20%" }}>분야</th>
+            <th style={{ ...thStyle, width: "10%" }}>상태</th>
+            <th style={{ ...thStyle, width: "55%" }}>문제</th> {/* ✅ 제일 길게 */}
+            <th style={{ ...thStyle, width: "15%" }}>분야</th>
             <th style={{ ...thStyle, width: "20%" }}>난이도</th>
           </tr>
           </thead>
@@ -40,12 +55,12 @@ function WargameTable() {
                   onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
                   onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
               >
-                <td style={{ ...tdStyle, color: "#0c8", fontWeight: 600, width: "80px" }}>
+                <td style={{ ...tdStyle, color: "#0c8", fontWeight: 600 }}>
                   {row.solved ? "해결" : ""}
                 </td>
-                <td style={{ ...tdStyle, width: "45%" }}>{row.title}</td>
-                <td style={{ ...tdStyle, width: "20%" }}>{row.category}</td>
-                <td style={{ ...tdStyle, width: "20%" }}>{row.level}</td>
+                <td style={tdStyle}>{row.title}</td>
+                <td style={tdStyle}>{row.category}</td>
+                <td style={tdStyle}>{row.level}</td>
               </tr>
           ))}
           </tbody>
