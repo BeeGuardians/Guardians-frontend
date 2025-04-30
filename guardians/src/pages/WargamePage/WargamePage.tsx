@@ -6,10 +6,10 @@ import PopularWargameList from "./PopularWargameList";
 
 function WargamePage() {
     return (
-        <div style={{ display: "flex", padding: "1.5rem" }}>
+        <div style={{ display: "flex", padding: "1.5rem", paddingLeft: "8rem"  }}>
             {/* 왼쪽 메인 */}
             <div style={{ flex: 1.8, paddingRight: "2rem" }}>
-                <h2 style={{ fontWeight: 700 }}>
+                <h2 style={{ fontWeight: 600 }}>
                     워게임
                 </h2>
                 <h3 style={{ marginTop: "0rem", marginBottom: "1rem", fontWeight: 400, fontSize: "1rem", color: "#666" }}>

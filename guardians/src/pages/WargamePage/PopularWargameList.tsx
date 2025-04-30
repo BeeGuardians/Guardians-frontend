@@ -28,6 +28,8 @@ function PopularWargameList() {
                             style={{
                                 textDecoration: "none",
                                 fontSize: "0.95rem",
+                                color: "#FFA94D",
+
                             }}
                         >
                             {index + 1}. {wargame.title}
