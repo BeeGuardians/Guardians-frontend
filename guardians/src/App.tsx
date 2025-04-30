@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/HomePage/Home.tsx";
-import Login from "./pages/Login";
+import Login from "./pages/LoginPage/Login";
 import Dashboard from "./pages/Dashboard";
 import Ranking from "./pages/Ranking";
 import Header from "./components/Header";
@@ -30,7 +30,7 @@ function App() {
                     {/* 로그인 관련 */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
-                    <Route path="/welcome" element={<SignupSuccess />} />
+                    <Route path="/signup/success" element={<SignupSuccess />} />
 
                     {/* 커뮤니티 전체 */}
                     <Route path="/community" element={<CommunityPage />} />
