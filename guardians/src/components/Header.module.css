@@ -10,6 +10,23 @@
     border-bottom: 1px solid #ccc;
 }
 
+.logo {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600; /* SemiBold */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 1.5rem;
+    color: orange;
+}
+
+.logoImg {
+    width: 34px; /* 필요시 조절 */
+    height: 34px;
+    margin-right: 0.2rem;
+}
+
+
 /* 안쪽 컨테이너 */
 .container {
     display: flex;
@@ -26,7 +43,8 @@
     display: flex;
     align-items: center;
     gap: 3rem;
-    padding-left: 5rem;
+    padding-top: 0.2rem;
+    padding-left: 7.5rem;
 }
 
 /* 로고 */
@@ -63,12 +81,13 @@
 .right {
     display: flex;
     align-items: center;
-    margin-right: 5rem;
+    margin-right: 4rem;
 }
 
 .loginButton {
     padding: 0.5rem 1rem;
     border: 1px solid lightgray;
+    font-size: 0.9rem;
     border-radius: 5px;
     background: white;
     cursor: pointer;

@@ -6,7 +6,10 @@ function Header() {
         <header className={styles.header}>
             <div className={styles.container}>
                 <div className={styles.left}>
-                    <Link to="/" className={styles.logo}>Guardians</Link>
+                    <Link to="/" className={styles.logo}>
+                        <img src="/logo_no_BG.png" alt="로고" className={styles.logoImg} />
+                        <span>Guardians</span>
+                    </Link>
 
                     <nav className={styles.nav}>
                         <Link to="/wargame" className={styles.link}>워게임</Link>
