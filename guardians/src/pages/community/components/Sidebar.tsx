@@ -6,7 +6,7 @@ const Sidebar = () => {
     const menuItems = [
         { path: "/community", label: "전체 게시판" },
         { path: "/community/free", label: "자유 게시판" },
-        { path: "/community/qna", label: "Q&A" },
+        { path: "/community/qna", label: "워게임 Q&A" },
         { path: "/community/study", label: "스터디 모집" },
         { path: "/community/inquiry", label: "문의 게시판" },
     ];
@@ -42,7 +42,7 @@ const Sidebar = () => {
                                     textDecoration: "none",
                                     fontWeight: isActive ? 700 : 500,
                                     color: isActive ? "#fff" : "#333",
-                                    backgroundColor: isActive ? "#646cff" : "transparent",
+                                    backgroundColor: isActive ? "#FFA94D" : "transparent",
                                     transition: "all 0.2s ease-in-out",
                                 }}
                             >
