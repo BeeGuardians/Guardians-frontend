@@ -1,0 +1,45 @@
+/* ✅ 배경 전체 영역 */
+.fullPage {
+    width: 100vw;
+    height: 100vh;
+    background-color: #FCDDB6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ✅ 텍스트 문구 묶음 */
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem; /* ✨ 문구와 버튼 사이 간격 */
+}
+
+/* ✅ 각 문장 스타일 (같은 크기) */
+.message {
+    font-size: 1.7rem; /* ✨ 문장 크기 조정 가능 */
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 0.4rem; /* ✨ 문장 간 간격 */
+}
+
+/* ✅ 로그인 버튼 (오렌지) */
+.loginButton {
+    padding: 1rem 2.5rem;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background-color: #FFA94D;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+/* ✅ hover 시 */
+.loginButton:hover {
+    background-color: #ff9b30;
+}

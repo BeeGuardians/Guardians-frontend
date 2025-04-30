@@ -12,6 +12,8 @@ import FreeBoardPage from "./pages/community/FreeBoardPage";
 import QnaBoardPage from "./pages/community/QnaBoardPage";
 import StudyBoardPage from "./pages/community/StudyBoardPage";
 import InquiryBoardPage from "./pages/community/InquiryBoardPage";
+import SignupSuccess from "./pages/LoginPage/SignupSuccess.tsx";
+import Signup from "./pages/LoginPage/Signup.tsx";
 
 function App() {
     return (
@@ -24,6 +26,11 @@ function App() {
                     <Route path="/ranking" element={<Ranking />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/wargame" element={<WargamePage />} />
+
+                    {/* 로그인 관련 */}
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route path="/welcome" element={<SignupSuccess />} />
 
                     {/* 커뮤니티 전체 */}
                     <Route path="/community" element={<CommunityPage />} />
