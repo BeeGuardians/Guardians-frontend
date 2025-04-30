@@ -12,6 +12,12 @@ const dummyOthers = [
     { rank: 1, nickname: "정현", score: 7000, solvedCount: 380 },
     { rank: 2, nickname: "ChatGPT", score: 6800, solvedCount: 360 },
     { rank: 3, nickname: "...", score: 6400, solvedCount: 340 },
+    { rank: 4, nickname: "user1", score: 6000, solvedCount: 280 },
+    { rank: 5, nickname: "user2", score: 5800, solvedCount: 260 },
+    { rank: 6, nickname: "user3", score: 5400, solvedCount: 240 },
+    { rank: 7, nickname: "user4", score: 5000, solvedCount: 180 },
+    { rank: 8, nickname: "user5", score: 4800, solvedCount: 160 },
+    { rank: 9, nickname: "user6", score: 4400, solvedCount: 140 }
 ];
 
 function Ranking() {
@@ -32,7 +38,7 @@ function Ranking() {
             </div>
 
             {/* 하위 순위 테이블 */}
-            <div style={{ display: "flex", justifyContent: "center", gap: "5rem", marginBottom: "2rem",marginRight: "10rem" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: "10rem", marginBottom: "2rem",marginRight: "10rem" }}>
                 <RankingTable data={dummyOthers} />
             </div>
         </div>

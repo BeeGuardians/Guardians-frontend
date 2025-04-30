@@ -11,7 +11,7 @@ interface RankingTableProps {
 
 const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
     return (
-        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "2rem" }}>
+        <table style={{ width: "50%", borderCollapse: "collapse", marginTop: "2rem" }}>
             <thead>
             <tr style={{ backgroundColor: "#f5f5f5" }}>
                 <th style={thStyle}>순위</th>
