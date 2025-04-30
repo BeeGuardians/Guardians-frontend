@@ -9,7 +9,7 @@ import WargamePage from "./pages/WargamePage/WargamePage";
 //커뮤니티 관련
 import CommunityPage from "./pages/community/CommunityPage";
 import FreeBoardPage from "./pages/community/FreeBoardPage";
-// import QnaBoardPage from "./pages/community/QnaBoardPage";
+import QnaBoardPage from "./pages/community/QnaBoardPage";
 import StudyBoardPage from "./pages/community/StudyBoardPage";
 import InquiryBoardPage from "./pages/community/InquiryBoardPage";
 
@@ -28,7 +28,7 @@ function App() {
                     {/* 커뮤니티 전체 */}
                     <Route path="/community" element={<CommunityPage />} />
                     <Route path="/community/free" element={<FreeBoardPage />} />
-                    {/*<Route path="/community/qna" element={<QnaBoardPage />} />*/}
+                    <Route path="/community/qna" element={<QnaBoardPage />} />
                     <Route path="/community/study" element={<StudyBoardPage />} />
                     <Route path="/community/inquiry" element={<InquiryBoardPage />} />
                 </Routes>
