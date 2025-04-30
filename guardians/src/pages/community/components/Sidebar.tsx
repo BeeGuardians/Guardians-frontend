@@ -5,8 +5,8 @@ const Sidebar = () => {
 
     const menuItems = [
         { path: "/community", label: "전체 게시판" },
-        { path: "/community/free", label: "자유 게시판" },
         { path: "/community/qna", label: "워게임 Q&A" },
+        { path: "/community/free", label: "자유 게시판" },
         { path: "/community/study", label: "스터디 모집" },
         { path: "/community/inquiry", label: "문의 게시판" },
     ];
