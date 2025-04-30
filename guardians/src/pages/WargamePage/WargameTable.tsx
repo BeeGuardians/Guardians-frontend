@@ -52,7 +52,7 @@ function WargameTable() {
                     borderRadius: "6px",
                     transition: "background 0.2s",
                   }}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#f9f9f9")}
+                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#fcddb6")}
                   onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
               >
                 <td style={{ ...tdStyle, color: "#0c8", fontWeight: 600 }}>
@@ -75,7 +75,7 @@ function WargameTable() {
                   style={{
                     margin: "0 0.25rem",
                     padding: "0.4rem 0.75rem",
-                    backgroundColor: currentPage === i + 1 ? "#646cff" : "#f0f0f0",
+                    backgroundColor: currentPage === i + 1 ? "#FFC078" : "#f0f0f0",
                     color: currentPage === i + 1 ? "white" : "black",
                     border: "none",
                     borderRadius: "4px",
