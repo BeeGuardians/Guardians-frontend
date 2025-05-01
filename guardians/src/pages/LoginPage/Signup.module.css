@@ -7,7 +7,7 @@
     display: flex;                         /* 내부 요소 가로 정렬 */
     justify-content: flex-end;            /* 오른쪽 정렬 */
     align-items: center;                  /* 수직 중앙 정렬 */
-    background-color: #FCDDB6;            /* 배경 색상 */
+    background-color: #ffaf59;;            /* 배경 색상 */
     overflow-x: hidden;                   /* 수평 스크롤 제거 */
     box-sizing: border-box;               /* 패딩 포함 */
     margin-right: 15rem;                  /* ✅ 위치 조정 (로그인과 동일) */
@@ -15,7 +15,7 @@
 
 /* ✅ 콘텐츠 박스를 정렬하는 wrapper */
 .wrapper {
-    display: flex;
+    /*display: flex;*/
     justify-content: flex-end;
     align-items: center;
     height: 80vh;
@@ -24,10 +24,10 @@
 
 /* ✅ 회원가입 박스 스타일 */
 .signupBox {
-    width: 500px;
+    width: 350px;
     padding: 2.5rem 2rem;
     background: white;
-    border-radius: 1rem;
+    border-radius: 2rem;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     border: 1px solid #ccc;
 }
@@ -35,7 +35,7 @@
 /* ✅ 제목 텍스트 */
 .title {
     font-size: 1.4rem;
-    font-weight: bold;
+    font-weight: 600;
     text-align: center;
     margin-bottom: 2rem;
 }

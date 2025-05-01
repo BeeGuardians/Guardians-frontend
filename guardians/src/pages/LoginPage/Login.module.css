@@ -7,9 +7,9 @@
     display: flex;                         /* 내부 요소 가로 정렬 */
     justify-content: flex-end;            /* 오른쪽 정렬 */
     align-items: center;                  /* 수직 중앙 정렬 */
-    background-color: #FCDDB6;            /* 배경 색상 */
+    background-color: #ffaf59;           /* 배경 색상 */
     overflow-x: hidden;                   /* 수평 스크롤 제거 */
-    box-sizing: border-box;               /* 패딩 포함 */
+    box-sizing: border-box;               /* 패딩 포함; */
     margin-right: 15rem;                  /* ✅ 위치 조정 (로그인과 동일) */
 }
 
@@ -24,7 +24,7 @@
 
 /* ✅ 로그인 박스 스타일 */
 .loginBox {
-    width: 420px;                          /* 고정 너비 */
+    width: 350px;                          /* 고정 너비 */
     padding: 1rem 2.5rem;                  /* 상하 1rem, 좌우 2.5rem 패딩 */
     background-color: white;              /* 흰색 배경 */
     border-radius: 1.2rem;                /* 모서리를 둥글게 */
@@ -35,7 +35,7 @@
 /* ✅ 제목 텍스트 */
 .title {
     font-size: 1.4rem;                    /* 글씨 크기 */
-    font-weight: 700;                    /* 굵은 글씨 */
+    font-weight: 600;                    /* 굵은 글씨 */
     text-align: center;                  /* 가운데 정렬 */
     margin-bottom: 2rem;                 /* 아래 여백 */
 }
