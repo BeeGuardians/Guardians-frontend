@@ -1,6 +1,6 @@
 // context/AuthContext.tsx
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 
 type User = {
     id: number;
@@ -17,7 +17,7 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true); // 🔥 로딩 여부
 
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            await axios.post("http://localhost:8080/api/users/logout", {}, { withCredentials: true });
+            await axios.post("http://localhost:8080/api/users/logout", {}, {withCredentials: true});
             setUser(null);
             window.location.href = "/"; // ✅ 새로고침으로 반영
         } catch (err) {
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         axios
-            .get("http://localhost:8080/api/users/check", { withCredentials: true })
+            .get("http://localhost:8080/api/users/check", {withCredentials: true})
             .then((res) => {
                 if (res.data.result.data === true) {
                     return axios.get("http://localhost:8080/api/users/me", {
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+        <AuthContext.Provider value={{user, login, logout, isLoading}}>
             {!isLoading && children}
         </AuthContext.Provider>
     );
