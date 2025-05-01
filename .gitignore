@@ -1,0 +1,31 @@
+# --- 기본 ---
+node_modules/
+dist/
+.env
+.env.*
+
+# --- Vite ---
+.vite/
+
+# --- 시스템 쓰레기 ---
+.DS_Store
+Thumbs.db
+
+# --- IDE 쓰레기 (VSCode, JetBrains 등) ---
+.vscode/
+.idea/
+*.suo
+*.ntvs_analysis.dat
+*.njsproj
+*.sln
+
+# --- 로그파일 ---
+*.log
+
+# macOS system files
+.DS_Store
+# --- npm/yarn/lock 파일 ---
+# (lock은 너가 사용하는거에 따라 추가/제외 가능)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
