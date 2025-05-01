@@ -14,6 +14,7 @@ import StudyBoardPage from "./pages/community/StudyBoardPage";
 import InquiryBoardPage from "./pages/community/InquiryBoardPage";
 import SignupSuccess from "./pages/LoginPage/SignupSuccess.tsx";
 import Signup from "./pages/LoginPage/Signup.tsx";
+import FindPassword from "./pages/LoginPage/FindPassword.tsx";
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/community/qna" element={<QnaBoardPage />} />
                     <Route path="/community/study" element={<StudyBoardPage />} />
                     <Route path="/community/inquiry" element={<InquiryBoardPage />} />
+                    <Route path="/find-password" element={<FindPassword />} />
                 </Routes>
             </div>
         </>

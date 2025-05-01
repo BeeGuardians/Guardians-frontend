@@ -3,7 +3,6 @@
 import styles from './Login.module.css';
 import emailIcon from '../../assets/mail.png';
 import lockIcon from '../../assets/lock.png';
-
 import { useNavigate } from "react-router-dom"; // ▶️ 훅 사용
 
 const Login = () => {
@@ -33,11 +32,16 @@ const Login = () => {
                         <button className={styles.loginButton}>로그인하기</button>
                         <button
                             className={styles.signupButton}
-                            onClick={() => navigate("/signup")} // ✅ 클릭 시 이동
+                            onClick={() => navigate("/signup")} // ✅ 회원가입 이동
                         >
                             이메일 회원가입
                         </button>
-                        <div className={styles.findPassword}>비밀번호 찾기</div>
+                        <div
+                            className={styles.findPassword}
+                            onClick={() => navigate("/find-password")} // ✅ 비밀번호 찾기 이동
+                        >
+                            비밀번호 찾기
+                        </div>
                     </div>
                 </div>
             </div>
