@@ -22,7 +22,7 @@ const Login = () => {
             );
 
             const userData = res.data.result.data;
-            console.log("🔥 로그인 성공", userData);
+            console.log("로그인 성공", userData);
             login(userData); // 👈 userContext 업데이트
             window.location.href = "/"
         } catch (err: unknown) {
@@ -74,7 +74,12 @@ const Login = () => {
                         >
                             이메일 회원가입
                         </button>
-                        <div className={styles.findPassword}>비밀번호 찾기</div>
+                        <div
+                            className={styles.findPassword}
+                            onClick={() => navigate("/findPassword")}
+                        >
+                            비밀번호 찾기
+                        </div>
                     </div>
                 </div>
             </div>

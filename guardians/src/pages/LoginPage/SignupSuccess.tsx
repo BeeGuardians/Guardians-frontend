@@ -6,13 +6,14 @@ const SignupSuccess = () => {
 
     return (
         <div className={styles.fullPage}>
-            <div className={styles.textContainer}>
-                <p className={styles.message}>사용자님, 가디언즈에 합류하신 것을 환영합니다.</p>
-                <p className={styles.message}>지금부터 보안 실력을 차근차근 쌓아가 보세요.</p>
+            <div className={styles.card}>
+                <div className={styles.emoji}>🎉</div>
+                <p className={styles.title}>가입을 환영합니다!</p>
+                <p className={styles.subtitle}>가디언즈와 함께 보안 실력을 키워보세요</p>
+                <button className={styles.loginButton} onClick={() => navigate('/login')}>
+                    로그인하러 가기
+                </button>
             </div>
-            <button className={styles.loginButton} onClick={() => navigate('/login')}>
-                로그인하기
-            </button>
         </div>
     );
 };
