@@ -20,6 +20,11 @@ const Signup = () => {
     const [password, setPassword] = useState("");
     const [passwordCheck, setPasswordCheck] = useState("");
 
+    const isPasswordMatch =
+        password.trim() !== "" &&
+        passwordCheck.trim() !== "" &&
+        password === passwordCheck;
+
     const [terms, setTerms] = useState({
         terms: false,
         privacy: false,
@@ -30,10 +35,10 @@ const Signup = () => {
 
     const handleIndividualCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = e.target;
-        setTerms((prev) => {
-            const updated = { ...prev, [name]: checked };
-            return updated;
-        });
+        setTerms((prev) => ({
+            ...prev,
+            [name]: checked
+        }));
     };
 
     const handleAllCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +56,7 @@ const Signup = () => {
             alert("인증 코드가 전송되었습니다.");
             setEmailCodeSent(true);
         } catch {
-            alert("이메일 인증 요청 실패");
+            alert("이메일 인증 요청 실패 : 유효하지 않은 이메일입니다");
         }
     };
 
@@ -179,6 +184,19 @@ const Signup = () => {
                                 onChange={(e) => setPasswordCheck(e.target.value)}
                             />
                         </div>
+
+                        <div className={styles.feedbackBox}>
+                            {passwordCheck ? (
+                                <p className={isPasswordMatch ? styles.match : styles.mismatch}>
+                                    {isPasswordMatch
+                                        ? "✅ 비밀번호가 일치합니다"
+                                        : "❌ 비밀번호가 일치하지 않습니다"}
+                                </p>
+                            ) : (
+                                <p className={styles.placeholder}></p> // 빈 줄로 공간 확보
+                            )}
+                        </div>
+
                     </div>
 
                     <div className={styles.checkboxes}>
@@ -215,16 +233,16 @@ const Signup = () => {
                                 개인정보 수집 및 이용 동의
                             </label>
 
-                            <label className={styles.checkboxLabel}>
-                                <input
-                                    type="checkbox"
-                                    name="age"
-                                    checked={terms.age}
-                                    onChange={handleIndividualCheck}
-                                />
-                                <span className={styles.customCheckbox}></span>
-                                [선택] 만 14세 이상입니다.
-                            </label>
+                            {/*<label className={styles.checkboxLabel}>*/}
+                            {/*    <input*/}
+                            {/*        type="checkbox"*/}
+                            {/*        name="age"*/}
+                            {/*        checked={terms.age}*/}
+                            {/*        onChange={handleIndividualCheck}*/}
+                            {/*    />*/}
+                            {/*    <span className={styles.customCheckbox}></span>*/}
+                            {/*    [선택] 만 14세 이상입니다.*/}
+                            {/*</label>*/}
                         </div>
                     </div>
 

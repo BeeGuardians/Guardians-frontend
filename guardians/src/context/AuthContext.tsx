@@ -19,7 +19,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true); // 🔥 로딩 여부
+    const [isLoading, setIsLoading] = useState(true);
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
     const login = (userData: User) => {
         console.log("📌 login() 호출됨", userData);
@@ -28,21 +29,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            await axios.post("http://localhost:8080/api/users/logout", {}, { withCredentials: true });
+            await axios.post(`${API_BASE}/api/users/logout`, {}, { withCredentials: true });
             setUser(null);
-            window.location.href = "/"; // ✅ 새로고침으로 반영
+            window.location.href = "/";
         } catch (err) {
             console.error("❌ 로그아웃 실패", err);
         }
     };
 
-
     useEffect(() => {
         axios
-            .get("http://localhost:8080/api/users/check", { withCredentials: true })
+            .get(`${API_BASE}/api/users/check`, { withCredentials: true })
             .then((res) => {
                 if (res.data.result.data === true) {
-                    return axios.get("http://localhost:8080/api/users/me", {
+                    return axios.get(`${API_BASE}/api/users/me`, {
                         withCredentials: true,
                     });
                 } else {
