@@ -1,9 +1,12 @@
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
+import {useNavigate} from "react-router-dom";
 
 
 const FreeBoardPage = () => {
+    const navigate = useNavigate();
+
     const dummyPosts = Array.from({ length: 47 }, (_, i) => ({
         id: i + 1,
         title: `자유글 제목입니다 ${i + 1}`,
@@ -21,9 +24,18 @@ const FreeBoardPage = () => {
         currentPage * postsPerPage
     );
 
+
     const handleRowClick = (id: number) => {
+        navigate(`/community/free/${id}`);
         console.log(`클릭된 게시글 ID: ${id}`);
     };
+
+    const handleWriteClick = () => {
+        navigate("/community/free/write"); // ✅ 글쓰기 페이지로 이동
+    };
+
+
+
 
     return (
         <div style={{ width: "90%", marginTop: "1.5rem", display: "flex", gap: "3.5rem", padding: "1rem" }}>
@@ -60,7 +72,7 @@ const FreeBoardPage = () => {
                             marginRight: "0.5rem",
                             width: "10%"
                         }}
-                        onClick={() => alert("글쓰기 클릭!")}
+                        onClick={handleWriteClick}
                     >
                         글쓰기
                     </button>
