@@ -9,7 +9,7 @@ const RankCard: React.FC<RankCardProps> = ({ rank, nickname, score, solvedCount 
     return (
         <div
             style={{
-                width: "160px",
+                width: "200px",
                 padding: "1rem",
                 borderRadius: "12px",
                 backgroundColor: "#fff", // ✅ 배경 통일
@@ -17,7 +17,7 @@ const RankCard: React.FC<RankCardProps> = ({ rank, nickname, score, solvedCount 
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
             }}
         >
-            <div style={{ fontSize: "1.2rem", fontWeight: "bold" }}>{rank}위</div>
+            <div style={{ fontSize: "1.2rem", fontWeight: "bold", marginBottom: "1.2rem"}}>{rank}위</div>
             <div
                 //원
                 style={{
@@ -26,6 +26,7 @@ const RankCard: React.FC<RankCardProps> = ({ rank, nickname, score, solvedCount 
                     borderRadius: "50%",
                     backgroundColor: "#ddd",
                     margin: "0 auto",
+                    marginBottom: "1rem"
                 }}
             />
             <p style={{ marginTop: '0.5rem', fontWeight: 'bold' }}>{nickname}</p>
@@ -37,6 +38,7 @@ const RankCard: React.FC<RankCardProps> = ({ rank, nickname, score, solvedCount 
                     marginTop: '0.5rem',
                     padding: '0 0.5rem',
                     fontSize: '0.9rem',
+                    marginBottom: "0.7rem",
                     color: '#555',
                 }}
             >

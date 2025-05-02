@@ -126,3 +126,15 @@
     cursor: pointer;
     text-decoration: underline;
 }
+/* Login.module.css or Signup.module.css */
+.match {
+    color: green;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.mismatch {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}

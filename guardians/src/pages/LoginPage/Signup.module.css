@@ -1,38 +1,34 @@
-/* Signup.module.css */
-
-/* ✅ 페이지 전체를 감싸는 배경 영역 */
 .fullPage {
-    width: 100vw;                          /* 전체 너비 */
-    height: 100vh;                         /* 전체 높이 */
-    display: flex;                         /* 내부 요소 가로 정렬 */
-    justify-content: flex-end;            /* 오른쪽 정렬 */
-    align-items: center;                  /* 수직 중앙 정렬 */
-    background-color: #ffaf59;;            /* 배경 색상 */
-    overflow-x: hidden;                   /* 수평 스크롤 제거 */
-    box-sizing: border-box;               /* 패딩 포함 */
-    margin-right: 15rem;                  /* ✅ 위치 조정 (로그인과 동일) */
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #ffaf59;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    margin-right: 15rem;
 }
 
-/* ✅ 콘텐츠 박스를 정렬하는 wrapper */
 .wrapper {
-    /*display: flex;*/
+    display: flex;
     justify-content: flex-end;
     align-items: center;
     height: 80vh;
-    margin-right: 15rem;                  /* 로그인 위치 기준 */
+    margin-right: 15rem;
 }
 
-/* ✅ 회원가입 박스 스타일 */
 .signupBox {
+    margin-top: 10rem;
     width: 350px;
     padding: 2.5rem 2rem;
     background: white;
     border-radius: 2rem;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     border: 1px solid #ccc;
+    margin-bottom: 5rem;
 }
 
-/* ✅ 제목 텍스트 */
 .title {
     font-size: 1.4rem;
     font-weight: 600;
@@ -40,19 +36,16 @@
     margin-bottom: 2rem;
 }
 
-/* ✅ 입력 그룹 (라벨 + 필드) */
 .inputGroup {
     margin-bottom: 1.8rem;
 }
 
-/* ✅ 라벨 텍스트 */
 .inputGroup label {
     display: block;
     margin-bottom: 0.4rem;
     font-weight: 600;
 }
 
-/* ✅ 입력 필드 + 아이콘 묶음 */
 .inputField {
     display: flex;
     align-items: center;
@@ -63,14 +56,12 @@
     margin-bottom: 0.8rem;
 }
 
-/* ✅ 아이콘 이미지 */
 .inputField img {
     width: 20px;
     margin-right: 0.6rem;
     opacity: 0.9;
 }
 
-/* ✅ input 태그 */
 .inputField input {
     border: none;
     outline: none;
@@ -78,27 +69,75 @@
     font-size: 0.95rem;
 }
 
-/* ✅ 약관 전체 체크박스 영역 */
+.verifyBtn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background-color: #ffa94d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.verifyBtn:hover:not(:disabled) {
+    background-color: #f76707;
+}
+
+.verifyBtn:disabled {
+    background-color: #ddd;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
 .checkboxes {
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
 }
 
-/* ✅ 각 체크박스 */
-.checkboxes input {
-    margin-right: 0.4rem;
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    position: relative;
 }
 
-/* ✅ 하위 약관 항목 묶음 */
+.checkboxLabel input[type="checkbox"] {
+    display: none;
+}
+
+.customCheckbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    display: inline-block;
+    position: relative;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.checkboxLabel input[type="checkbox"]:checked + .customCheckbox {
+    background-color: #FFA94D;
+    border-color: #FFA94D;
+    background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 10L9 14L15 6' stroke='white' stroke-width='2'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .subChecks {
-    margin-top: 0.8rem;
+    margin-left: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    padding-left: 1rem;
 }
 
-/* ✅ 회원가입 버튼 */
 .signupBtn {
     width: 100%;
     padding: 0.9rem;
@@ -108,4 +147,29 @@
     color: white;
     font-size: 1rem;
     cursor: pointer;
+}
+
+.signupBtn:disabled {
+    background-color: #e0e0e0;
+    color: #aaa;
+    cursor: not-allowed;
+}
+.match {
+    color: green;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.mismatch {
+    color: red;
+    font-size: 13px;
+    margin-top: 4px;
+}
+.feedbackBox {
+    min-height: 20px; /* 공간 확보 */
+    margin-top: 4px;
+}
+
+.placeholder {
+    visibility: hidden; /* 공간은 차지하지만 안보임 */
 }

@@ -1,16 +1,34 @@
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./Header.module.css";
 
 function Header() {
     const { user, logout } = useAuth();
     const isLoggedIn = !!user;
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     const toggleDropdown = () => {
         setDropdownOpen((prev) => !prev);
     };
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (
+                dropdownOpen &&
+                dropdownRef.current &&
+                !dropdownRef.current.contains(e.target as Node)
+            ) {
+                setDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownOpen]);
 
     return (
         <header className={styles.header}>
@@ -33,7 +51,7 @@ function Header() {
 
                 <div className={styles.right}>
                     {isLoggedIn ? (
-                        <div className={styles.profileBox}>
+                        <div className={styles.profileBox} ref={dropdownRef}>
                             <div className={styles.profileTrigger} onClick={toggleDropdown}>
                                 <div className={styles.profileCircle} />
                                 <span>{user.username} 님</span>
@@ -55,7 +73,6 @@ function Header() {
                         </Link>
                     )}
                 </div>
-
             </div>
         </header>
     );

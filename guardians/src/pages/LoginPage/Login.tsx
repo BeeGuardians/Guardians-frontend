@@ -12,17 +12,19 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
     const {login} = useAuth(); // 👈 전역 상태 로그인 처리
+    const API_BASE = import.meta.env.VITE_API_BASE_URL; // 꼭 상단에 선언!
 
     const handleLogin = async () => {
+
         try {
             const res = await axios.post(
-                "http://localhost:8080/api/users/login",
-                {email, password},
-                {withCredentials: true}
+                `${API_BASE}/api/users/login`, // 백틱으로 감싸서 변수 적용
+                { email, password },
+                { withCredentials: true }
             );
 
             const userData = res.data.result.data;
-            console.log("🔥 로그인 성공", userData);
+            console.log("로그인 성공", userData);
             login(userData); // 👈 userContext 업데이트
             window.location.href = "/"
         } catch (err: unknown) {
@@ -31,6 +33,12 @@ const Login = () => {
             } else {
                 alert("알 수 없는 오류가 발생했습니다");
             }
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleLogin();
         }
     };
 
@@ -49,6 +57,7 @@ const Login = () => {
                                 placeholder="이메일을 입력해 주세요"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
 
@@ -59,6 +68,7 @@ const Login = () => {
                                 placeholder="비밀번호를 입력해 주세요"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                onKeyDown={handleKeyDown}
                             />
                         </div>
                     </div>
@@ -74,7 +84,12 @@ const Login = () => {
                         >
                             이메일 회원가입
                         </button>
-                        <div className={styles.findPassword}>비밀번호 찾기</div>
+                        <div
+                            className={styles.findPassword}
+                            onClick={() => navigate("/findPassword")}
+                        >
+                            비밀번호 찾기
+                        </div>
                     </div>
                 </div>
             </div>

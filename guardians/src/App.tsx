@@ -2,10 +2,11 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/HomePage/Home.tsx";
 import Login from "./pages/LoginPage/Login";
 import Dashboard from "./pages/Dashboard";
-import Ranking from "./pages/Ranking";
+import RankingPage from "./pages/RankingPage/RankingPage";
 import Header from "./components/Header";
 import AuthHeader from "./components/AuthHeader";
 import WargamePage from "./pages/WargamePage/WargamePage";
+import FindPassword from "./pages/LoginPage/FindPassword.tsx";
 
 // 커뮤니티 관련
 import CommunityPage from "./pages/community/CommunityPage";
@@ -23,7 +24,7 @@ import FreeBoardDetailPage from "./pages/community/FreeBoardDetailPage.tsx";
 
 function App() {
     const location = useLocation();
-    const authPaths = ["/login", "/signup", "/signup/success"];
+    const authPaths = ["/login", "/signup", "/signup/success", "/findPassword"];
     const isAuthPage = authPaths.includes(location.pathname);
 
     return (
@@ -33,7 +34,6 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
 
-                    {/* 👇 로그인한 사람 못 들어오게 막기 */}
                     <Route
                         path="/login"
                         element={
@@ -59,7 +59,15 @@ function App() {
                         }
                     />
 
-                    {/* ✅ 로그인한 사람만 들어올 수 있음 */}
+                    <Route
+                        path="/findPassword"
+                        element={
+                            <PublicOnlyRoute>
+                                <FindPassword />
+                            </PublicOnlyRoute>
+                        }
+                    />
+                    {/* 로그인한 사람만 들어올 수 있음 */}
                     <Route
                         path="/dashboard"
                         element={
@@ -77,11 +85,11 @@ function App() {
                         }
                     />
 
-                    {/* ✅ 자유 접근 가능 */}
-                    <Route path="/ranking" element={<Ranking />} />
+                    {/* 자유 접근 가능 */}
+                    <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
 
-                    {/* ✅ 커뮤니티 */}
+                    {/* 커뮤니티 */}
                     <Route path="/community" element={<CommunityPage />} />
                     <Route path="/community/free" element={<FreeBoardPage />} />
                     <Route path="/community/free/write" element={<BoardWrite onClose={() => {}} />} />
