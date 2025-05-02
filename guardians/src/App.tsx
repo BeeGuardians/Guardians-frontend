@@ -65,7 +65,7 @@ function App() {
                             </PublicOnlyRoute>
                         }
                     />
-                    {/* ✅ 로그인한 사람만 들어올 수 있음 */}
+                    {/* 로그인한 사람만 들어올 수 있음 */}
                     <Route
                         path="/dashboard"
                         element={
@@ -83,11 +83,11 @@ function App() {
                         }
                     />
 
-                    {/* ✅ 자유 접근 가능 */}
+                    {/* 자유 접근 가능 */}
                     <Route path="/ranking" element={<Ranking />} />
                     <Route path="/wargame" element={<WargamePage />} />
 
-                    {/* ✅ 커뮤니티 */}
+                    {/* 커뮤니티 */}
                     <Route path="/community" element={<CommunityPage />} />
                     <Route path="/community/free" element={<FreeBoardPage />} />
                     <Route path="/community/qna" element={<QnaBoardPage />} />

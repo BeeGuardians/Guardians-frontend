@@ -154,3 +154,22 @@
     color: #aaa;
     cursor: not-allowed;
 }
+.match {
+    color: green;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.mismatch {
+    color: red;
+    font-size: 13px;
+    margin-top: 4px;
+}
+.feedbackBox {
+    min-height: 20px; /* 공간 확보 */
+    margin-top: 4px;
+}
+
+.placeholder {
+    visibility: hidden; /* 공간은 차지하지만 안보임 */
+}
