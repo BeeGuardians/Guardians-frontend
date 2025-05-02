@@ -2,7 +2,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/HomePage/Home.tsx";
 import Login from "./pages/LoginPage/Login";
 import Dashboard from "./pages/Dashboard";
-import Ranking from "./pages/Ranking";
+import RankingPage from "./pages/RankingPage/RankingPage";
 import Header from "./components/Header";
 import AuthHeader from "./components/AuthHeader";
 import WargamePage from "./pages/WargamePage/WargamePage";
@@ -84,7 +84,7 @@ function App() {
                     />
 
                     {/* 자유 접근 가능 */}
-                    <Route path="/ranking" element={<Ranking />} />
+                    <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
 
                     {/* 커뮤니티 */}
