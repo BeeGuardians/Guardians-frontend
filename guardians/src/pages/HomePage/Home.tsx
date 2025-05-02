@@ -18,6 +18,7 @@ function Home() {
                 {/* 상단 제목 영역 */}
                 <h1
                     style={{
+                        color : "white",
                         fontSize: "4.5rem",        // 큰 글씨
                         fontWeight: "bold",        // 굵은 텍스트
                         marginTop: "6rem",

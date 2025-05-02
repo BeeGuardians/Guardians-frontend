@@ -1,45 +1,53 @@
-/* ✅ 배경 전체 영역 */
 .fullPage {
     width: 100vw;
     height: 100vh;
-    background-color: #ffaf59;;
+    background: #ffaf59;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: 'Pretendard', sans-serif;
 }
 
-/* ✅ 텍스트 문구 묶음 */
-.textContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 2rem; /* ✨ 문구와 버튼 사이 간격 */
+.card {
+    background-color: #fff;
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
 }
 
-/* ✅ 각 문장 스타일 (같은 크기) */
-.message {
-    font-size: 1.7rem; /* ✨ 문장 크기 조정 가능 */
-    font-weight: 500;
-    color: #222;
-    margin-bottom: 0.4rem; /* ✨ 문장 간 간격 */
+.emoji {
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
-/* ✅ 로그인 버튼 (오렌지) */
+.title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
 .loginButton {
-    padding: 1rem 2.5rem;
-    border-radius: 0.5rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    border: none;
-    outline: none;
-    background-color: #FFA94D;
+    padding: 0.9rem 2rem;
+    background-color: #535bf2;
     color: white;
+    font-size: 1rem;
     font-weight: 600;
-    transition: background-color 0.3s ease;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
 }
 
-/* ✅ hover 시 */
 .loginButton:hover {
-    background-color: #ff9b30;
+    background-color: #3f46c2;
 }

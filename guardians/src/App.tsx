@@ -6,6 +6,7 @@ import Ranking from "./pages/Ranking";
 import Header from "./components/Header";
 import AuthHeader from "./components/AuthHeader";
 import WargamePage from "./pages/WargamePage/WargamePage";
+import FindPassword from "./pages/LoginPage/FindPassword.tsx";
 
 // 커뮤니티 관련
 import CommunityPage from "./pages/community/CommunityPage";
@@ -21,7 +22,7 @@ import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
     const location = useLocation();
-    const authPaths = ["/login", "/signup", "/signup/success"];
+    const authPaths = ["/login", "/signup", "/signup/success", "/findPassword"];
     const isAuthPage = authPaths.includes(location.pathname);
 
     return (
@@ -31,7 +32,6 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
 
-                    {/* 👇 로그인한 사람 못 들어오게 막기 */}
                     <Route
                         path="/login"
                         element={
@@ -57,6 +57,14 @@ function App() {
                         }
                     />
 
+                    <Route
+                        path="/findPassword"
+                        element={
+                            <PublicOnlyRoute>
+                                <FindPassword />
+                            </PublicOnlyRoute>
+                        }
+                    />
                     {/* ✅ 로그인한 사람만 들어올 수 있음 */}
                     <Route
                         path="/dashboard"
