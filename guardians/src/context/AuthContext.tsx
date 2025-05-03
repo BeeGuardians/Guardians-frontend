@@ -29,13 +29,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
+            setIsLoading(true); // 로딩 시작
             await axios.post(`${API_BASE}/api/users/logout`, {}, { withCredentials: true });
-            setUser(null);
             window.location.href = "/";
         } catch (err) {
-            console.error("❌ 로그아웃 실패", err);
+            console.error("로그아웃 실패", err);
+        } finally {
+            setIsLoading(false);
         }
     };
+
 
     useEffect(() => {
         axios
