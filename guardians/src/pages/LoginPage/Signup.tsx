@@ -52,13 +52,23 @@ const Signup = () => {
 
     const sendVerificationCode = async () => {
         try {
+            const checkRes = await axios.get(`${API_BASE}/api/users/check-email?email=${email}`);
+            const isExists = checkRes.data.result.data;
+
+            if (isExists) {
+                alert("이미 가입된 이메일입니다.");
+                return;
+            }
+
             await axios.get(`${API_BASE}/api/users/send-code?email=${email}`);
             alert("인증 코드가 전송되었습니다.");
             setEmailCodeSent(true);
+
         } catch {
-            alert("이메일 인증 요청 실패 : 유효하지 않은 이메일입니다");
+            alert("이메일 인증 요청 실패: 유효하지 않은 이메일입니다");
         }
     };
+
 
     const verifyEmailCode = async () => {
         try {
