@@ -44,7 +44,8 @@ const Login = () => {
             <div className={styles.left}>
                 <div className={styles.textBox}>
                     <p>환영합니다,</p>
-                    성장을 위한 발걸음 <strong style={{fontSize:"2.1rem", color: "white" }}>Guardians</strong> 입니다.
+                    <span style={{ fontWeight: "750", color: "#fff" }}>모의 해킹</span> 성장을 위한 발걸음{" "}
+                    <strong style={{ fontSize: "2.1rem", color: "white" }}>가디언즈</strong> 입니다.
                 </div>
                 <img src="/login_logo.png" alt="login visual" className={styles.visual} />
             </div>

@@ -38,7 +38,7 @@
 
 .loginButton {
     padding: 0.9rem 2rem;
-    background-color: #535bf2;
+    background-color: #FF8C1A;
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -49,5 +49,5 @@
 }
 
 .loginButton:hover {
-    background-color: #3f46c2;
+    background-color: #FFA94D;
 }
