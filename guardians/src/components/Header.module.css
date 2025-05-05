@@ -14,7 +14,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1440px;
+    max-width: 1920px;
     padding: 1rem 2rem;
     margin: 0 auto;
 }
@@ -28,7 +28,7 @@
 }
 
 .logo {
-    font-size: 1.7rem;
+    font-size: 2rem;
     font-weight: bold;
     color: orange;
     text-decoration: none;
@@ -54,8 +54,9 @@
 
 /* ===== 메뉴 ===== */
 .nav {
+    font-size: 1.1rem;
     display: flex;
-    gap: 2rem;
+    gap: 2.5rem;
     margin-left: 2rem;
 }
 
@@ -79,7 +80,7 @@
 .loginButton {
     padding: 0.5rem 1rem;
     border: 1px solid lightgray;
-    font-size: 0.9rem;
+    font-size: 1rem;
     border-radius: 5px;
     background: white;
     cursor: pointer;

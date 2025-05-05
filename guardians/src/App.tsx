@@ -28,7 +28,7 @@ function App() {
     return (
         <AuthProvider>
             {isAuthPage ? <AuthHeader /> : <Header />}
-            <div style={{ paddingTop: isAuthPage ? "0" : "5rem"}}>
+            <div style={{ paddingTop: isAuthPage ? "0" : "5rem", paddingLeft : "5rem", maxWidth : "1920px"}}>
                 <Routes>
                     <Route path="/" element={<Home />} />
 
