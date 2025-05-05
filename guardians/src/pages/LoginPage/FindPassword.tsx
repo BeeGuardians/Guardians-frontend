@@ -1,8 +1,10 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
 import styles from './FindPassword.module.css';
 import emailIcon from '../../assets/mail.png';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios';
+import ErrorModal from '../ErrorModal/ErrorModal'; // ✅ 추가
 
 const FindPassword = () => {
     const [email, setEmail] = useState('');
@@ -11,10 +13,18 @@ const FindPassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [step, setStep] = useState<'email' | 'verify'>('email');
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
     const navigate = useNavigate();
 
     const isPasswordMatch = newPassword !== '' && newPassword === confirmPassword;
+
+    const showError = (msg: string) => {
+        setModalMessage(msg);
+        setShowModal(true);
+    };
 
     const handleSendCode = async () => {
         try {
@@ -23,10 +33,10 @@ const FindPassword = () => {
             setUserId(fetchedUserId);
 
             await axios.get(`${API_BASE}/api/users/${fetchedUserId}/reset-password/send-code`);
-            alert('인증 코드를 이메일로 보냈어요!');
             setStep('verify');
+            showError('인증 코드를 이메일로 보냈어요!');
         } catch (err) {
-            alert('이메일을 확인할 수 없습니다.');
+            showError('이메일을 확인할 수 없습니다.');
             console.error(err);
         }
     };
@@ -34,7 +44,7 @@ const FindPassword = () => {
     const handleResetPassword = async () => {
         try {
             if (!userId) {
-                alert('유저 정보를 확인할 수 없습니다.');
+                showError('유저 정보를 확인할 수 없습니다.');
                 return;
             }
 
@@ -45,10 +55,13 @@ const FindPassword = () => {
                 },
             });
 
-            alert('비밀번호가 성공적으로 재설정되었습니다.');
-            navigate('/login');
+            showError('비밀번호가 성공적으로 재설정되었습니다.');
+            setTimeout(() => {
+                setShowModal(false);
+                navigate('/login');
+            }, 1500);
         } catch (err) {
-            alert('코드가 틀리거나 비밀번호 재설정 실패!');
+            showError('코드가 틀리거나 비밀번호 재설정 실패!');
             console.error(err);
         }
     };
@@ -146,6 +159,8 @@ const FindPassword = () => {
                     )}
                 </div>
             </div>
+
+            {showModal && <ErrorModal message={modalMessage} onClose={() => setShowModal(false)} />}
         </div>
     );
 };
