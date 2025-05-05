@@ -12,7 +12,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1440px;
+    max-width: 100%;
     padding: 1rem 2rem;
     margin: 0 auto;
 }
@@ -26,7 +26,7 @@
 }
 
 .logo {
-    font-size: 1.7rem;
+    font-size: 2rem;
     font-weight: bold;
     color: white;
     text-decoration: none;

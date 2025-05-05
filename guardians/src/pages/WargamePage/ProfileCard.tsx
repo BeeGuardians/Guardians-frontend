@@ -2,7 +2,7 @@ function UserInfoCard() {
     return (
         <div
             style={{
-                width: "320px",
+                width: "360px",
                 border: "1px solid #ccc",
                 borderRadius: "10px",
                 overflow: "hidden",

@@ -22,13 +22,20 @@ import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
     const location = useLocation();
+
     const authPaths = ["/login", "/signup", "/signup/success", "/findPassword"];
     const isAuthPage = authPaths.includes(location.pathname);
 
     return (
         <AuthProvider>
             {isAuthPage ? <AuthHeader /> : <Header />}
-            <div style={{ paddingTop: isAuthPage ? "0" : "5rem"}}>
+            <div
+                style={{
+                    paddingTop: isAuthPage ? "0" : "5rem",
+                    paddingLeft: isAuthPage ? "0" : "5rem",
+                    maxWidth: "100%",
+                }}
+            >
                 <Routes>
                     <Route path="/" element={<Home />} />
 
@@ -65,7 +72,7 @@ function App() {
                             </PublicOnlyRoute>
                         }
                     />
-                    {/* 로그인한 사람만 들어올 수 있음 */}
+
                     <Route
                         path="/dashboard"
                         element={
@@ -83,7 +90,6 @@ function App() {
                         }
                     />
 
-                    {/* 자유 접근 가능 */}
                     <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
 

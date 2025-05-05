@@ -156,7 +156,8 @@ body {
 .container {
     display: flex;
     height: 100vh;
-    width: 100vw;
+    width: 100%;
+    overflow: hidden;
 }
 
 /* 왼쪽 영역 */
