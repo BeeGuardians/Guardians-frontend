@@ -1,6 +1,6 @@
 function Home() {
     return (
-        <div style={{ padding: "0", margin: "0", maxWidth: "1920px", marginLeft: "-5rem"}}>
+        <div style={{ padding: "0", margin: "0", maxWidth: "100vw", marginLeft: "-5rem"}}>
             {/* 배경색이 전체 너비로 적용되는 상단 Hero 영역 */}
             <div
                 style={{
