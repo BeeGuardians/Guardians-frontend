@@ -6,6 +6,7 @@ import styles from './Signup.module.css';
 import emailIcon from '../../assets/mail.png';
 import nicknameIcon from '../../assets/smile.png';
 import lockIcon from '../../assets/lock.png';
+import ErrorModal from '../ErrorModal/ErrorModal';
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -24,6 +25,14 @@ const Signup = () => {
     const [terms, setTerms] = useState({ terms: false, privacy: false, age: false });
     const allChecked = terms.terms && terms.privacy && terms.age;
 
+    const [errorMsg, setErrorMsg] = useState("");
+    const [showModal, setShowModal] = useState(false);
+
+    const showError = (msg: string) => {
+        setErrorMsg(msg);
+        setShowModal(true);
+    };
+
     const handleIndividualCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = e.target;
         setTerms((prev) => ({ ...prev, [name]: checked }));
@@ -35,17 +44,23 @@ const Signup = () => {
     };
 
     const sendVerificationCode = async () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showError("올바른 이메일 형식을 입력해 주세요.");
+            return;
+        }
+
         try {
             const checkRes = await axios.get(`${API_BASE}/api/users/check-email?email=${email}`);
             if (checkRes.data.result.data) {
-                alert("이미 가입된 이메일입니다.");
+                showError("이미 가입된 이메일입니다.");
                 return;
             }
             await axios.get(`${API_BASE}/api/users/send-code?email=${email}`);
-            alert("인증 코드가 전송되었습니다.");
             setEmailCodeSent(true);
+            showError("인증 코드가 전송되었습니다. 이메일을 확인해 주세요.");
         } catch {
-            alert("이메일 인증 요청 실패: 유효하지 않은 이메일입니다");
+            showError("이메일 인증 요청 실패: 유효하지 않은 이메일입니다");
         }
     };
 
@@ -53,23 +68,23 @@ const Signup = () => {
         try {
             const res = await axios.post(`${API_BASE}/api/users/verify-code?email=${email}&code=${verificationCode}`);
             if (res.data.result.data === true) {
-                alert("이메일 인증 완료");
                 setEmailVerified(true);
+                showError("✅ 이메일 인증이 완료되었습니다.");
             } else {
-                alert("인증 코드가 올바르지 않습니다");
+                showError("인증 코드가 올바르지 않습니다");
             }
         } catch {
-            alert("이메일 인증 실패");
+            showError("이메일 인증 실패");
         }
     };
 
     const handleSubmit = async () => {
         if (!emailVerified || !nickname || !password || !passwordCheck || !allChecked) {
-            alert("모든 정보를 입력하고 약관에 동의해야 합니다.");
+            showError("모든 정보를 입력하고 약관에 동의해야 합니다.");
             return;
         }
         if (password !== passwordCheck) {
-            alert("비밀번호가 일치하지 않습니다.");
+            showError("비밀번호가 일치하지 않습니다.");
             return;
         }
         try {
@@ -78,10 +93,9 @@ const Signup = () => {
                 username: nickname,
                 password,
             });
-            alert("회원가입이 완료되었습니다.");
             navigate("/signup/success");
         } catch {
-            alert("회원가입 실패: 이미 가입된 이메일일 수 있습니다.");
+            showError("회원가입 실패: 이미 가입된 이메일일 수 있습니다.");
         }
     };
 
@@ -90,7 +104,7 @@ const Signup = () => {
             <div className={styles.left}>
                 <div className={styles.textBox}>
                     <p>환영합니다,</p>
-                    <span style={{ fontWeight: "750", color: "#fff" }}>모의 해킹</span> 성장을 위한 발걸음{" "}
+                    <span style={{ fontWeight: "750", color: "#fff" }}>모의 해킹</span> 성장을 위한 발걸음 {" "}
                     <strong style={{ fontSize: "2.1rem", color: "white" }}>가디언즈</strong> 입니다.
                 </div>
                 <img src="/login_logo.png" alt="login visual" className={styles.visual} />
@@ -109,8 +123,13 @@ const Signup = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 disabled={emailVerified}
+                                style={{
+                                    backgroundColor: emailVerified ? "#f0f0f0" : "white",
+                                    color: emailVerified ? "#888" : "#000",
+                                    cursor: emailVerified ? "not-allowed" : "text"
+                                }}
                             />
-                            {!emailVerified && (
+                            {!emailVerified && !emailCodeSent && (
                                 <button className={styles.verifyBtn} onClick={sendVerificationCode} disabled={!email.trim()}>
                                     인증
                                 </button>
@@ -209,6 +228,8 @@ const Signup = () => {
                     </button>
                 </div>
             </div>
+
+            {showModal && <ErrorModal message={errorMsg} onClose={() => setShowModal(false)} />}
         </div>
     );
 };
