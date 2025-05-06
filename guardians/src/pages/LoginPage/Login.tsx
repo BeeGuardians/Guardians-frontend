@@ -1,38 +1,46 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import styles from "./Login.module.css";
 import emailIcon from "../../assets/mail.png";
 import lockIcon from "../../assets/lock.png";
-import {useAuth} from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+import ErrorModal from "../ErrorModal/ErrorModal"; // ✅ 경로 확인!
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMsg, setErrorMsg] = useState("");
+    const [showModal, setShowModal] = useState(false);
+
     const navigate = useNavigate();
-    const {login} = useAuth(); // 👈 전역 상태 로그인 처리
-    const API_BASE = import.meta.env.VITE_API_BASE_URL; // 꼭 상단에 선언!
+    const { login } = useAuth();
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
     const handleLogin = async () => {
+        if (!email.trim() || !password.trim()) {
+            setErrorMsg("이메일과 비밀번호를 모두 입력해주세요.");
+            setShowModal(true);
+            return;
+        }
 
         try {
             const res = await axios.post(
-                `${API_BASE}/api/users/login`, // 백틱으로 감싸서 변수 적용
+                `${API_BASE}/api/users/login`,
                 { email, password },
                 { withCredentials: true }
             );
-
             const userData = res.data.result.data;
-            console.log("로그인 성공", userData);
-            login(userData); // 👈 userContext 업데이트
-            window.location.href = "/"
+            login(userData);
+            window.location.href = "/";
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
-                alert("로그인 실패: " + (err.response?.data?.message || "에러 발생"));
+                setErrorMsg(err.response?.data?.message || "로그인 실패");
             } else {
-                alert("알 수 없는 오류가 발생했습니다");
+                setErrorMsg("알 수 없는 오류가 발생했습니다.");
             }
+            setShowModal(true);
         }
     };
 
@@ -43,15 +51,21 @@ const Login = () => {
     };
 
     return (
-        <div className={styles.fullPage}>
-            <div className={styles.wrapper}>
+        <div className={styles.container}>
+            <div className={styles.left}>
+                <div className={styles.textBox}>
+                    <p>환영합니다,</p>
+                    <span style={{ fontWeight: "750", color: "#fff" }}>모의 해킹</span> 성장을 위한 발걸음{" "}
+                    <strong style={{ fontSize: "2.1rem", color: "white" }}>가디언즈</strong> 입니다.
+                </div>
+                <img src="/login_logo.png" alt="login visual" className={styles.visual} />
+            </div>
+            <div className={styles.right}>
                 <div className={styles.loginBox}>
                     <h2 className={styles.title}>가디언즈 로그인</h2>
-
-                    {/* ✅ 입력창 그룹 */}
                     <div className={styles.inputSection}>
                         <div className={styles.inputGroup}>
-                            <img src={emailIcon} alt="email"/>
+                            <img src={emailIcon} alt="email" />
                             <input
                                 type="email"
                                 placeholder="이메일을 입력해 주세요"
@@ -60,9 +74,8 @@ const Login = () => {
                                 onKeyDown={handleKeyDown}
                             />
                         </div>
-
                         <div className={styles.inputGroup}>
-                            <img src={lockIcon} alt="lock"/>
+                            <img src={lockIcon} alt="lock" />
                             <input
                                 type="password"
                                 placeholder="비밀번호를 입력해 주세요"
@@ -72,27 +85,19 @@ const Login = () => {
                             />
                         </div>
                     </div>
-
-                    {/* ✅ 버튼 그룹 */}
                     <div className={styles.buttonSection}>
-                        <button className={styles.loginButton} onClick={handleLogin}>
-                            로그인하기
-                        </button>
-                        <button
-                            className={styles.signupButton}
-                            onClick={() => navigate("/signup")}
-                        >
+                        <button className={styles.loginButton} onClick={handleLogin}>로그인하기</button>
+                        <button className={styles.signupButton} onClick={() => navigate("/signup")}>
                             이메일 회원가입
                         </button>
-                        <div
-                            className={styles.findPassword}
-                            onClick={() => navigate("/findPassword")}
-                        >
+                        <div className={styles.findPassword} onClick={() => navigate("/findPassword")}>
                             비밀번호 찾기
                         </div>
                     </div>
                 </div>
             </div>
+
+            {showModal && <ErrorModal message={errorMsg} onClose={() => setShowModal(false)} />}
         </div>
     );
 };
