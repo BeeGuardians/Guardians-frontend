@@ -2,9 +2,9 @@ import { useState } from "react";
 
 interface UserRanking {
     rank: number;
-    nickname: string;
+    username: string;
     score: number;
-    solvedCount: number;
+    totalSolved: number;
 }
 
 interface RankingTableProps {
@@ -69,8 +69,8 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                         }
                     >
                         <td style={tdStyle}>{user.rank}</td>
-                        <td style={tdStyle}>{user.nickname}</td>
-                        <td style={tdStyle}>{user.solvedCount}</td>
+                        <td style={tdStyle}>{user.username}</td>
+                        <td style={tdStyle}>{user.totalSolved}</td>
                         <td style={tdStyle}>{user.score}</td>
                     </tr>
                 ))}
