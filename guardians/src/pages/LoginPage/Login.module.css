@@ -1,5 +1,7 @@
 /* Login.module.css */
-
+body {
+    font-family: 'Pretendard', sans-serif;
+}
 /* ✅ 페이지 전체를 감싸는 배경 영역 */
 .fullPage {
     width: 100vw;                          /* 전체 너비 */
@@ -7,7 +9,7 @@
     display: flex;                         /* 내부 요소 가로 정렬 */
     justify-content: flex-end;            /* 오른쪽 정렬 */
     align-items: center;                  /* 수직 중앙 정렬 */
-    background-color: #ffaf59;           /* 배경 색상 */
+    background-color: #FCD7A2;           /* 배경 색상 */
     overflow-x: hidden;                   /* 수평 스크롤 제거 */
     box-sizing: border-box;               /* 패딩 포함; */
     margin-right: 15rem;                  /* ✅ 위치 조정 (로그인과 동일) */
@@ -30,6 +32,18 @@
     border-radius: 1.2rem;                /* 모서리를 둥글게 */
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.08); /* 은은한 그림자 */
     border: 1px solid #ddd;               /* 연한 회색 테두리 */
+}
+
+/* ✅ 로그인 화면 배경에 로고 이미지 추가 */
+.bgLogo {
+    position: absolute;
+    right: 4rem;
+    bottom: 4rem;
+    width: 30%;
+    max-width: 400px;
+    opacity: 0.15; /* 자연스럽게 어울리게 투명도 적용 */
+    pointer-events: none; /* 클릭 방지 */
+    z-index: 0;
 }
 
 /* ✅ 제목 텍스트 */
@@ -137,4 +151,64 @@
     color: red;
     font-size: 14px;
     margin-top: 4px;
+}
+/* 전체 컨테이너 (좌우 나누기) */
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* 왼쪽 영역 */
+.left {
+    flex: 1;
+    background-color: #ffaf59;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.leftContent {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
+
+.visual {
+    margin-left: 12rem;
+    margin-bottom: 6rem;
+    width: 400px;
+    max-width: 100%;
+}
+
+.textBox {
+    margin-left: 10rem;
+    margin-bottom: 3rem;
+    color: white;
+    text-align: left;
+    font-size: 1.6rem;
+    line-height: 0.7rem;
+    max-width: 500px;
+    font-weight: 500;
+}
+
+
+/* 오른쪽 영역 */
+.right {
+    flex: 1.2;
+    background-color: #ffaf59;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 로그인 박스는 그대로 써도 됨 */
+.loginBox {
+    width: 350px;
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 1rem;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
 }
