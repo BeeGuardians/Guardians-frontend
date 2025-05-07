@@ -70,7 +70,7 @@ function PopularWargameList() {
                             {index + 1}.
                         </span>
                         <Link
-                            to={`/wargames/${wargame.id}`}
+                            to={`/wargame/${wargame.id}`}
                             style={{
                                 textDecoration: "none",
                                 color: "#444",

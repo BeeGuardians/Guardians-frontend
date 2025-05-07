@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import AuthHeader from "./components/AuthHeader";
 import WargamePage from "./pages/WargamePage/WargamePage";
 import FindPassword from "./pages/LoginPage/FindPassword.tsx";
+import WargameDetailPage from "./pages/WargamePage/WargameDetailPage.tsx";
 
 // 커뮤니티 관련
 import CommunityPage from "./pages/community/CommunityPage";
@@ -92,6 +93,7 @@ function App() {
 
                     <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
+                    <Route path="/wargame/:id" element={<WargameDetailPage />} />
 
                     {/* 커뮤니티 */}
                     <Route path="/community" element={<CommunityPage />} />
