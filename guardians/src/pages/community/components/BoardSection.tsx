@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import viewIcon from "../../../assets/view.png"; // 경로는 너 구조에 맞게 조정
 
 type Post = {

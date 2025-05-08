@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import {Route, Routes, useLocation} from "react-router-dom";
 import Home from "./pages/HomePage/Home.tsx";
 import Login from "./pages/LoginPage/Login";
 import Dashboard from "./pages/Dashboard";
@@ -17,7 +17,7 @@ import StudyBoardPage from "./pages/community/StudyBoardPage";
 import InquiryBoardPage from "./pages/community/InquiryBoardPage";
 import SignupSuccess from "./pages/LoginPage/SignupSuccess.tsx";
 import Signup from "./pages/LoginPage/Signup.tsx";
-import { AuthProvider } from "./context/AuthContext.tsx";
+import {AuthProvider} from "./context/AuthContext.tsx";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import PrivateRoute from "./components/PrivateRoute";
 import BoardWrite from "./pages/community/BoardWrite.tsx";

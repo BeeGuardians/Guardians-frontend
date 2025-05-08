@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import styles from "./WargameDetailPage.module.css";
 import QACard from "./QACard";
@@ -41,7 +41,7 @@ function WargameDetailPage() {
     const [wargame, setWargame] = useState<Wargame | null>(null);
     const [flag, setFlag] = useState("");
     const [qaList, setQaList] = useState<QuestionWithAnswers[]>([]);
-    const [sessionUserId, setSessionUserId] = useState<number | null>(null);
+    //const [sessionUserId, setSessionUserId] = useState<number | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalResult, setModalResult] = useState<null | { correct: boolean; message: string }>(null);
 
@@ -61,14 +61,14 @@ function WargameDetailPage() {
             .catch((err) => console.error("워게임 상세 불러오기 실패", err));
     };
 
-    const fetchSessionUser = async () => {
-        try {
-            const res = await axios.get(`${API_BASE}/api/users/me`);
-            setSessionUserId(res.data.result.data.id);
-        } catch {
-            setSessionUserId(null);
-        }
-    };
+    // const fetchSessionUser = async () => {
+    //     try {
+    //         const res = await axios.get(`${API_BASE}/api/users/me`);
+    //         setSessionUserId(res.data.result.data.id);
+    //     } catch {
+    //         setSessionUserId(null);
+    //     }
+    // };
 
     const fetchQnA = async () => {
         try {
@@ -93,7 +93,7 @@ function WargameDetailPage() {
 
     useEffect(() => {
         fetchWargame();
-        fetchSessionUser();
+        // fetchSessionUser();
         fetchQnA();
     }, [id]);
 
@@ -137,7 +137,7 @@ function WargameDetailPage() {
                 <div className={styles["title-row"]}>
                     <h1 className={styles.title}>
                         [{wargame.title}]
-                        {wargame.solved && <span className={styles.badge}>✔ 해결됨</span>}
+                        {wargame.solved && <span className={styles.badge}>✔ 해결</span>}
                     </h1>
                     <div className={styles["action-box"]}>
                         <button onClick={toggleBookmark} className={`${styles["action-btn"]} ${wargame.bookmarked ? styles.active : ""}`}>

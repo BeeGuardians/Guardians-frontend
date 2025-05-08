@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 
 import styles from "./Login.module.css";
 import emailIcon from "../../assets/mail.png";
 import lockIcon from "../../assets/lock.png";
-import { useAuth } from "../../context/AuthContext";
+import {useAuth} from "../../context/AuthContext";
 import ErrorModal from "../ErrorModal/ErrorModal"; // ✅ 경로 확인!
 
 const Login = () => {

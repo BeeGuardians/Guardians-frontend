@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
 import viewIcon from "../../assets/view.png";

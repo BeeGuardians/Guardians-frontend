@@ -1,5 +1,5 @@
 // components/AuthHeader.tsx
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import styles from "./AuthHeader.module.css";
 
 const AuthHeader = () => {
