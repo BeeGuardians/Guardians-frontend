@@ -2,7 +2,7 @@ import styles from "./QACard.module.css";
 import viewIcon from "../../assets/view.png";
 import likeIcon from "../../assets/like.png";
 import commentIcon from "../../assets/comment.png";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 type QACardProps = {
     question: {

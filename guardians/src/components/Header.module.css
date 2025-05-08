@@ -22,7 +22,7 @@
 .left {
     display: flex;
     align-items: center;
-    gap: 3rem;
+    gap: 2.5rem;
     padding-top: 0.2rem;
     padding-left: 7.5rem;
 }
@@ -56,7 +56,7 @@
 .nav {
     font-size: 1.1rem;
     display: flex;
-    gap: 2.5rem;
+    gap: 2rem;
     margin-left: 2rem;
 }
 

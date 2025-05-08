@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import Select from "react-select";
 import resetIcon from "../../assets/reset.png";
 

@@ -1,6 +1,6 @@
-import { useAuth } from "../context/AuthContext";
-import { Link, useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import {useAuth} from "../context/AuthContext";
+import {Link, useLocation} from "react-router-dom";
+import {useEffect, useRef, useState} from "react";
 import styles from "./Header.module.css";
 
 function Header() {

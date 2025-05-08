@@ -1,7 +1,7 @@
 // components/PrivateRoute.tsx
 import {JSX, useEffect} from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "../context/AuthContext";
 
 const PrivateRoute = ({ children }: { children: JSX.Element }) => {
     const { user, isLoading } = useAuth();

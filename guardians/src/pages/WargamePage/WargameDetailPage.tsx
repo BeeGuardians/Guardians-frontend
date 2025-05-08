@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import styles from "./WargameDetailPage.module.css";
 import QACard from "./QACard";
@@ -137,7 +137,7 @@ function WargameDetailPage() {
                 <div className={styles["title-row"]}>
                     <h1 className={styles.title}>
                         [{wargame.title}]
-                        {wargame.solved && <span className={styles.badge}>✔ 해결됨</span>}
+                        {wargame.solved && <span className={styles.badge}>✔ 해결</span>}
                     </h1>
                     <div className={styles["action-box"]}>
                         <button onClick={toggleBookmark} className={`${styles["action-btn"]} ${wargame.bookmarked ? styles.active : ""}`}>
