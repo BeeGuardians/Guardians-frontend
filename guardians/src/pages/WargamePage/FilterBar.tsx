@@ -10,9 +10,9 @@ const categoryOptions = [
 ];
 
 const levelOptions = [
-    { value: "쉬움", label: "쉬움" },
-    { value: "보통", label: "보통" },
-    { value: "어려움", label: "어려움" },
+    { value: "EASY", label: "쉬움" },
+    { value: "MEDIUM", label: "보통" },
+    { value: "HARD", label: "어려움" },
 ];
 
 const statusOptions = [
