@@ -1,0 +1,82 @@
+.card {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+    font-size: 0.95rem;
+}
+
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+    color: #888;
+}
+
+.wargameTitle {
+    font-weight: 500;
+    color: #666;
+}
+
+.userMeta {
+    color: #666;
+}
+
+.title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0.4rem 0 0.7rem;
+    line-height: 1.4;
+    color: #111;
+}
+
+.content {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.separator {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 0.5rem 0 1rem;
+}
+
+.bottomRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.iconRow {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.iconItem {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.iconItem img {
+    width: 16px;
+    height: 16px;
+}
+
+.answeredBadge {
+    background-color: #D3F9D8;
+    color: #2B8A3E;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+}

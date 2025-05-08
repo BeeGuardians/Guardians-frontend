@@ -1,6 +1,6 @@
-// context/AuthContext.tsx
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type User = {
     id: number;
@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
+    const navigate = useNavigate(); // ✅ 새로고침 없이 페이지 이동
 
     const login = (userData: User) => {
         console.log("📌 login() 호출됨", userData);
@@ -29,16 +30,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            setIsLoading(true); // 로딩 시작
+            setIsLoading(true);
             await axios.post(`${API_BASE}/api/users/logout`, {}, { withCredentials: true });
-            window.location.href = "/";
+            setUser(null); // ✅ 유저 상태 날림
+            navigate("/"); // ✅ 새로고침 없이 이동
         } catch (err) {
             console.error("로그아웃 실패", err);
         } finally {
             setIsLoading(false);
         }
     };
-
 
     useEffect(() => {
         axios
@@ -59,7 +60,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setUser(null);
             })
             .finally(() => {
-                setIsLoading(false); // ✅ 마지막에 로딩 끝 표시
+                setIsLoading(false); // ✅ 로딩 끝
             });
     }, []);
 
