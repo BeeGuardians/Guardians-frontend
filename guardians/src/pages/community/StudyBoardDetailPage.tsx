@@ -12,7 +12,7 @@ import axios from "axios";
         viewCount: number;
     }
 
-const FreeBoardDetailPage = () => {
+const InquiryBoardDetailPage = () => {
     const {id} = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [board, setBoard] = useState<Board | null>(null);
@@ -83,4 +83,4 @@ const FreeBoardDetailPage = () => {
     );
 };
 
-    export default FreeBoardDetailPage;
+    export default InquiryBoardDetailPage;
