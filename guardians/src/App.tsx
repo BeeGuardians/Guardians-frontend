@@ -20,6 +20,10 @@ import Signup from "./pages/LoginPage/Signup.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import PrivateRoute from "./components/PrivateRoute";
+import BoardWrite from "./pages/community/BoardWrite.tsx";
+import FreeBoardDetailPage from "./pages/community/FreeBoardDetailPage.tsx";
+import StudyBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
+import InquiryBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
 
 function App() {
     const location = useLocation();
@@ -98,9 +102,16 @@ function App() {
                     {/* 커뮤니티 */}
                     <Route path="/community" element={<CommunityPage />} />
                     <Route path="/community/free" element={<FreeBoardPage />} />
+                    <Route path="/community/free/write" element={<BoardWrite type="FREE" />} />
+                    <Route path="/community/free/:id" element={<FreeBoardDetailPage />} />
                     <Route path="/community/qna" element={<QnaBoardPage />} />
                     <Route path="/community/study" element={<StudyBoardPage />} />
+                    <Route path="/community/study/write" element={<BoardWrite type="STUDY" />} />
+                    <Route path="/community/study/:id" element={<StudyBoardDetailPage />} />
                     <Route path="/community/inquiry" element={<InquiryBoardPage />} />
+                    <Route path="/community/inquiry/write" element={<BoardWrite type="INQUIRY" />} />
+                    <Route path="/community/inquiry/:id" element={<InquiryBoardDetailPage />} />
+
                 </Routes>
             </div>
         </AuthProvider>

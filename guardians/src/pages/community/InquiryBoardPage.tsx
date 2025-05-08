@@ -1,28 +1,54 @@
-import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
+import {useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 
-const FreeBoardPage = () => {
-    const dummyPosts = Array.from({ length: 47 }, (_, i) => ({
-        id: i + 1,
-        title: `자유글 제목입니다 ${i + 1}`,
-        views: 50 * (i + 1),
-        likes: 5 + (i % 10), // ❤️ 좋아요 수 추가
-        author: "익명",
-        createdAt: "2024-04-30",
-    }));
+const InquiryBoardPage = () => {
+    const navigate = useNavigate();
 
-    const postsPerPage = 10;
+    interface Board {
+        boardId: number;
+        title: string;
+        username: string;
+        createdAt: string;
+        likeCount: number;
+        viewCount: number;
+        boardType: string;
+    }
+    const [boards, setBoards] = useState<Board[]>([]);
+    const boardsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(dummyPosts.length / postsPerPage);
-    const currentPosts = dummyPosts.slice(
-        (currentPage - 1) * postsPerPage,
-        currentPage * postsPerPage
+
+    useEffect(() => {
+        axios.get('/api/boards?type=INQUIRY', { withCredentials: true })
+            .then(res => {
+                const result = res.data.result.data;
+                if (Array.isArray(result)) {
+                    const sortedBoards = result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                    setBoards(sortedBoards);
+                } else {
+                    setBoards([]);
+                }
+            })
+            .catch(err => {
+                console.error('게시글 목록 불러오기 실패', err);
+            });
+    }, []);
+
+    const totalPages = Math.ceil(boards.length / boardsPerPage);
+    const currentBoards = boards.slice(
+        (currentPage - 1) * boardsPerPage,
+        currentPage * boardsPerPage
     );
 
     const handleRowClick = (id: number) => {
-        console.log(`클릭된 게시글 ID: ${id}`);
+        navigate(`/community/inquiry/${id}`);
+    };
+
+    const handleWriteClick = () => {
+        navigate("/community/inquiry/write");
     };
 
     return (
@@ -60,7 +86,7 @@ const FreeBoardPage = () => {
                             marginRight: "0.5rem",
                             width: "10%"
                         }}
-                        onClick={() => alert("글쓰기 클릭!")}
+                        onClick={handleWriteClick}
                     >
                         글쓰기
                     </button>
@@ -79,10 +105,10 @@ const FreeBoardPage = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {currentPosts.map((post) => (
+                    {currentBoards.map((board) => (
                         <tr
-                            key={post.id}
-                            onClick={() => handleRowClick(post.id)}
+                            key={board.boardId}
+                            onClick={() => handleRowClick(board.boardId)}
                             style={{
                                 borderTop: "1px solid #eee",
                                 cursor: "pointer",
@@ -91,11 +117,11 @@ const FreeBoardPage = () => {
                             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#fcddb6")}
                             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
                         >
-                            <td style={td}>{post.title}</td>
-                            <td style={td}>{post.author}</td>
-                            <td style={td}>{post.createdAt}</td>
-                            <td style={td}>{post.likes}</td>
-                            <td style={td}>{post.views}</td>
+                            <td style={td}>{board.title}</td>
+                            <td style={td}>{board.username}</td>
+                            <td style={td}>{new Date(board.createdAt).toLocaleDateString()}</td>
+                            <td style={td}>{board.likeCount}</td>
+                            <td style={td}>{board.viewCount}</td>
                         </tr>
                     ))}
                     </tbody>
@@ -139,4 +165,4 @@ const td = {
     fontSize: "0.9rem",
 };
 
-export default FreeBoardPage;
+export default InquiryBoardPage;

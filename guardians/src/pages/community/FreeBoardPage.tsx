@@ -1,34 +1,60 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
-
+import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const FreeBoardPage = () => {
-    const dummyPosts = Array.from({ length: 47 }, (_, i) => ({
-        id: i + 1,
-        title: `자유글 제목입니다 ${i + 1}`,
-        views: 50 * (i + 1),
-        likes: 5 + (i % 10), // ❤️ 좋아요 수 추가
-        author: "익명",
-        createdAt: "2024-04-30",
-    }));
+    const navigate = useNavigate();
 
-    const postsPerPage = 10;
+    interface Board {
+        boardId: number;
+        title: string;
+        username: string;
+        createdAt: string;
+        likeCount: number;
+        viewCount: number;
+        boardType: string;
+    }
+
+    const [boards, setBoards] = useState<Board[]>([]);
+    const boardsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(dummyPosts.length / postsPerPage);
-    const currentPosts = dummyPosts.slice(
-        (currentPage - 1) * postsPerPage,
-        currentPage * postsPerPage
+
+    useEffect(() => {
+        axios.get('/api/boards?type=FREE', { withCredentials: true })
+            .then(res => {
+                const result = res.data.result.data;
+                if (Array.isArray(result)) {
+                    const sortedBoards = result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                    setBoards(sortedBoards);
+                } else {
+                    setBoards([]);
+                }
+            })
+            .catch(err => {
+                console.error('게시글 목록 불러오기 실패', err);
+            });
+    }, []);
+
+    const totalPages = Math.ceil(boards.length / boardsPerPage);
+    const currentBoards = boards.slice(
+        (currentPage - 1) * boardsPerPage,
+        currentPage * boardsPerPage
     );
 
     const handleRowClick = (id: number) => {
-        console.log(`클릭된 게시글 ID: ${id}`);
+        navigate(`/community/free/${id}`);
+    };
+
+    const handleWriteClick = () => {
+        navigate("/community/free/write");
     };
 
     return (
         <div style={{ width: "90%", marginTop: "1.5rem", display: "flex", gap: "3.5rem", padding: "1rem" }}>
             <Sidebar />
-            <div style={{ flex: 1}}>
+            <div style={{ flex: 1 }}>
                 {/* 🔥 상단 색 섹션 */}
                 <div
                     style={{
@@ -60,15 +86,13 @@ const FreeBoardPage = () => {
                             marginRight: "0.5rem",
                             width: "10%"
                         }}
-                        onClick={() => alert("글쓰기 클릭!")}
+                        onClick={handleWriteClick}
                     >
                         글쓰기
                     </button>
                 </div>
 
-
-                {/* 📋 게시글 테이블 */}
-                <table style={{ width: "100%", borderCollapse: "collapse", backgroundColor: "#fff", border: "1px solid #ddd",  borderRadius: "5px", overflow: "hidden"}}>
+                <table style={{ width: "100%", borderCollapse: "collapse", backgroundColor: "#fff", border: "1px solid #ddd", borderRadius: "5px", overflow: "hidden" }}>
                     <thead>
                     <tr style={{ backgroundColor: "#f9f9f9", textAlign: "left" }}>
                         <th style={{ ...th, width: "40%" }}>제목</th>
@@ -79,10 +103,10 @@ const FreeBoardPage = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {currentPosts.map((post) => (
+                    {currentBoards.map((board) => (
                         <tr
-                            key={post.id}
-                            onClick={() => handleRowClick(post.id)}
+                            key={board.boardId}
+                            onClick={() => handleRowClick(board.boardId)}
                             style={{
                                 borderTop: "1px solid #eee",
                                 cursor: "pointer",
@@ -91,15 +115,14 @@ const FreeBoardPage = () => {
                             onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#fcddb6")}
                             onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
                         >
-                            <td style={td}>{post.title}</td>
-                            <td style={td}>{post.author}</td>
-                            <td style={td}>{post.createdAt}</td>
-                            <td style={td}>{post.likes}</td>
-                            <td style={td}>{post.views}</td>
+                            <td style={td}>{board.title}</td>
+                            <td style={td}>{board.username}</td>
+                            <td style={td}>{new Date(board.createdAt).toLocaleDateString()}</td>
+                            <td style={td}>{board.likeCount}</td>
+                            <td style={td}>{board.viewCount}</td>
                         </tr>
                     ))}
                     </tbody>
-
                 </table>
 
                 {/* ⏩ 페이징 */}
