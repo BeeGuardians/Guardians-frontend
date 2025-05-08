@@ -1,10 +1,11 @@
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import styles from "./Header.module.css";
 
 function Header() {
     const { user, logout } = useAuth();
+    const location = useLocation();
     const isLoggedIn = !!user;
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -16,30 +17,26 @@ function Header() {
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
-            if (
-                dropdownOpen &&
-                dropdownRef.current &&
-                !dropdownRef.current.contains(e.target as Node)
-            ) {
+            if (dropdownOpen && dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
                 setDropdownOpen(false);
             }
         };
 
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [dropdownOpen]);
 
     const handleLogout = async () => {
         try {
-            setIsLoading(true); // ✅ 로딩 시작
-            await logout();      // 세션 날리고
-            window.location.href = "/"; // 새로고침
+            setIsLoading(true);
+            await logout();
+            window.location.href = "/";
         } catch (err) {
             console.error("❌ 로그아웃 실패", err);
         }
     };
+
+    const isActive = (path: string) => location.pathname.startsWith(path);
 
     return (
         <>
@@ -58,11 +55,11 @@ function Header() {
                         </Link>
 
                         <nav className={styles.nav}>
-                            <Link to="/wargame" className={styles.link}>워게임</Link>
-                            <Link to="/ranking" className={styles.link}>랭킹</Link>
-                            <Link to="/community" className={styles.link}>커뮤니티</Link>
+                            <Link to="/wargame" className={`${styles.link} ${isActive("/wargame") ? styles.active : ""}`}>워게임</Link>
+                            <Link to="/ranking" className={`${styles.link} ${isActive("/ranking") ? styles.active : ""}`}>랭킹</Link>
+                            <Link to="/community" className={`${styles.link} ${isActive("/community") ? styles.active : ""}`}>커뮤니티</Link>
                             {isLoggedIn && (
-                                <Link to="/dashboard" className={styles.link}>대시보드</Link>
+                                <Link to="/dashboard" className={`${styles.link} ${isActive("/dashboard") ? styles.active : ""}`}>대시보드</Link>
                             )}
                         </nav>
                     </div>

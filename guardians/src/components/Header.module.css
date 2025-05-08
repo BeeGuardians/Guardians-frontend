@@ -191,6 +191,24 @@
     background-color: #ffd6d6;
 }
 
+.link {
+    color: #555;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem;
+    transition: color 0.2s;
+}
+
+.link:hover {
+    color: #ff9900;
+}
+
+.active {
+    color: #ffa94d;
+    border-bottom: 2px solid #ffa94d;
+    font-weight: 700;
+}
+
 .spinnerOverlay {
     position: fixed;
     top: 0;
