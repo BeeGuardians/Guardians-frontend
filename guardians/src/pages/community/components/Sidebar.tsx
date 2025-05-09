@@ -42,7 +42,7 @@ const Sidebar = () => {
                                     textDecoration: "none",
                                     fontWeight: isActive ? 700 : 500,
                                     color: isActive ? "#fff" : "#333",
-                                    backgroundColor: isActive ? "#FFA94D" : "transparent",
+                                     backgroundColor: isActive ? "#FFA94D" : "transparent",
                                     transition: "all 0.2s ease-in-out",
                                 }}
                             >

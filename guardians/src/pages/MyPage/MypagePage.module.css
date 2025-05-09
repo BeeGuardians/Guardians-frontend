@@ -1,0 +1,119 @@
+/* ✅ MypagePage.module.css */
+.pageWrapper {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    margin-top: 1rem;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    min-height: 80vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 180px;
+    padding: 0.5rem 1rem;
+    border-right: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.06);
+    height: fit-content;
+}
+
+.sidebarTitle {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #444;
+}
+
+.menuList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menuItemWrapper {
+    margin-bottom: 1.25rem;
+}
+
+.menuItem {
+    display: block;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.active {
+    font-weight: 700;
+    background-color: #FFA94D;
+    color: #fff;
+}
+
+/* Info Card */
+.card {
+    flex: 1;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.profileSection {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.profileCircle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #8ed16f;
+}
+
+.changePhoto {
+    color: #888;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.infoItem {
+    margin-bottom: 1.5rem;
+}
+
+.inputRow {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f5f5f5;
+}
+
+.editBtn {
+    padding: 0.5rem 1rem;
+    background-color: #FFA94D;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.editBtn:hover {
+    background-color: #ff922b;
+}

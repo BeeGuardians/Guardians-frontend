@@ -24,6 +24,7 @@ import BoardWrite from "./pages/community/BoardWrite.tsx";
 import FreeBoardDetailPage from "./pages/community/FreeBoardDetailPage.tsx";
 import StudyBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
 import InquiryBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
+import MypagePage from "./pages/MyPage/MypagePage";
 
 function App() {
     const location = useLocation();
@@ -90,10 +91,12 @@ function App() {
                         path="/mypage"
                         element={
                             <PrivateRoute>
-                                <div>마이페이지</div>
+                                <MypagePage />
                             </PrivateRoute>
                         }
                     />
+
+
 
                     <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
