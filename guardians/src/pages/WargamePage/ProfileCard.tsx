@@ -1,4 +1,49 @@
-function UserInfoCard() {
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+function ProfileCard() {
+    const [info, setInfo] = useState({
+        nickname: "",
+        profileImageUrl: "",
+        score: 0,
+        rank: 0,
+        solvedCount: 0,
+    });
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const profileRes = await axios.get("/api/users/me", { withCredentials: true });
+                const userId = profileRes.data.result.data.id;
+                const nickname = profileRes.data.result.data.username;
+                const profileImageUrl = profileRes.data.result.data.profileImageUrl;
+
+                const statsRes = await axios.get(`/api/users/${userId}/stats`);
+                const { score, rank, solvedCount } = statsRes.data.result.data;
+
+                setInfo({ nickname, profileImageUrl, score, rank, solvedCount });
+            } catch (err) {
+                setError("프로필 정보를 불러오지 못했습니다.");
+                console.error("ProfileCard Error:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (isLoading) {
+        return <div style={{ padding: "1rem" }}>⏳ 로딩 중...</div>;
+    }
+
+    if (error) {
+        return <div style={{ padding: "1rem", color: "red" }}>{error}</div>;
+    }
+
     return (
         <div
             style={{
@@ -20,7 +65,7 @@ function UserInfoCard() {
                     alignItems: "center",
                 }}
             >
-                <span style={{ color: "#1a73e8", marginRight: "0.25rem" }}>Guardians123</span>
+                <span style={{ color: "#1a73e8", marginRight: "0.25rem" }}>{info.nickname}</span>
             </div>
 
             {/* 프사 + 정보 */}
@@ -33,31 +78,33 @@ function UserInfoCard() {
                 }}
             >
                 {/* 프사 */}
-                <div
+                <img
+                    src={info.profileImageUrl}
+                    alt="프로필"
                     style={{
-                        width: "100px", // ✅ 프사 크기 줄임
-                        height: "100px",
-                        backgroundColor: "#aaa",
+                        marginLeft: "1rem",
+                        width: "110px",
+                        height: "110px",
                         borderRadius: "50%",
-                        border: "1px solid black",
+                        border: "1px solid gray",
+                        objectFit: "cover",
                         flexShrink: 0,
                     }}
-                ></div>
+                />
 
                 {/* 정보 */}
                 <div
                     style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: "1rem",
-                        marginLeft: "1rem",
+                        gap: "0.5rem",
+                        marginRight: "2rem",
                     }}
                 >
-                    {/* 각 정보 항목 */}
                     {[
-                        { label: "점수", value: "1000점" },
-                        { label: "랭킹", value: "00위" },
-                        { label: "해결", value: "00개" },
+                        { label: "점수", value: `${info.score}점` },
+                        { label: "랭킹", value: `${info.rank}위` },
+                        { label: "해결", value: `${info.solvedCount}개` },
                     ].map((item, index) => (
                         <div
                             key={index}
@@ -65,7 +112,7 @@ function UserInfoCard() {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between",
-                                minWidth: "120px", // ✅ 좌우 라인 길이 맞춰줌
+                                minWidth: "110px",
                             }}
                         >
                             <span style={{ color: "#888", fontSize: "0.85rem" }}>{item.label}</span>
@@ -78,4 +125,4 @@ function UserInfoCard() {
     );
 }
 
-export default UserInfoCard;
+export default ProfileCard;
