@@ -135,10 +135,14 @@ function WargameDetailPage() {
         <div className={styles.container}>
             <div className={styles["header-card"]}>
                 <div className={styles["title-row"]}>
-                    <h1 className={styles.title}>
-                        [{wargame.title}]
-                        {wargame.solved && <span className={styles.badge}>✔ 해결</span>}
-                    </h1>
+                    <div>
+                        <p className={styles["wargame-id"]}>워게임 {wargame.id}</p>
+                        <h1 className={styles.title}>
+                            [{wargame.title}]
+                            {wargame.solved && <span className={styles.badge}>✔ 해결</span>}
+                        </h1>
+                    </div>
+
                     <div className={styles["action-box"]}>
                         <button onClick={toggleBookmark} className={`${styles["action-btn"]} ${wargame.bookmarked ? styles.active : ""}`}>
                             {wargame.bookmarked ? "⭐" : "☆"} 북마크
