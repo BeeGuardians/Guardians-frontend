@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/HomePage/Home.tsx";
 import Login from "./pages/LoginPage/Login";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard/DashboardPage"; // ✅ 수정된 부분
 import RankingPage from "./pages/RankingPage/RankingPage";
 import Header from "./components/Header";
 import AuthHeader from "./components/AuthHeader";
