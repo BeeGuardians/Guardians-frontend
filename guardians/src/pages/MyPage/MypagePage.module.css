@@ -147,7 +147,7 @@
 }
 
 .infoLabel {
-    margin-left: 15rem;
+    margin-left: 5rem;
     font-size: 1rem;
     font-weight: 600;
     color: #1e1e1e;
@@ -156,7 +156,7 @@
 
 /* ✅ 인풋 + 버튼 한 줄 정렬 */
 .inputRow {
-    margin-left: 15rem;
+    margin-left: 5rem;
     display: flex;
     align-items: center;
     gap: 2rem;
