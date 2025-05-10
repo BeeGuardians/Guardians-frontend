@@ -24,6 +24,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
     return (
         <div
             style={{
+                width: "100%",
                 backgroundColor: "white",
                 padding: "1rem",
                 borderRadius: "8px",

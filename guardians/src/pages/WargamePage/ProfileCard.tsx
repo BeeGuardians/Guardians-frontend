@@ -11,7 +11,7 @@ function ProfileCard() {
     });
 
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(false); // string → boolean 처리로 변경
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,7 +26,7 @@ function ProfileCard() {
 
                 setInfo({ nickname, profileImageUrl, score, rank, solvedCount });
             } catch (err) {
-                setError("프로필 정보를 불러오지 못했습니다.");
+                setError(true);
                 console.error("ProfileCard Error:", err);
             } finally {
                 setIsLoading(false);
@@ -40,14 +40,11 @@ function ProfileCard() {
         return <div style={{ padding: "1rem" }}>⏳ 로딩 중...</div>;
     }
 
-    if (error) {
-        return <div style={{ padding: "1rem", color: "red" }}>{error}</div>;
-    }
-
     return (
         <div
             style={{
                 width: "360px",
+                height: "220px",
                 border: "1px solid #ccc",
                 borderRadius: "10px",
                 overflow: "hidden",
@@ -65,61 +62,75 @@ function ProfileCard() {
                     alignItems: "center",
                 }}
             >
-                <span style={{ color: "#1a73e8", marginRight: "0.25rem" }}>{info.nickname}</span>
+            <span style={{ color: "black", marginRight: "0.25rem" }}>
+                {error ? "로그인이 필요합니다" : info.nickname}
+            </span>
             </div>
 
-            {/* 프사 + 정보 */}
+            {/* 본문 영역 */}
             <div
                 style={{
-                    padding: "1.5rem",
+                    height: "calc(220px - 62px)", // 카드 높이 - 상단 닉네임 영역 높이
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
                 }}
             >
-                {/* 프사 */}
-                <img
-                    src={info.profileImageUrl}
-                    alt="프로필"
-                    style={{
-                        marginLeft: "1rem",
-                        width: "110px",
-                        height: "110px",
-                        borderRadius: "50%",
-                        border: "1px solid gray",
-                        objectFit: "cover",
-                        flexShrink: 0,
-                    }}
-                />
-
-                {/* 정보 */}
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0.5rem",
-                        marginRight: "2rem",
-                    }}
-                >
-                    {[
-                        { label: "점수", value: `${info.score}점` },
-                        { label: "랭킹", value: `${info.rank}위` },
-                        { label: "해결", value: `${info.solvedCount}개` },
-                    ].map((item, index) => (
-                        <div
-                            key={index}
+                {error ? (
+                    <button
+                        style={{
+                            backgroundColor: "#FFA94D",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            padding: "0.5rem 1rem",
+                            fontSize: "1.1rem",
+                            fontWeight: 500,
+                            cursor: "pointer",
+                        }}
+                        onClick={() => (window.location.href = "/login")}
+                    >
+                        로그인하러 가기
+                    </button>
+                ) : (
+                    <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
+                        {/* 프사 */}
+                        <img
+                            src={info.profileImageUrl}
+                            alt="프로필"
                             style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                minWidth: "110px",
+                                width: "110px",
+                                height: "110px",
+                                borderRadius: "50%",
+                                border: "1px solid gray",
+                                objectFit: "cover",
+                                flexShrink: 0,
                             }}
-                        >
-                            <span style={{ color: "#888", fontSize: "0.85rem" }}>{item.label}</span>
-                            <span style={{ fontWeight: 600, fontSize: "1rem" }}>{item.value}</span>
+                        />
+
+                        {/* 정보 */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                            {[
+                                { label: "점수", value: `${info.score}점` },
+                                { label: "랭킹", value: `${info.rank}위` },
+                                { label: "해결", value: `${info.solvedCount}개` },
+                            ].map((item, index) => (
+                                <div
+                                    key={index}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        minWidth: "110px",
+                                    }}
+                                >
+                                    <span style={{ color: "#888", fontSize: "0.85rem" }}>{item.label}</span>
+                                    <span style={{ fontWeight: 600, fontSize: "1rem" }}>{item.value}</span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );
