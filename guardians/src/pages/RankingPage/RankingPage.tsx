@@ -33,7 +33,7 @@ function RankingPage() {
     }, []);
 
     return (
-        <div style={{ padding: "2rem 10rem" }}>
+        <div style={{ padding: "2rem 10rem", maxWidth: "80%" }}>
             {/* 상단 설명 */}
             <h3 style={{ marginTop: "0rem", marginBottom: "1rem", fontWeight: 400, fontSize: "1rem", color: "#666" }}>
                 🏆 나의 순위는 몇 위? 최고 수치로 실력을 증명해보세요!

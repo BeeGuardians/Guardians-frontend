@@ -1,12 +1,12 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import styles from "./Login.module.css";
 import emailIcon from "../../assets/mail.png";
 import lockIcon from "../../assets/lock.png";
-import {useAuth} from "../../context/AuthContext";
-import ErrorModal from "../ErrorModal/ErrorModal"; // ✅ 경로 확인!
+import { useAuth } from "../../context/AuthContext";
+import ErrorModal from "../ErrorModal/ErrorModal"; // ✅ 경로 확인
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -44,10 +44,9 @@ const Login = () => {
         }
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            handleLogin();
-        }
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        handleLogin();
     };
 
     return (
@@ -60,41 +59,50 @@ const Login = () => {
                 </div>
                 <img src="/login_logo.png" alt="login visual" className={styles.visual} />
             </div>
+
             <div className={styles.right}>
-                <div className={styles.loginBox}>
+                <form
+                    className={styles.loginBox}
+                    onSubmit={handleSubmit}
+                    autoComplete="on"
+                >
                     <h2 className={styles.title}>가디언즈 로그인</h2>
                     <div className={styles.inputSection}>
                         <div className={styles.inputGroup}>
                             <img src={emailIcon} alt="email" />
                             <input
                                 type="email"
+                                name="email"
                                 placeholder="이메일을 입력해 주세요"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                onKeyDown={handleKeyDown}
+                                autoComplete="email"
+                                required
                             />
                         </div>
                         <div className={styles.inputGroup}>
                             <img src={lockIcon} alt="lock" />
                             <input
                                 type="password"
+                                name="password"
                                 placeholder="비밀번호를 입력해 주세요"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                onKeyDown={handleKeyDown}
+                                autoComplete="current-password"
+                                required
                             />
                         </div>
                     </div>
                     <div className={styles.buttonSection}>
-                        <button className={styles.loginButton} onClick={handleLogin}>로그인하기</button>
-                        <button className={styles.signupButton} onClick={() => navigate("/signup")}>
+                        <button type="submit" className={styles.loginButton}>로그인하기</button>
+                        <button type="button" className={styles.signupButton} onClick={() => navigate("/signup")}>
                             이메일 회원가입
                         </button>
                         <div className={styles.findPassword} onClick={() => navigate("/findPassword")}>
                             비밀번호 찾기
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
 
             {showModal && <ErrorModal message={errorMsg} onClose={() => setShowModal(false)} />}
