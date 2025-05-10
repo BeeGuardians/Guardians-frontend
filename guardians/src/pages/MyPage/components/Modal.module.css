@@ -117,3 +117,13 @@
     cursor: pointer;              /* 마우스 오버 시 손 모양 */
     font-weight: 600;             /* 굵은 글씨 */
 }
+
+.closeButton {
+    /* ... 기존 스타일 ... */
+    outline: none;     /* ✅ 포커스 테두리 제거 */
+}
+
+.closeButton:focus {
+    outline: none;
+}
+

@@ -6,7 +6,7 @@ const MypagePage = () => {
     return (
         <div className={styles.pageWrapper}>
             <MypageSidebar />
-            <Outlet /> {/* ← 여기서 PostsPage, InfoCard 등이 렌더링됨 */}
+            <Outlet />
         </div>
     );
 };

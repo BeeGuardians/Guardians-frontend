@@ -1,168 +1,201 @@
-/* ✅ 마이페이지 전체 레이아웃을 감싸는 Wrapper */
+/* ✅ 전체 페이지 래퍼 */
 .pageWrapper {
-    display: flex;                /* 사이드바와 카드 박스를 옆으로 정렬 */
-    gap: 2rem;                    /* 사이드바와 카드 사이 간격 */
-    padding: 2rem;                /* 전체 내부 여백 */
-    margin-top: 1rem;             /* 위쪽 외부 여백 */
-    align-items: flex-start;      /* 사이드바와 카드가 위쪽에 맞춰지도록 정렬 */
-    background-color: #f9f9f9;    /* 전체 배경색 */
-    min-height: 80vh;             /* 화면 높이의 80%를 최소 높이로 지정 */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    margin-top: 1rem;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    min-height: 80vh;
 }
 
-/* ✅ 왼쪽 사이드바 */
+/* ✅ 사이드바 */
 .sidebar {
-    width: 180px;                         /* 사이드바의 고정 너비 */
-    padding: 0.5rem 1rem;                 /* 내부 여백 */
-    border-right: 1px solid #ddd;        /* 오른쪽에 연한 선 추가 */
-    background-color: #fff;              /* 배경을 흰색으로 설정 */
-    border-radius: 10px;                 /* 모서리 둥글게 처리 */
-    box-shadow: 0 0 4px rgba(0,0,0,0.06); /* 흐릿한 그림자 효과 */
-    height: fit-content;                 /* 사이드바 높이를 콘텐츠에 맞춤 */
+    flex: 0 0 180px;
+    padding: 0.5rem 1rem;
+    border-right: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.06);
+    height: fit-content;
 }
 
-/* ✅ 사이드바 제목 */
 .sidebarTitle {
-    font-size: 1.1rem;       /* 글자 크기 */
-    margin-bottom: 1.5rem;   /* 제목과 항목 사이 간격 */
-    font-weight: 700;        /* 굵은 글씨 */
-    color: #444;             /* 중간 회색 글씨색 */
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #444;
 }
 
-/* ✅ 사이드바 메뉴 리스트 */
 .menuList {
-    list-style: none;   /* 기본 리스트 스타일 제거 (● 제거) */
-    padding: 0.5rem;    /* 리스트 내부 여백 */
-    margin: 0;          /* 외부 여백 제거 */
+    list-style: none;
+    padding: 0.5rem;
+    margin: 0;
 }
 
-/* ✅ 메뉴 항목 간 간격 */
 .menuItemWrapper {
-    margin-bottom: 0.3rem; /* 각 메뉴 항목 사이 간격 */
+    margin-bottom: 0.3rem;
 }
 
-/* ✅ 메뉴 항목 링크 스타일 */
 .menuItem {
-    display: block;                       /* 박스형 링크로 전체 클릭 가능 */
-    padding: 0.6rem 1rem;                 /* 내부 여백 */
-    border-radius: 6px;                   /* 모서리 둥글게 */
-    text-decoration: none;                /* 밑줄 제거 */
-    font-weight: 500;                     /* 기본 글씨 굵기 */
-    color: #333;                          /* 어두운 회색 글씨 */
-    transition: all 0.2s ease-in-out;     /* hover 시 부드럽게 변화 */
+    display: block;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s ease-in-out;
 }
 
-/* ✅ 현재 선택된 메뉴 항목 */
 .active {
-    font-weight: 700;         /* 더 굵은 글씨 */
-    background-color: #FFA94D; /* 주황색 배경 */
-    color: #fff;              /* 흰 글씨 */
+    font-weight: 700;
+    background-color: #FFA94D;
+    color: #fff;
 }
 
 /***************************************************************/
 
-/* ✅ 오른쪽 카드 컴포넌트 (정보 폼 박스) */
+/* ✅ 카드 (오른쪽 콘텐츠 영역) */
 .card {
-    width: 700px;                        /* 카드의 고정 너비 */
-    background-color: #fff;             /* 배경을 흰색으로 설정 */
-    padding: 2rem;                      /* 카드 내부 여백 */
-    border-radius: 12px;               /* 둥근 모서리 */
-    box-shadow: 0 0 10px rgba(0,0,0,0.05); /* 흐릿한 그림자 */
-    margin-left: 5rem;                 /* 사이드바와 카드 사이 간격 */
-    display: flex;                     /* 내부 요소들을 수직 정렬로 */
+    flex: 1 1 500px;
+    max-width: 70%;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;           /* 내부 요소 좌측 정렬 */
+    align-items: flex-start;
+    margin-left: 0;
 }
 
-/* ✅ 프로필 사진 및 '사진 변경' 텍스트 포함 영역 */
 .profileSection {
-    display: flex;             /* 수직 정렬 */
-    flex-direction: column;    /* 요소들을 위-아래로 배치 */
-    align-items: center;       /* 가운데 정렬 */
-    gap: 1rem;                 /* 사진과 텍스트 사이 간격 */
-    margin-bottom: 2rem;       /* 프로필 아래 여백 */
-    align-self: center;        /* 카드 전체는 왼쪽 정렬인데 프로필만 가운데로 */
-}
-
-/* ✅ 프로필 사진(동그라미) */
-.profileCircle {
-    width: 150px;               /* 너비 */
-    height: 150px;              /* 높이 (동그라미) */
-    border-radius: 50%;        /* 완전한 원 모양 */
-    background-color: #eaeaea; /* 연회색 배경 */
-}
-
-/* ✅ '사진 변경' 텍스트 스타일 */
-.changePhoto {
-    color: #888;                /* 흐린 회색 글씨 */
-    text-decoration: underline;/* 밑줄 표시 */
-    cursor: pointer;           /* 마우스를 올리면 손가락 모양 */
-    font-size: 0.9rem;         /* 작은 글씨 */
-}
-
-/* ✅ 정보 항목 전체 (username, email, password) */
-.infoItem {
-    display: flex;             /* 수직 정렬 */
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;   /* 라벨 및 input 좌측 정렬 */
-    gap: 0.8rem;               /* 라벨과 인풋 사이 간격 */
-    margin-bottom: 4rem;       /* 항목 간 여백 */
-    width: 100%;               /* 카드 안에서 꽉 차게 */
-
-    /* 👉 오른쪽으로 전체 밀기 */
-    padding-left: 8rem;  /* 또는 margin-left */
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 5rem;
+    align-self: center;
 }
 
-/* ✅ 라벨 텍스트 (username, email 등) */
+/* ✅ 프로필 이미지 + 아이콘 */
+.avatarWrapper {
+    position: relative;
+    width: 14rem;
+    height: 14rem;
+    margin: 0 auto;
+}
+
+.profileCircle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #eaeaea;
+    background-size: cover;
+    background-position: center;
+}
+
+.avatarEditBtn {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background-color: gray;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.avatarEditBtn img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+}
+
+.resetBtn {
+    display: block;
+    margin: 0.5rem auto 5rem auto; /* 위 여백 0.5rem, 좌우 가운데 정렬 */
+    background-color: white;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: underline;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.resetBtn:hover {
+    background-color: #bbb;
+}
+
+/* ✅ 정보 항목 (이름, 이메일, 비번) */
+.infoItem {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    padding-left: 0;
+}
+
 .infoLabel {
-    font-size: 1rem;           /* 기본 글씨 크기 */
-    font-weight: 600;          /* 중간 굵기 */
-    color: #1e1e1e;            /* 진한 회색 */
-    padding-left: 0.1rem;      /* 살짝 들여쓰기 */
+    margin-left: 15rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e1e1e;
+    padding-left: 0.1rem;
 }
 
-/* ✅ 인풋과 버튼을 가로로 정렬 */
+/* ✅ 인풋 + 버튼 한 줄 정렬 */
 .inputRow {
-    display: flex;             /* 인풋과 버튼을 옆으로 정렬 */
-    align-items: center;       /* 수직 가운데 정렬 */
-    gap: 1rem;                 /* 인풋과 버튼 사이 간격 */
+    margin-left: 15rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
 }
 
-/* ✅ 인풋 필드 스타일 */
+/* ✅ 인풋 필드 넓게 */
 .inputField {
-    width: 300px;               /* 고정 너비 */
-    padding: 0.7rem;            /* 내부 여백 */
-    border: 1px solid #ccc;     /* 연한 테두리 */
-    border-radius: 6px;         /* 둥근 테두리 */
-    font-size: 1rem;            /* 기본 글씨 크기 */
-    background-color: #f5f5f5;  /* 연한 회색 배경 */
+    flex: 1;
+    max-width: 38rem;
+    min-width: 0;
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f5f5f5;
 }
 
-/* ✅ 버튼 (수정, 비밀번호 변경 등) */
+/* ✅ 수정 버튼 */
 .editBtn {
-    padding: 0.7rem 0.98rem;                   /* 위아래/좌우 여백 */
-    background-color: #c8c8c8;                /* 연회색 배경 */
-    color: white;                             /* 흰 글씨 */
-    border: none;                             /* 테두리 제거 */
-    border-radius: 6px;                       /* 둥근 모서리 */
-    cursor: pointer;                          /* 클릭 가능 */
-    font-size: 0.99rem;                       /* 살짝 작은 글씨 */
-    font-weight: 600;                         /* 굵기 조정 */
-    height: 100%;                             /* 입력창 높이에 맞춤 */
-    white-space: nowrap;                      /* 줄바꿈 없이 한 줄로 유지 */
+    padding: 0.7rem 1.2rem;
+    background-color: #FFA94D;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.99rem;
+    font-weight: 600;
+    height: 100%;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-/* ✅ 버튼 hover 시 색상 변경 */
 .editBtn:hover {
-    background-color: rgba(255, 154, 56, 0.71); /* 연한 주황으로 변경 */
+    background-color: rgba(255, 154, 56, 0.71);
 }
 
-/* ✅ 입력창 focus 시 테두리 제거 */
-.inputField:focus {
-    outline: none;
-    border-color: #ccc; /* 기존 테두리 유지 */
-}
-
-/* ✅ 버튼 focus 시 테두리 제거 */
+.inputField:focus,
 .editBtn:focus {
     outline: none;
+    border-color: #ccc;
 }
