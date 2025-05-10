@@ -30,7 +30,7 @@ const EditPasswordModal = ({ onClose, onSuccess }: Props) => {
 
         try {
             await axios.patch(
-                `${API_BASE}//api/users/${userId}/reset-password`,
+                `${API_BASE}/api/users/${userId}/reset-password`,
                 {
                     currentPassword,
                     newPassword,

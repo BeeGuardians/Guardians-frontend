@@ -58,7 +58,7 @@ const MypageInfoCard = () => {
 
         try {
             await axios.post(
-                `${API_BASE}//api/users/${userId}/profile-image`,
+                `${API_BASE}/api/users/${userId}/profile-image`,
                 formData,
                 {
                     withCredentials: true,
@@ -77,7 +77,7 @@ const MypageInfoCard = () => {
         if (!userId) return;
 
         try {
-            await axios.delete(`${API_BASE}//api/users/${userId}/profile-image`, {
+            await axios.delete(`${API_BASE}/api/users/${userId}/profile-image`, {
                 withCredentials: true,
             });
             setSuccessMessage("프로필 이미지가 기본 이미지로 변경되었습니다!");
