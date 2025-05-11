@@ -1,46 +1,57 @@
-import {useState} from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
 import viewIcon from "../../assets/view.png";
-import likeIcon from "../../assets/like.png";
 import commentIcon from "../../assets/comment.png";
+import axios from "axios";
 
 type QnaPost = {
     id: number;
-    wargameTitle: string;
-    questionTitle: string;
-    questionContent: string;
-    answered: boolean;
-    answers: number;
-    likes: number;
-    views: number;
-    author: string;
+    wargameTitle?: string;
+    title: string;
+    content: string;
+    username: string;
     createdAt: string;
+    answerCount?: number;
 };
 
+
 const QnaBoardPage = () => {
-    const dummyPosts: QnaPost[] = Array.from({ length: 27 }, (_, i) => ({
-        id: i + 1,
-        wargameTitle: `워게임 ${i + 1}번`,
-        questionTitle: `이 문제는 어떻게 접근하나요? ${i + 1}`,
-        questionContent:
-            "이 문제를 풀다가 막혔는데 조건이 잘 이해가 안 됩니다. 혹시 힌트나 접근 방식 알려주실 수 있나요? 특정 입력에 대한 처리가 의도대로 되지 않아서 분석이 필요한 것 같습니다. 코드도 첨부했습니다.",
-        answered: i % 2 === 0,
-        answers: Math.floor(Math.random() * 5),
-        likes: 10 + i,
-        views: 100 * (i + 1),
-        author: "익명",
-        createdAt: "2024-04-30",
-    }));
-
-    const postsPerPage = 10;
+    const [posts, setPosts] = useState<QnaPost[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const postsPerPage = 10;
 
-    const totalPages = Math.ceil(dummyPosts.length / postsPerPage);
-    const currentPosts = dummyPosts.slice(
-        (currentPage - 1) * postsPerPage,
-        currentPage * postsPerPage
-    );
+    useEffect(() => {
+        const fetchQuestionsWithCounts = async () => {
+            try {
+                const res = await axios.get("/api/qna/questions");
+                const questions: QnaPost[] = res.data.result.data;
+
+                // 각 질문에 대한 답변 count 불러오기
+                const questionsWithCount = await Promise.all(
+                    questions.map(async (q) => {
+                        try {
+                            const answerRes = await axios.get(`/api/qna/answers/${q.id}`);
+                            const count = answerRes.data.result.count || 0;
+                            return { ...q, answerCount: count };
+                        } catch (err) {
+                            console.error(`답변 수 불러오기 실패 (id: ${q.id})`, err);
+                            return { ...q, answerCount: 0 };
+                        }
+                    })
+                );
+
+                setPosts(questionsWithCount);
+            } catch (err) {
+                console.error("QnA 질문 목록 불러오기 실패:", err);
+            }
+        };
+
+        fetchQuestionsWithCounts();
+    }, []);
+
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+    const currentPosts = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
 
     return (
         <div style={{ width: "90%", marginTop: "1.5rem", display: "flex", gap: "3.5rem", padding: "1rem" }}>
@@ -61,14 +72,7 @@ const QnaBoardPage = () => {
                     </p>
                 </div>
 
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "1.5rem",
-                    }}
-                >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
                     <SearchBar />
                     <button
                         style={{
@@ -106,24 +110,17 @@ const QnaBoardPage = () => {
                             onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.1)")}
                             onMouseOut={(e) => (e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.04)")}
                         >
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    fontSize: "0.85rem",
-                                    marginBottom: "0.4rem",
-                                }}
-                            >
-                                <span style={{ fontWeight: 500, color: "#888" }}>{post.wargameTitle}</span>
-                                <span style={{ color: "#666" }}>{post.author} · {post.createdAt}</span>
+                            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "0.4rem" }}>
+                                <span style={{ fontWeight: 500, color: "#888" }}>{post.wargameTitle || "워게임 미지정"}</span>
+                                <span style={{ color: "#666" }}>{post.username} · {post.createdAt.slice(0, 10)}</span>
                             </div>
 
                             <div style={{ fontSize: "1.15rem", fontWeight: 700, margin: "0.4rem 0 1rem", lineHeight: "1.4" }}>
-                                {post.questionTitle}
+                                {post.title}
                             </div>
 
                             <div style={{ fontSize: "0.9rem", color: "#444", marginBottom: "0.8rem", lineHeight: "1.5" }}>
-                                {post.questionContent.length > 150 ? post.questionContent.slice(0, 150) + "..." : post.questionContent}
+                                {post.content.length > 150 ? post.content.slice(0, 150) + "..." : post.content}
                             </div>
 
                             <hr style={{ border: "none", borderTop: "1px solid #eee", margin: "0.5rem 0 1rem" }} />
@@ -139,29 +136,25 @@ const QnaBoardPage = () => {
                                 <div style={{ display: "flex", gap: "1.25rem", fontSize: "0.85rem", color: "#555" }}>
                                     <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                                         <img src={commentIcon} alt="comment" style={{ width: "16px", height: "16px" }} />
-                                        <span>{post.answers} 답변</span>
-                                    </div>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                                        <img src={likeIcon} alt="like" style={{ width: "16px", height: "16px" }} />
-                                        <span>{post.likes} 추천</span>
+                                        <span>{post.answerCount ?? 0} 답변</span>
                                     </div>
                                     <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                                         <img src={viewIcon} alt="view" style={{ width: "18px", height: "18px" }} />
-                                        <span>{post.views} 조회</span>
+                                        <span>- 조회</span>
                                     </div>
                                 </div>
                                 <span
                                     style={{
-                                        backgroundColor: post.answered ? "#D3F9D8" : "#FFE3E3",
-                                        color: post.answered ? "#2B8A3E" : "#C92A2A",
+                                        backgroundColor: post.answerCount && post.answerCount > 0 ? "#D3F9D8" : "#FFF3BF",
+                                        color: post.answerCount && post.answerCount > 0 ? "#2B8A3E" : "#C77D00",
                                         fontSize: "0.75rem",
                                         fontWeight: 600,
                                         padding: "0.35rem 0.8rem",
                                         borderRadius: "999px",
                                     }}
                                 >
-                  {post.answered ? "답변 완료" : "미답변"}
-                </span>
+                                {post.answerCount && post.answerCount > 0 ? "답변완료" : "미답변"}
+                            </span>
                             </div>
                         </div>
                     ))}

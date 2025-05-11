@@ -1,7 +1,7 @@
-import {Route, Routes, useLocation} from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/HomePage/Home.tsx";
 import Login from "./pages/LoginPage/Login";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Dashboard/DashboardPage"; // ✅ 수정된 부분
 import RankingPage from "./pages/RankingPage/RankingPage";
 import Header from "./components/Header";
 import AuthHeader from "./components/AuthHeader";
@@ -17,13 +17,18 @@ import StudyBoardPage from "./pages/community/StudyBoardPage";
 import InquiryBoardPage from "./pages/community/InquiryBoardPage";
 import SignupSuccess from "./pages/LoginPage/SignupSuccess.tsx";
 import Signup from "./pages/LoginPage/Signup.tsx";
-import {AuthProvider} from "./context/AuthContext.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import PrivateRoute from "./components/PrivateRoute";
 import BoardWrite from "./pages/community/BoardWrite.tsx";
 import FreeBoardDetailPage from "./pages/community/FreeBoardDetailPage.tsx";
 import StudyBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
 import InquiryBoardDetailPage from "./pages/community/InquiryBoardDetailPage.tsx";
+
+// ✅ 마이페이지 관련
+import MypagePage from "./pages/MyPage/MypagePage";
+import MypageInfoCard from "./pages/MyPage/MypageInfoCard";
+import PostsPage from "./pages/MyPage/posts/PostsPage.tsx";
 
 function App() {
     const location = useLocation();
@@ -44,6 +49,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
 
+                    {/* 🔐 인증 페이지 */}
                     <Route
                         path="/login"
                         element={
@@ -68,7 +74,6 @@ function App() {
                             </PublicOnlyRoute>
                         }
                     />
-
                     <Route
                         path="/findPassword"
                         element={
@@ -78,6 +83,20 @@ function App() {
                         }
                     />
 
+                    {/* 🔐 마이페이지 - 공통 레이아웃 */}
+                    <Route
+                        path="/mypage/*"
+                        element={
+                            <PrivateRoute>
+                                <MypagePage />
+                            </PrivateRoute>
+                        }
+                    >
+                        <Route path="" element={<MypageInfoCard />} />         {/* /mypage */}
+                        <Route path="posts" element={<PostsPage />} />         {/* /mypage/posts */}
+                    </Route>
+
+                    {/* 🔐 대시보드 */}
                     <Route
                         path="/dashboard"
                         element={
@@ -86,20 +105,13 @@ function App() {
                             </PrivateRoute>
                         }
                     />
-                    <Route
-                        path="/mypage"
-                        element={
-                            <PrivateRoute>
-                                <div>마이페이지</div>
-                            </PrivateRoute>
-                        }
-                    />
 
+                    {/* 🔓 일반 공개 페이지 */}
                     <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
                     <Route path="/wargame/:id" element={<WargameDetailPage />} />
 
-                    {/* 커뮤니티 */}
+                    {/* 💬 커뮤니티 */}
                     <Route path="/community" element={<CommunityPage />} />
                     <Route path="/community/free" element={<FreeBoardPage />} />
                     <Route path="/community/free/write" element={<BoardWrite type="FREE" />} />
@@ -111,7 +123,6 @@ function App() {
                     <Route path="/community/inquiry" element={<InquiryBoardPage />} />
                     <Route path="/community/inquiry/write" element={<BoardWrite type="INQUIRY" />} />
                     <Route path="/community/inquiry/:id" element={<InquiryBoardDetailPage />} />
-
                 </Routes>
             </div>
         </AuthProvider>

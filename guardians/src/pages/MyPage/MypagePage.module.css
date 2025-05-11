@@ -1,0 +1,201 @@
+/* ✅ 전체 페이지 래퍼 */
+.pageWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    margin-top: 1rem;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    min-height: 80vh;
+}
+
+/* ✅ 사이드바 */
+.sidebar {
+    flex: 0 0 180px;
+    padding: 0.5rem 1rem;
+    border-right: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.06);
+    height: fit-content;
+}
+
+.sidebarTitle {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #444;
+}
+
+.menuList {
+    list-style: none;
+    padding: 0.5rem;
+    margin: 0;
+}
+
+.menuItemWrapper {
+    margin-bottom: 0.3rem;
+}
+
+.menuItem {
+    display: block;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.active {
+    font-weight: 700;
+    background-color: #FFA94D;
+    color: #fff;
+}
+
+/***************************************************************/
+
+/* ✅ 카드 (오른쪽 콘텐츠 영역) */
+.card {
+    flex: 1 1 500px;
+    max-width: 70%;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0;
+}
+
+.profileSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 5rem;
+    align-self: center;
+}
+
+/* ✅ 프로필 이미지 + 아이콘 */
+.avatarWrapper {
+    position: relative;
+    width: 14rem;
+    height: 14rem;
+    margin: 0 auto;
+}
+
+.profileCircle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #eaeaea;
+    background-size: cover;
+    background-position: center;
+}
+
+.avatarEditBtn {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background-color: gray;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.avatarEditBtn img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1);
+}
+
+.resetBtn {
+    display: block;
+    margin: 0.5rem auto 5rem auto; /* 위 여백 0.5rem, 좌우 가운데 정렬 */
+    background-color: white;
+    color: #333;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: underline;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.resetBtn:hover {
+    background-color: #bbb;
+}
+
+/* ✅ 정보 항목 (이름, 이메일, 비번) */
+.infoItem {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    padding-left: 0;
+}
+
+.infoLabel {
+    margin-left: 15rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e1e1e;
+    padding-left: 0.1rem;
+}
+
+/* ✅ 인풋 + 버튼 한 줄 정렬 */
+.inputRow {
+    margin-left: 15rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+/* ✅ 인풋 필드 넓게 */
+.inputField {
+    flex: 1;
+    max-width: 38rem;
+    min-width: 0;
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: #f5f5f5;
+}
+
+/* ✅ 수정 버튼 */
+.editBtn {
+    padding: 0.7rem 1.2rem;
+    background-color: #FFA94D;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.99rem;
+    font-weight: 600;
+    height: 100%;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.editBtn:hover {
+    background-color: rgba(255, 154, 56, 0.71);
+}
+
+.inputField:focus,
+.editBtn:focus {
+    outline: none;
+    border-color: #ccc;
+}
