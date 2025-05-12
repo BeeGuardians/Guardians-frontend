@@ -123,7 +123,7 @@ EOF
                         git config user.email "ci-bot@example.com"
                         git config user.name "CI Bot"
                         git add cloud-cluster/frontend/deployment.yaml
-                        git commit -m "release: update frontend image to ${FULL_IMAGE}" || echo "No changes to commit"
+                        git commit -m "release : update frontend image to ${FULL_IMAGE}" || echo "No changes to commit"
                         git push https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git dev
                         """
                     }
