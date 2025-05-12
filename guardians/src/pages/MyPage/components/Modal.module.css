@@ -127,3 +127,37 @@
     outline: none;
 }
 
+.deleteConfirmInput {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.deleteButton {
+    padding: 0.6rem 1.2rem;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.deleteButton:disabled {
+    background-color: #ffc9c9;
+    cursor: not-allowed;
+}
+
+.warningText {
+    font-size: 0.9rem;
+    color: #ff4d4f;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+

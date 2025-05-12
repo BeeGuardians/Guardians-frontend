@@ -4,6 +4,7 @@ import styles from "./MypagePage.module.css";
 import EditUsernameModal from "./components/EditUsernameModal";
 import EditPasswordModal from "./components/EditPasswordModal";
 import SuccessModal from "./components/SuccessModal";
+import DeleteUserModal from "./components/DeleteUserModal";
 import { useAuth } from "../../context/AuthContext";
 import editIcon from "../../assets/edit.png";
 
@@ -19,6 +20,7 @@ const MypageInfoCard = () => {
     const [showUsernameModal, setShowUsernameModal] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -40,6 +42,21 @@ const MypageInfoCard = () => {
     useEffect(() => {
         fetchUserInfo();
     }, [fetchUserInfo]);
+
+    const handleDeleteUser = async () => {
+        if (!userId) return;
+        try {
+            await axios.delete(`${API_BASE}/api/users/${userId}`, {
+                withCredentials: true,
+            });
+            setSuccessMessage("회원 탈퇴가 완료되었습니다.");
+            setShowDeleteModal(false);
+            setShowSuccessModal(true);
+        } catch (err) {
+            console.error("탈퇴 실패:", err);
+            alert("탈퇴 중 오류 발생");
+        }
+    };
 
     const handleUsernameSuccess = () => {
         setSuccessMessage("닉네임이 성공적으로 변경되었습니다!");
@@ -68,14 +85,13 @@ const MypageInfoCard = () => {
             setSuccessMessage("프로필 이미지가 업로드되었습니다!");
             setShowSuccessModal(true);
         } catch (err) {
-            console.error("❌ 프로필 이미지 업로드 실패:", err);
+            console.error("프로필 이미지 업로드 실패:", err);
             alert("이미지 업로드 중 오류 발생");
         }
     };
 
     const handleImageDelete = async () => {
         if (!userId) return;
-
         try {
             await axios.delete(`${API_BASE}/api/users/${userId}/profile-image`, {
                 withCredentials: true,
@@ -83,7 +99,7 @@ const MypageInfoCard = () => {
             setSuccessMessage("프로필 이미지가 기본 이미지로 변경되었습니다!");
             setShowSuccessModal(true);
         } catch (err) {
-            console.error("❌ 프로필 이미지 삭제 실패:", err);
+            console.error("프로필 이미지 삭제 실패:", err);
             alert("이미지 삭제 중 오류 발생");
         }
     };
@@ -120,29 +136,38 @@ const MypageInfoCard = () => {
                 </button>
             )}
 
-            <div className={styles.infoItem}>
-                <label className={styles.infoLabel}>사용자 이름</label>
-                <div className={styles.inputRow}>
-                    <input type="text" className={styles.inputField} value={userInfo.username} readOnly />
-                    <button className={styles.editBtn} onClick={() => setShowUsernameModal(true)}>
-                        닉네임 수정
-                    </button>
+            {/* ✅ 전체 정보 영역 래퍼 */}
+            <div className={styles.infoWrapper}>
+                <div className={styles.infoItem}>
+                    <label className={styles.infoLabel}>사용자 이름</label>
+                    <div className={styles.inputRow}>
+                        <input type="text" className={styles.inputField} value={userInfo.username} readOnly />
+                        <button className={styles.editBtn} onClick={() => setShowUsernameModal(true)}>
+                            닉네임 수정
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div className={styles.infoItem}>
-                <label className={styles.infoLabel}>이메일</label>
-                <div className={styles.inputRow}>
-                    <input type="email" className={styles.inputField} value={userInfo.email} readOnly />
+                <div className={styles.infoItem}>
+                    <label className={styles.infoLabel}>이메일</label>
+                    <div className={styles.inputRow}>
+                        <input type="email" className={styles.inputField} value={userInfo.email} readOnly />
+                    </div>
                 </div>
-            </div>
 
-            <div className={styles.infoItem}>
-                <label className={styles.infoLabel}>비밀번호</label>
-                <div className={styles.inputRow}>
-                    <input type="password" className={styles.inputField} value="**********" readOnly />
-                    <button className={styles.editBtn} onClick={() => setShowPasswordModal(true)}>
-                        비밀번호 변경
+                <div className={styles.infoItem}>
+                    <label className={styles.infoLabel}>비밀번호</label>
+                    <div className={styles.inputRow}>
+                        <input type="password" className={styles.inputField} value="**********" readOnly />
+                        <button className={styles.editBtn} onClick={() => setShowPasswordModal(true)}>
+                            비밀번호 변경
+                        </button>
+                    </div>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+                    <button className={styles.deleteAccountBtn} onClick={() => setShowDeleteModal(true)}>
+                        회원 탈퇴
                     </button>
                 </div>
             </div>
@@ -166,8 +191,19 @@ const MypageInfoCard = () => {
                     message={successMessage}
                     onClose={() => {
                         setShowSuccessModal(false);
-                        window.location.reload();
+                        if (successMessage.includes("탈퇴")) {
+                            window.location.href = "/";
+                        } else {
+                            window.location.reload();
+                        }
                     }}
+                />
+            )}
+
+            {showDeleteModal && (
+                <DeleteUserModal
+                    onClose={() => setShowDeleteModal(false)}
+                    onConfirm={handleDeleteUser}
                 />
             )}
         </div>
