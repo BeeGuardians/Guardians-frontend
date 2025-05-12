@@ -17,6 +17,13 @@ spec:
     image: alpine/git:latest
     command: ['sleep']
     args: ['infinity']
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+      limits:
+        cpu: "200m"
+        memory: "256Mi"
     volumeMounts:
     - mountPath: "/home/jenkins/agent"
       name: workspace-volume
@@ -25,6 +32,13 @@ spec:
     image: gcr.io/kaniko-project/executor:debug
     command: ['sleep']
     args: ['infinity']
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "512Mi"
+      limits:
+        cpu: "1000m"
+        memory: "2048Mi"
     volumeMounts:
     - mountPath: "/kaniko/.docker"
       name: docker-config
@@ -73,7 +87,6 @@ EOF
             }
         }
 
-
         stage('Build and Push Docker Image') {
             steps {
                 container('kaniko') {
@@ -87,6 +100,33 @@ EOF
                       --skip-tls-verify
                     echo "[SUCCESS] Docker Image pushed to ${FULL_IMAGE}"
                     """
+                }
+            }
+        }
+
+        stage('Update Deployment YAML in Infra Repo') {
+            steps {
+                container('git') {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'github-token',
+                        usernameVariable: 'GIT_USER',
+                        passwordVariable: 'GIT_TOKEN'
+                    )]) {
+                        sh """
+                        echo "[CLONE] Guardians-Infra"
+                        git clone --single-branch --branch dev https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git infra
+
+                        echo "[PATCH] Updating frontend deployment.yaml image tag"
+                        sed -i "s|image: .*|image: ${FULL_IMAGE}|" infra/cloud-cluster/frontend/deployment.yaml
+
+                        cd infra
+                        git config user.email "ci-bot@example.com"
+                        git config user.name "CI Bot"
+                        git add cloud-cluster/frontend/deployment.yaml
+                        git commit -m "release: update frontend image to ${FULL_IMAGE}" || echo "No changes to commit"
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git dev
+                        """
+                    }
                 }
             }
         }
