@@ -60,6 +60,20 @@ spec:
             }
         }
 
+        stage('Inject .env') {
+            steps {
+                container('kaniko') {
+                    sh """
+                    echo "[INFO] Injecting .env"
+                    cat <<EOF > \$WORKSPACE/guardians/.env
+VITE_API_BASE_URL=http://192.168.0.11:30090
+EOF
+                    """
+                }
+            }
+        }
+
+
         stage('Build and Push Docker Image') {
             steps {
                 container('kaniko') {
