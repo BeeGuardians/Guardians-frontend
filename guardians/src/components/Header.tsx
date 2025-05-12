@@ -41,6 +41,9 @@ function Header() {
         }
     }, [isLoggedIn]);
 
+    useEffect(() => {
+        setDropdownOpen(false);
+    }, [location.pathname]);
 
     const toggleDropdown = () => {
         setDropdownOpen((prev) => !prev);
