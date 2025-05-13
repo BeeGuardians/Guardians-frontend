@@ -125,7 +125,7 @@ const FreeBoardPage = () => {
                     </tbody>
                 </table>
 
-                {/* ⏩ 페이징 */}
+
                 <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
                     {Array.from({ length: totalPages }, (_, i) => (
                         <button
