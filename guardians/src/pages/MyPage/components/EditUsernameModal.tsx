@@ -31,7 +31,7 @@ const EditUsernameModal = ({ onClose, onSuccess }: Props) => {
             onClose();
             onSuccess();
         } catch (err) {
-            console.error("❌ 닉네임 변경 실패:", err);
+            console.error("닉네임 변경 실패:", err);
             alert("닉네임 변경 중 오류가 발생했습니다.");
         }
     };

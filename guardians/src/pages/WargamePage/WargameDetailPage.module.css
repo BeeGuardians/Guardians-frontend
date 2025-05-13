@@ -1,10 +1,26 @@
-.container {
-    padding: 4rem 6rem;
-    font-family: 'Pretendard', sans-serif;
-    max-width: 960px;
-    margin: 0 auto;
+.pageWrapper {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #fafafa;
 }
 
+.mainContent {
+    display: flex;
+    max-width: 1200px;
+    width: 100%;
+    gap: 2rem;
+}
+
+.leftColumn {
+    flex: 4;
+}
+
+.rightColumn {
+    flex: 1;
+}
+
+/* ───────────────── Header ───────────────── */
 .header-card {
     position: relative;
     background-color: #fff4e6;
@@ -47,14 +63,38 @@
     font-weight: 500;
 }
 
+.badge-meta-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.badge-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.info-badge {
+    background-color: white;
+    border: 1px solid #ccc;
+    color: #664d03;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 999px;
+}
+
 .meta {
     color: #555;
     display: flex;
-    justify-content: flex-end;
     gap: 1rem;
     font-size: 0.8rem;
+    justify-content: flex-end;
 }
 
+/* ───────────────── Buttons ───────────────── */
 .action-box {
     display: flex;
     gap: 0.5rem;
@@ -70,14 +110,17 @@
     font-weight: 500;
     gap: 0.5rem;
     margin-bottom: 2rem;
+    transition: all 0.2s ease-in-out;
 }
 
-.action-btn.active {
+.action-btn.active,
+.action-btn:hover {
     border-color: #FFA94D;
     color: #FFA94D;
     background-color: #fff7ed;
 }
 
+/* ───────────────── Download ───────────────── */
 .download-box {
     display: flex;
     justify-content: flex-end;
@@ -90,8 +133,14 @@
     text-decoration: none;
     font-weight: 600;
     border-bottom: 1px solid #FFA94D;
+    transition: all 0.2s ease-in-out;
 }
 
+.file-link:hover {
+    background-color: #fff7ed;
+}
+
+/* ───────────────── Title & Description ───────────────── */
 .desc-title {
     font-size: 1.25rem;
     font-weight: 600;
@@ -112,6 +161,7 @@
     margin-bottom: 2rem;
 }
 
+/* ───────────────── Submit & Pod ───────────────── */
 .submit-box {
     display: flex;
     align-items: center;
@@ -135,69 +185,38 @@
     cursor: pointer;
 }
 
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-box {
-    background-color: white;
-    padding: 2rem;
+/* ───────────────── Pod Card ───────────────── */
+.pod-card {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
     border-radius: 1rem;
-    border: 2px solid #ccc;
-    text-align: center;
-    width: 320px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 1.25rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
 }
 
-.modal-box.correct {
-    border-color: #0c8;
+.pod-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #ffa94d;
+    padding-bottom: 0.4rem;
+    color: #333;
 }
 
-.modal-box.wrong {
-    border-color: #f03e3e;
-}
-.badge-row {
-    display: flex;
-    gap: 0.5rem;
-    margin: 0.5rem 0 1rem 0;
-}
-
-.info-badge {
-    background-color: white;
-    border : solid 1px #ccc;
-    color: #664d03;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    border-radius: 999px;
-}
-.action-btn:hover {
-    border-color: #FFA94D;
-    background-color: #fff7ed; /* 연한 주황 배경 */
-    transition: all 0.2s ease-in-out;
-}
-
-.file-link:hover {
-    color: #FFA94D;
-    background-color: #fff7ed;
-    transition: all 0.2s ease-in-out;
-}
-.badge-meta-wrapper {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.pod-url {
     margin-top: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
 }
 
+.pod-url a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* ───────────────── QnA ───────────────── */
 .qa-section {
     margin-top: 5rem;
 }
@@ -229,3 +248,60 @@
 .qa-answer {
     color: #555;
 }
+
+/* ───────────────── Modal ───────────────── */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 2px solid #ccc;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-box.correct {
+    border-color: #0c8;
+}
+
+.modal-box.wrong {
+    border-color: #f03e3e;
+}
+
+.firstSolverCard {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #704800;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-direction: row;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.06);
+}
+
+.firstSolverCard strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 550;
+    margin-top: 1rem;
+    color: black;
+}
+

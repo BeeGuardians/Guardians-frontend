@@ -1,0 +1,32 @@
+.card {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #333;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.table th,
+.table td {
+    border-bottom: 1px solid #eee;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.firstSolver td {
+    font-weight: bold;
+    color: #f03e3e;
+}
