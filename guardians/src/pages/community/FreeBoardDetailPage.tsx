@@ -36,34 +36,35 @@ const FreeBoardDetailPage = () => {
 
         axios.get(`/api/boards/${id}`, { withCredentials: true })
             .then(res => setBoard(res.data.result.data))
-            .catch(err => {
-                console.error('게시글 상세 불러오기 실패', err);
+            .catch((err) => {
+                console.error('게시글 로딩 오류:', err); // ← 사용하면 오류 안 남
                 alert('게시글을 불러오지 못했습니다.');
             });
 
+
         axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
             .then(res => setComments(res.data.result.data))
-            .catch(err => console.error('댓글 불러오기 실패', err));
 
-        axios.get('/api/users/check', { withCredentials: true })
+        axios.get('/api/users/me', { withCredentials: true })
             .then(res => {
-                setIsLoggedIn(res.data.loggedIn);
-                setSessionUserId(res.data.userId);
+                const id = res.data.result.data.id; //
+                console.log('✅ 로그인 유저 정보:', id);
+                setIsLoggedIn(true);
+                setSessionUserId(String(id)); //
             })
-            .catch(() => {
+            .catch(err => {
+                console.error('❌ 로그인 확인 실패:', err);
                 setIsLoggedIn(false);
                 setSessionUserId(null);
             });
 
-        axios.get(`/api/boards/${id}/like`, { withCredentials: true })
-            .then(res => setIsLiked(res.data))
-            .catch(() => setIsLiked(false));
+
     }, [id]);
 
     const toggleLike = () => {
         if (!id) return;
 
-        axios.post(`/api/boards/${id}/like`, {}, { withCredentials: true })
+        axios.post(`/api/boards/${id}/like`, { withCredentials: true })
             .then(res => {
                 const liked = res.data.result.data.liked;
                 setIsLiked(liked);
@@ -185,24 +186,13 @@ const FreeBoardDetailPage = () => {
                     </button>
                 </div>
 
-                {isLoggedIn && sessionUserId !== null && board !== null && sessionUserId === board.userId && (
+
+                {isLoggedIn && board && String(sessionUserId) === String(board.userId) && (
                     <div style={{ textAlign: 'right', marginTop: '1.5rem' }}>
-                        <button
-                            onClick={handleDelete}
-                            style={{
-                                background: '#ffe0e0',
-                                color: '#cc0000',
-                                border: '1px solid #cc0000',
-                                padding: '0.5rem 1rem',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontWeight: 'bold'
-                            }}
-                        >
-                            삭제하기
-                        </button>
+                        <button onClick={handleDelete}>삭제하기</button>
                     </div>
                 )}
+
 
                 {comments.length === 0 ? (
                     <div className="p-4 border border-gray-200 rounded-md text-gray-500 text-sm">
@@ -227,7 +217,7 @@ const FreeBoardDetailPage = () => {
                     </ul>
                 )}
 
-                {isLoggedIn && (
+                {(
                     <div style={{ marginTop: '1.5rem' }}>
                         <textarea
                             placeholder="댓글을 입력하세요"
