@@ -16,7 +16,7 @@ const WargameUserStatusCard: React.FC<Props> = ({ users }) => {
 
     return (
         <div className={styles.card}>
-            <h3 className={styles.title}>🔥 현재 접속 중인 유저</h3>
+            <h3 className={styles.title}>🔥 현재 해결중인 유저</h3>
             <table className={styles.table}>
                 <thead>
                 <tr>

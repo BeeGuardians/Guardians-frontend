@@ -53,8 +53,26 @@ function WargameDetailPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalResult, setModalResult] = useState<null | { correct: boolean; message: string }>(null);
     const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        checkLoginStatus();
+    }, []);
+
+    const checkLoginStatus = async () => {
+        try {
+            const res = await axios.get(`${API_BASE}/api/users/me`);
+            if (res.data.result.data) {
+                setIsLoggedIn(true);
+            }
+        } catch {
+            setIsLoggedIn(false); // 에러 나면 로그인 안 된 걸로 간주
+        }
+    };
+
     const firstSolver: UserStatus | undefined = userStatuses.find((u) => u.isFirstSolver);
     const currentUsers: UserStatus[] = userStatuses.filter((u) => !u.isFirstSolver);
+
 
 
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -279,6 +297,14 @@ function WargameDetailPage() {
                     {/* Q&A */}
                     <div className={styles["qa-section"]}>
                         <h2 className={styles["qa-title"]}>Q&A</h2>
+                        {isLoggedIn && (
+                            <button
+                                className={styles["submit-btn"]}
+                                style={{ marginBottom: '1rem', marginLeft: 'auto', display: 'block' }}
+                            >
+                                질문하기
+                            </button>
+                        )}
                         {qaList.length === 0 ? (
                             <p style={{padding: "1rem", color: "#888"}}>아직 등록된 질문이 없습니다.</p>
                         ) : (
