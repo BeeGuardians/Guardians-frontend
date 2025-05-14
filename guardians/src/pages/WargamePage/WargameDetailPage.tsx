@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import styles from "./WargameDetailPage.module.css";
 import QACard from "./QACard";
@@ -43,16 +43,74 @@ type UserStatus = {
     isFirstSolver?: boolean;
 };
 
+type Review = {
+    id: number;
+    content: string;
+    userId: number;
+    createdAt: string;
+    userName: string;
+};
+
 function WargameDetailPage() {
     const {id} = useParams();
     const [wargame, setWargame] = useState<Wargame | null>(null);
     const [flag, setFlag] = useState("");
     const [qaList, setQaList] = useState<QuestionWithAnswers[]>([]);
+    const [reviewList, setReviewList] = useState<Review[]>([]);
     const [podUrl, setPodUrl] = useState<string | null>(null);
     const [isPodRunning, setIsPodRunning] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalResult, setModalResult] = useState<null | { correct: boolean; message: string }>(null);
     const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [newReview, setNewReview] = useState("");
+    const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+    const [editingReviewId, setEditingReviewId] = useState<number | null>(null);
+    const [editingContent, setEditingContent] = useState<string>("");
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+    const [confirmEditDone, setConfirmEditDone] = useState(false);
+
+
+    useEffect(() => {
+        checkLoginStatus();
+    }, []);
+
+    const checkLoginStatus = async () => {
+        try {
+            const res = await axios.get(`${API_BASE}/api/users/me`);
+            if (res.data.result.data) {
+                setIsLoggedIn(true);
+                setCurrentUserId(res.data.result.data.id);
+            }
+        } catch {
+            setIsLoggedIn(false); // 에러 나면 로그인 안 된 걸로 간주
+        }
+    };
+
+    const handleCreateReview = async () => {
+        if (!newReview.trim()) return;
+
+        try {
+            await axios.post(`${API_BASE}/api/wargames/${id}/reviews`, {
+                content: newReview
+            });
+            setNewReview("");
+            fetchReviews();
+        } catch {
+            alert("리뷰 등록 실패!");
+        }
+    };
+
+    const handleDeleteReview = async (reviewId: number) => {
+        try {
+            await axios.delete(`${API_BASE}/api/wargames/reviews/${reviewId}`);
+            await fetchReviews();
+        } catch {
+            console.error("리뷰 삭제 실패");
+        }
+    };
+
     const firstSolver: UserStatus | undefined = userStatuses.find((u) => u.isFirstSolver);
     const currentUsers: UserStatus[] = userStatuses.filter((u) => !u.isFirstSolver);
 
@@ -71,6 +129,7 @@ function WargameDetailPage() {
         fetchWargame();
         fetchQnA();
         fetchUserStatus();
+        fetchReviews();
     }, [id]);
 
     const fetchWargame = () => {
@@ -119,6 +178,41 @@ function WargameDetailPage() {
         ];
         setUserStatuses(dummyUsers);
     };
+
+    const fetchReviews = async () => {
+        try {
+            const res = await axios.get(`${API_BASE}/api/wargames/${id}/reviews`);
+            setReviewList(res.data.result.data);
+        } catch (e) {
+            console.error("리뷰 불러오기 실패", e);
+        }
+    };
+
+    const startEdit = (id: number, content: string) => {
+        setEditingReviewId(id);
+        setEditingContent(content);
+    };
+
+    const cancelEdit = () => {
+        setEditingReviewId(null);
+        setEditingContent("");
+    };
+
+    const handleConfirmEdit = async (reviewId: number) => {
+        if (!editingContent.trim()) return;
+        try {
+            await axios.patch(`${API_BASE}/api/wargames/reviews/${reviewId}`, {
+                content: editingContent
+            });
+            setEditingReviewId(null);
+            setEditingContent("");
+            fetchReviews();
+            setConfirmEditDone(true); // 👈 요거
+        } catch {
+            alert("리뷰 수정 실패");
+        }
+    };
+
 
     // const fetchUserStatus = () => {
     //     axios.get(`${API_BASE}/api/wargames/${id}/status`).then(res => {
@@ -267,7 +361,7 @@ function WargameDetailPage() {
                             >
                                 {modalResult.message !== "로그인이 되지 않았습니다. 로그인을 해주세요." && (
                                     <p style={{fontSize: "1.1rem", fontWeight: 600}}>
-                                        {modalResult.correct ? "정답입니다!" : "틀렸습니다!"}
+                                        {modalResult.correct ? "정답!" : "오답!"}
                                     </p>
                                 )}
                                 <p style={{marginTop: "0.5rem", color: "#555"}}>{modalResult.message}</p>
@@ -279,6 +373,14 @@ function WargameDetailPage() {
                     {/* Q&A */}
                     <div className={styles["qa-section"]}>
                         <h2 className={styles["qa-title"]}>Q&A</h2>
+                        {isLoggedIn && (
+                            <button
+                                className={styles["submit-btn"]}
+                                style={{marginBottom: '1rem', marginLeft: 'auto', display: 'block'}}
+                            >
+                                질문하기
+                            </button>
+                        )}
                         {qaList.length === 0 ? (
                             <p style={{padding: "1rem", color: "#888"}}>아직 등록된 질문이 없습니다.</p>
                         ) : (
@@ -301,6 +403,71 @@ function WargameDetailPage() {
                             ))
                         )}
                     </div>
+                    <div className={styles.reviewSection}>
+                        <h2 className={styles["review-title"]}>리뷰</h2>
+                        {isLoggedIn && (
+                            <div className={styles.reviewForm}>
+                                <textarea
+                                    className={styles.reviewTextarea}
+                                    value={newReview}
+                                    onChange={(e) => setNewReview(e.target.value)}
+                                    placeholder="리뷰를 작성해보세요!"
+                                />
+                                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                    <button
+                                        className={styles["submit-btn"]}
+                                        style={{ width: "80px" }}
+                                        onClick={() => setIsReviewModalOpen(true)}
+                                    >
+                                        등록
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {reviewList.length === 0 ? (
+                            <p style={{padding: "1rem", color: "#888"}}>아직 리뷰가 없습니다.</p>
+                        ) : (
+                            <ul className={styles.reviewList}>
+                                {reviewList.map((r) => (
+                                    <li key={r.id} className={styles.reviewItem}>
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center'
+                                        }}>
+                                            <div style={{fontWeight: 600}}>{r.userName}</div>
+                                            <small style={{color: '#666'}}>작성일: {r.createdAt.split("T")[0]}</small>
+                                        </div>
+
+                                        {editingReviewId === r.id ? (
+                                            <>
+                                                    <textarea
+                                                        className={styles.reviewTextarea}
+                                                        value={editingContent}
+                                                        onChange={(e) => setEditingContent(e.target.value)}
+                                                    />
+                                                <div className={styles.reviewActionBtns}>
+                                                    <button onClick={() => handleConfirmEdit(r.id)}>저장</button>
+                                                    <button onClick={() => cancelEdit()}>취소</button>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p style={{margin: '0.5rem 0'}}>{r.content}</p>
+                                                {isLoggedIn && r.userId === currentUserId && (
+                                                    <div className={styles.reviewActionBtns}>
+                                                        <button onClick={() => startEdit(r.id, r.content)}>수정</button>
+                                                        <button onClick={() => setConfirmDeleteId(r.id)}>삭제</button>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
                 </div>
                 <div className={styles.rightColumn}>
                     {firstSolver && (
@@ -311,10 +478,66 @@ function WargameDetailPage() {
                             </div>
                         </div>
                     )}
-                    <WargameUserStatusCard users={currentUsers} />
+                    <WargameUserStatusCard users={currentUsers}/>
                 </div>
             </div>
+            {isReviewModalOpen && (
+                <div className={styles["modal-overlay"]} onClick={() => setIsReviewModalOpen(false)}>
+                    <div
+                        className={styles["modal-box"]}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <p style={{ fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem" }}>리뷰를 등록할까요?</p>
+                        <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
+                            <button className={styles["submit-btn"]} onClick={() => {
+                                handleCreateReview();
+                                setIsReviewModalOpen(false);
+                            }}>확인</button>
+                            <button className={styles["submit-btn"]} style={{ backgroundColor: "#ddd", color: "#333" }} onClick={() => setIsReviewModalOpen(false)}>취소</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {confirmDeleteId !== null && (
+                <div className={styles["modal-overlay"]} onClick={() => setConfirmDeleteId(null)}>
+                    <div className={styles["modal-box"]} onClick={(e) => e.stopPropagation()}>
+                        <p style={{ fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem" }}>리뷰를 삭제할까요?</p>
+                        <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
+                            <button
+                                className={styles["submit-btn"]}
+                                onClick={() => {
+                                    handleDeleteReview(confirmDeleteId);
+                                    setConfirmDeleteId(null);
+                                }}
+                            >
+                                확인
+                            </button>
+                            <button
+                                className={styles["submit-btn"]}
+                                style={{ backgroundColor: "#ddd", color: "#333" }}
+                                onClick={() => setConfirmDeleteId(null)}
+                            >
+                                취소
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {confirmEditDone && (
+                <div className={styles["modal-overlay"]} onClick={() => setConfirmEditDone(false)}>
+                    <div className={styles["modal-box"]} onClick={(e) => e.stopPropagation()}>
+                        <p style={{ fontWeight: 600, fontSize: "1.1rem" }}>리뷰가 수정되었습니다!</p>
+                        <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+                            <button className={styles["submit-btn"]} onClick={() => setConfirmEditDone(false)}>
+                                닫기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }
+
 export default WargameDetailPage;
