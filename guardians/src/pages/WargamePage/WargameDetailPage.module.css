@@ -304,3 +304,89 @@
     color: black;
 }
 
+/* ───────────────── Review ───────────────── */
+.reviewSection {
+    margin-top: 5rem;
+}
+
+.review-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    border-bottom: 2px solid #ffa94d;
+    padding-bottom: 0.4rem;
+    color: #333;
+}
+
+.reviewList {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.reviewItem {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.reviewItem small {
+    display: block;
+    margin-top: 0.5rem;
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.reviewForm {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reviewTextarea {
+    width: 97%;
+    height: 90px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+.reviewActionBtns {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.reviewActionBtns button {
+    font-size: 0.8rem;
+    background-color: transparent;
+    border: 1px solid #ffa94d;
+    color: #ffa94d;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.reviewActionBtns button:hover {
+    background-color: #fff7ed;
+}
+
+.reviewConfirmModal {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 2px solid #ccc;
+    width: 320px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}

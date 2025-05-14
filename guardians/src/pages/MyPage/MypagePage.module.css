@@ -1,11 +1,8 @@
 /* ✅ 전체 페이지 래퍼 */
 .pageWrapper {
     display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    padding: 2rem;
-    margin-top: 1rem;
-    align-items: flex-start;
+    justify-content: center;           /* ✅ 중앙 정렬 추가 */
+    padding: 2rem 1rem;
     background-color: #f9f9f9;
     min-height: 80vh;
 }
@@ -58,8 +55,9 @@
 
 /* ✅ 카드 (오른쪽 콘텐츠 영역) */
 .card {
-    flex: 1 1 500px;
+    flex: 1 1 800px;
     max-width: 1200px;
+    width: 100%;
     background-color: #fff;
     padding: 2rem;
     border-radius: 12px;

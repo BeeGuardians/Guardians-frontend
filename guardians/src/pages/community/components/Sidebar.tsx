@@ -14,7 +14,6 @@ const Sidebar = () => {
     return (
         <aside
             style={{
-                right :"100px",
                 width: "180px",
                 padding: "0.5rem 1rem",
                 borderRight: "1px solid #ddd",
