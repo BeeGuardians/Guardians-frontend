@@ -36,34 +36,25 @@ const FreeBoardDetailPage = () => {
 
         axios.get(`/api/boards/${id}`, { withCredentials: true })
             .then(res => setBoard(res.data.result.data))
-            .catch((err) => {
-                console.error('게시글 로딩 오류:', err); // ← 사용하면 오류 안 남
-                alert('게시글을 불러오지 못했습니다.');
-            });
-
+            .catch(err => alert('게시글을 불러오지 못했습니다.'));
 
         axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
-            .then(res => setComments(res.data.result.data))
+            .then(res => setComments(res.data.result.data));
 
         axios.get('/api/users/me', { withCredentials: true })
             .then(res => {
-                const id = res.data.result.data.id; //
-                console.log('✅ 로그인 유저 정보:', id);
+                const id = res.data.result.data.id;
                 setIsLoggedIn(true);
-                setSessionUserId(String(id)); //
+                setSessionUserId(String(id));
             })
-            .catch(err => {
-                console.error('❌ 로그인 확인 실패:', err);
+            .catch(() => {
                 setIsLoggedIn(false);
                 setSessionUserId(null);
             });
-
-
     }, [id]);
 
     const toggleLike = () => {
         if (!id) return;
-
         axios.post(`/api/boards/${id}/like`, { withCredentials: true })
             .then(res => {
                 const liked = res.data.result.data.liked;
@@ -72,8 +63,7 @@ const FreeBoardDetailPage = () => {
                     ...prev,
                     likeCount: prev.likeCount + (liked ? 1 : -1)
                 } : prev);
-            })
-            .catch(err => console.error("좋아요 토글 실패", err));
+            });
     };
 
     const handleDelete = () => {
@@ -83,10 +73,6 @@ const FreeBoardDetailPage = () => {
             .then(() => {
                 alert('게시글이 삭제되었습니다.');
                 navigate('/community/free');
-            })
-            .catch(err => {
-                console.error('삭제 실패', err);
-                alert('삭제에 실패했습니다.');
             });
     };
 
@@ -100,10 +86,6 @@ const FreeBoardDetailPage = () => {
             .then(res => {
                 setComments(prev => [...prev, res.data.result.data]);
                 setNewComment('');
-            })
-            .catch(err => {
-                console.error('댓글 작성 실패', err);
-                alert('댓글 작성에 실패했습니다.');
             });
     };
 
@@ -115,17 +97,20 @@ const FreeBoardDetailPage = () => {
         <div style={{
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'start',
-            minHeight: '10vh',
+            padding: '2rem',
+            boxSizing: 'border-box',
             backgroundColor: '#f5f5f5',
+            minHeight: '90vh',
         }}>
             <div style={{
-                width: '60%',
-                padding: '3.5rem',
+                width: '100%',
+                maxWidth: '800px',
                 background: '#fff',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
                 boxShadow: '0 4px 10px rgba(0,0,0,0.05)',
+                padding: '3rem',
+                boxSizing: 'border-box',
             }}>
                 <button onClick={() => navigate(-1)}>←</button>
 
@@ -136,7 +121,6 @@ const FreeBoardDetailPage = () => {
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center',
                     fontSize: '0.95rem',
                     color: '#666',
                     marginBottom: '1rem'
@@ -145,7 +129,7 @@ const FreeBoardDetailPage = () => {
                     <div>추천 {board.likeCount} | 조회 {board.viewCount}</div>
                 </div>
 
-                <hr style={{ margin: '1rem 0', border: '1px solid #ccc' }} />
+                <hr />
 
                 <div style={{
                     whiteSpace: 'pre-wrap',
@@ -157,17 +141,14 @@ const FreeBoardDetailPage = () => {
                     {board.content}
                 </div>
 
-                <hr style={{ margin: '1rem 0', border: '1px solid #ccc' }} />
+                <hr style={{ margin: '1.5rem 0' }} />
 
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginBottom: '0.5rem'
                 }}>
-                    <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0 }}>
-                        댓글 {comments.length}
-                    </h2>
+                    <h2 style={{ fontSize: '1.2rem' }}>댓글 {comments.length}</h2>
                     <button
                         onClick={toggleLike}
                         disabled={!isLoggedIn}
@@ -179,78 +160,78 @@ const FreeBoardDetailPage = () => {
                             cursor: isLoggedIn ? 'pointer' : 'not-allowed',
                             fontWeight: '500',
                             color: isLiked ? '#6b4bb8' : '#555',
-                            opacity: isLoggedIn ? 1 : 0.5,
                         }}
                     >
                         {isLiked ? '❤️ 좋아요 취소' : '🤍 좋아요'}
                     </button>
                 </div>
 
-
-                {isLoggedIn && board && String(sessionUserId) === String(board.userId) && (
+                {isLoggedIn && String(sessionUserId) === String(board.userId) && (
                     <div style={{ textAlign: 'right', marginTop: '1.5rem' }}>
                         <button onClick={handleDelete}>삭제하기</button>
                     </div>
                 )}
 
-
-                {comments.length === 0 ? (
-                    <div className="p-4 border border-gray-200 rounded-md text-gray-500 text-sm">
-                        아직 댓글이 없습니다.
-                    </div>
-                ) : (
-                    <ul style={{ marginTop: '1rem' }}>
-                        {comments.map(comment => (
-                            <li key={comment.commentId} style={{
-                                marginBottom: '1rem',
-                                padding: '1rem',
-                                border: '1px solid #e0e0e0',
-                                borderRadius: '6px',
-                                backgroundColor: '#f9f9f9'
-                            }}>
-                                <div style={{ fontSize: '0.9rem', color: '#555', marginBottom: '0.3rem' }}>
-                                    {comment.username} · {new Date(comment.createdAt).toLocaleDateString()}
-                                </div>
-                                <div style={{ whiteSpace: 'pre-wrap' }}>{comment.content}</div>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-
-                {(
-                    <div style={{ marginTop: '1.5rem' }}>
-                        <textarea
-                            placeholder="댓글을 입력하세요"
-                            value={newComment}
-                            onChange={(e) => setNewComment(e.target.value)}
-                            style={{
-                                width: '100%',
-                                height: '80px',
-                                padding: '0.8rem',
-                                fontSize: '1rem',
-                                borderRadius: '6px',
-                                border: '1px solid #ccc',
-                                resize: 'none',
-                            }}
-                        />
-                        <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
-                            <button
-                                onClick={handleCommentSubmit}
-                                style={{
-                                    backgroundColor: '#6b4bb8',
-                                    color: '#fff',
-                                    padding: '0.5rem 1.2rem',
-                                    border: 'none',
-                                    borderRadius: '6px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold'
-                                }}
-                            >
-                                등록
-                            </button>
+                <div style={{ marginTop: '2rem' }}>
+                    {comments.length === 0 ? (
+                        <div style={{
+                            padding: '1rem',
+                            border: '1px solid #eee',
+                            borderRadius: '8px',
+                            color: '#777',
+                            textAlign: 'center'
+                        }}>
+                            아직 댓글이 없습니다.
                         </div>
+                    ) : (
+                        <ul>
+                            {comments.map(comment => (
+                                <li key={comment.commentId} style={{
+                                    padding: '1rem',
+                                    borderBottom: '1px solid #eee'
+                                }}>
+                                    <div style={{ fontSize: '0.9rem', color: '#555' }}>
+                                        {comment.username} · {new Date(comment.createdAt).toLocaleDateString()}
+                                    </div>
+                                    <div style={{ whiteSpace: 'pre-wrap', marginTop: '0.5rem' }}>{comment.content}</div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+
+                <div style={{ marginTop: '2rem' }}>
+                    <textarea
+                        placeholder="댓글을 입력하세요"
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        style={{
+                            width: '100%',
+                            height: '80px',
+                            padding: '0.8rem',
+                            fontSize: '1rem',
+                            borderRadius: '6px',
+                            border: '1px solid #ccc',
+                            resize: 'none',
+                        }}
+                    />
+                    <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
+                        <button
+                            onClick={handleCommentSubmit}
+                            style={{
+                                backgroundColor: '#6b4bb8',
+                                color: '#fff',
+                                padding: '0.5rem 1.2rem',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontWeight: 'bold'
+                            }}
+                        >
+                            등록
+                        </button>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );

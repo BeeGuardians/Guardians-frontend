@@ -10,16 +10,16 @@ const CommunityPage = () => {
 
     return (
         <div style={{
-            marginTop: "1.5rem",
-            padding: "1rem",
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
+            padding: "2rem",
+            boxSizing: "border-box",
         }}>
             <div style={{
                 display: "flex",
-                gap: "1.5rem",
+                gap: "3.5rem",
                 maxWidth: "1200px",
-                width: "100%"
+                width: "100%",
             }}>
                 <Sidebar />
                 <div style={{ flex: 1 }}>
