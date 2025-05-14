@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "./PostsPage.module.css";
-import { useAuth } from "../../../context/AuthContext"; // ✅ AuthContext에서 사용자 정보 가져옴
+import { useAuth } from "../../../context/AuthContext";
 
-// ✅ DTO 기반 인터페이스
-interface BoardItem {
-    boardId: number;
+// ✅ 게시글 인터페이스
+interface Board {
+    id: number;
     title: string;
     content: string;
     boardType: string;
@@ -18,6 +17,7 @@ const categoryKorean: Record<string, string> = {
     STUDY: "스터디",
 };
 
+// ✅ 한글 → 색상 매핑
 const categoryColors: Record<string, string> = {
     자유: "#f0b429",
     스터디: "#d38df2",
@@ -25,23 +25,30 @@ const categoryColors: Record<string, string> = {
 };
 
 const BoardsTable = () => {
-    const { user } = useAuth(); // ✅ 로그인된 사용자 정보
-    const [boardData, setBoardData] = useState<BoardItem[]>([]);
+    const { user } = useAuth();
+    const [boardData, setBoardData] = useState<Board[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
     useEffect(() => {
-        if (!user) return; // ❗️user 없으면 아무것도 안함
+        if (!user) return;
 
-        axios
-            .get(`/api/users/${user.id}/boards`, { withCredentials: true }) // ✅ user.id 기반 요청
-            .then((res) => {
-                setBoardData(res.data.result.data.posts);
-            })
-            .catch((err) => {
-                console.error("게시글 데이터 불러오기 실패", err);
-            });
-    }, [user]); // ✅ user 정보가 바뀌면 재요청
+        const fetchBoards = async () => {
+            try {
+                const res = await axios.get(`/api/users/${user.id}/boards`, {
+                    withCredentials: true,
+                });
+
+                const boards = res.data?.result?.data ?? [];
+                setBoardData(boards);
+            } catch (err) {
+                console.error("게시글 불러오기 실패:", err);
+                setBoardData([]);
+            }
+        };
+
+        fetchBoards();
+    }, [user]);
 
     const totalPages = Math.ceil(boardData.length / itemsPerPage);
     const currentData = boardData.slice(
@@ -77,43 +84,32 @@ const BoardsTable = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {currentData.map((post, index) => {
-                        const category = categoryKorean[post.boardType] || post.boardType;
-                        return (
-                            <tr
-                                key={post.boardId}
-                                style={{
-                                    backgroundColor: "white",
-                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                                    borderRadius: "6px",
-                                    transition: "background 0.2s",
-                                }}
-                                onMouseOver={(e) =>
-                                    (e.currentTarget.style.backgroundColor = "#fcddb6")
-                                }
-                                onMouseOut={(e) =>
-                                    (e.currentTarget.style.backgroundColor = "white")
-                                }
-                            >
-                                <td style={tdStyle}>
-                                    {(currentPage - 1) * itemsPerPage + index + 1}
-                                </td>
-                                <td style={tdStyle}>{post.title}</td>
+                    {currentData.length === 0 ? (
+                        <tr>
+                            <td colSpan={6} style={{ textAlign: "center", padding: "3rem" }}>
+                                작성한 게시글이 없습니다.
+                            </td>
+                        </tr>
+                    ) : (
+                        currentData.map((board, idx) => (
+                            <tr key={board.id} style={{ backgroundColor: "white" }}>
+                                <td style={tdStyle}>{(currentPage - 1) * itemsPerPage + idx + 1}</td> {/* 순번 */}
+                                <td style={tdStyle}>{board.title}</td> {/* 제목 */}
                                 <td
                                     style={{
                                         ...tdStyle,
                                         fontWeight: 600,
-                                        color: categoryColors[category],
+                                        color: categoryColors[categoryKorean[board.boardType]] || "#555",
                                     }}
                                 >
-                                    {category}
-                                </td>
-                                <td style={tdStyle}>-</td> {/* 작성일 없음 */}
-                                <td style={tdStyle}>-</td> {/* 추천수 없음 */}
-                                <td style={tdStyle}>-</td> {/* 조회수 없음 */}
+                                    {categoryKorean[board.boardType] || board.boardType}
+                                </td> {/* 분류 */}
+                                <td style={tdStyle}>-</td> {/* 작성일 (현재 DTO에 없음) */}
+                                <td style={tdStyle}>-</td> {/* 추천수 (현재 DTO에 없음) */}
+                                <td style={tdStyle}>-</td> {/* 조회수 (현재 DTO에 없음) */}
                             </tr>
-                        );
-                    })}
+                        ))
+                    )}
                     </tbody>
                 </table>
             </div>
@@ -122,9 +118,18 @@ const BoardsTable = () => {
                 {Array.from({ length: totalPages }, (_, idx) => (
                     <button
                         key={idx + 1}
-                        className={`${styles.paginationButton} ${
-                            currentPage === idx + 1 ? styles.activePage : ""
-                        }`}
+                        style={{
+                            margin: "0 0.25rem",
+                            padding: "0.4rem 0.75rem",
+                            backgroundColor:
+                                currentPage === idx + 1 ? "#fcb24b" : "#e0e0e0",
+                            color: currentPage === idx + 1 ? "white" : "#333",
+                            border: "none",
+                            borderRadius: "4px",
+                            fontWeight: "bold",
+                            cursor: "pointer",
+                            outline: "none",
+                        }}
                         onClick={() => setCurrentPage(idx + 1)}
                     >
                         {idx + 1}

@@ -6,11 +6,10 @@ interface Review {
     id: number;
     content: string;
     createdAt: string;
-    // title?: string; // 워게임명은 현재 DTO에 없으므로 주석 처리
 }
 
 const ReviewsTable = () => {
-    const { user } = useAuth(); // 로그인된 사용자 정보 가져오기
+    const { user } = useAuth();
     const [reviewData, setReviewData] = useState<Review[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -23,9 +22,13 @@ const ReviewsTable = () => {
                 const res = await axios.get(`/api/users/${user.id}/reviews`, {
                     withCredentials: true,
                 });
-                setReviewData(res.data.result.data.reviews);
+
+                // ✅ 옵셔널 체이닝 + fallback으로 undefined 방어
+                const reviews = res.data?.result?.data ?? [];
+                setReviewData(reviews);
             } catch (err) {
                 console.error("리뷰 데이터를 불러오는 중 오류 발생:", err);
+                setReviewData([]); // 에러 발생 시 빈 배열로
             }
         };
 
@@ -33,7 +36,7 @@ const ReviewsTable = () => {
     }, [user]);
 
     const formatDateTime = (isoString: string) => {
-        return isoString.replace("T", " ").slice(0, 16); // 예: "2025-05-01 10:15"
+        return isoString.replace("T", " ").slice(0, 16);
     };
 
     const totalPages = Math.ceil(reviewData.length / itemsPerPage);
@@ -60,44 +63,46 @@ const ReviewsTable = () => {
                     }}
                 >
                     <thead>
-                    <tr
-                        style={{
-                            textAlign: "left",
-                            fontSize: "0.9rem",
-                            color: "#555",
-                        }}
-                    >
+                    <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
                         <th style={thStyle}>#</th>
-                        <th style={thStyle}>워게임명</th> {/* ❗️현재 표시 불가 */}
+                        <th style={thStyle}>워게임명</th>
                         <th style={thStyle}>리뷰 내용</th>
                         <th style={thStyle}>작성일</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {currentData.map((review, idx) => (
-                        <tr
-                            key={review.id}
-                            style={{
-                                backgroundColor: "white",
-                                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                                borderRadius: "6px",
-                                transition: "background 0.2s",
-                            }}
-                            onMouseOver={(e) =>
-                                (e.currentTarget.style.backgroundColor = "#fcddb6")
-                            }
-                            onMouseOut={(e) =>
-                                (e.currentTarget.style.backgroundColor = "white")
-                            }
-                        >
-                            <td style={tdStyle}>
-                                {(currentPage - 1) * itemsPerPage + idx + 1}
+                    {currentData.length === 0 ? (
+                        <tr>
+                            <td colSpan={4} style={{ textAlign: "center", padding: "3rem" }}>
+                                작성한 리뷰가 없습니다.
                             </td>
-                            <td style={tdStyle}>-</td> {/* 워게임명 없음 */}
-                            <td style={tdStyle}>{review.content}</td>
-                            <td style={tdStyle}>{formatDateTime(review.createdAt)}</td>
                         </tr>
-                    ))}
+                    ) : (
+                        currentData.map((review, idx) => (
+                            <tr
+                                key={review.id}
+                                style={{
+                                    backgroundColor: "white",
+                                    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                                    borderRadius: "6px",
+                                    transition: "background 0.2s",
+                                }}
+                                onMouseOver={(e) =>
+                                    (e.currentTarget.style.backgroundColor = "#fcddb6")
+                                }
+                                onMouseOut={(e) =>
+                                    (e.currentTarget.style.backgroundColor = "white")
+                                }
+                            >
+                                <td style={tdStyle}>
+                                    {(currentPage - 1) * itemsPerPage + idx + 1}
+                                </td>
+                                <td style={tdStyle}>-</td> {/* 워게임명은 아직 없음 */}
+                                <td style={tdStyle}>{review.content}</td>
+                                <td style={tdStyle}>{formatDateTime(review.createdAt)}</td>
+                            </tr>
+                        ))
+                    )}
                     </tbody>
                 </table>
             </div>
