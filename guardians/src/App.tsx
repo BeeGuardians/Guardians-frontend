@@ -42,7 +42,7 @@ function App() {
             <div
                 style={{
                     paddingTop: isAuthPage ? "0" : "5rem",
-                    paddingLeft: isAuthPage ? "0" : "5rem",
+                    // paddingLeft: isAuthPage ? "0" : "5rem",
                     maxWidth: "100%",
                 }}
             >
