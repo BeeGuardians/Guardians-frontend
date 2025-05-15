@@ -36,7 +36,7 @@ const FreeBoardDetailPage = () => {
 
         axios.get(`/api/boards/${id}`, { withCredentials: true })
             .then(res => setBoard(res.data.result.data))
-            .catch(err => alert('게시글을 불러오지 못했습니다.'));
+            // .catch(err => alert('게시글을 불러오지 못했습니다.'));
 
         axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
             .then(res => setComments(res.data.result.data));
