@@ -27,12 +27,11 @@ const EditUsernameModal = ({ onClose, onSuccess }: Props) => {
                 { withCredentials: true }
             );
 
-            // 닫고 → 부모에게 성공 알림
             onClose();
             onSuccess();
         } catch (err) {
             console.error("닉네임 변경 실패:", err);
-            alert("닉네임 변경 중 오류가 발생했습니다.");
+            alert("이미 존재하는 닉네임입니다.");
         }
     };
 

@@ -1,12 +1,10 @@
 import { useAuth } from "../context/AuthContext";
-import { Link, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import styles from "./Header.module.css";
 
 function Header() {
     const { user, logout } = useAuth();
-    const location = useLocation();
     const isLoggedIn = !!user;
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -21,7 +19,6 @@ function Header() {
                 setDropdownOpen(false);
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [dropdownOpen]);
@@ -32,18 +29,13 @@ function Header() {
                 .get(`${import.meta.env.VITE_API_BASE_URL}/api/users/me`, { withCredentials: true })
                 .then((res) => {
                     const data = res.data.result.data;
-                    console.log("✅ 유저 데이터:", data); // 👉 여기서 실제 값 확인
-                    setProfileUrl(data.profileImageUrl); // 🔥 요기!
+                    setProfileUrl(data.profileImageUrl);
                 })
                 .catch((err) => {
                     console.error("⚠️ 유저 정보 가져오기 실패", err);
                 });
         }
     }, [isLoggedIn]);
-
-    useEffect(() => {
-        setDropdownOpen(false);
-    }, [location.pathname]);
 
     const toggleDropdown = () => {
         setDropdownOpen((prev) => !prev);
@@ -59,8 +51,6 @@ function Header() {
         }
     };
 
-    const isActive = (path: string) => location.pathname.startsWith(path);
-
     return (
         <>
             {isLoading && (
@@ -72,17 +62,17 @@ function Header() {
             <header className={styles.header}>
                 <div className={styles.container}>
                     <div className={styles.left}>
-                        <Link to="/" className={styles.logo}>
+                        <a href="/" className={styles.logo}>
                             <img src="/logo_no_BG.png" alt="로고" className={styles.logoImg} />
                             <span className={styles.logoText}>Guardians</span>
-                        </Link>
+                        </a>
 
                         <nav className={styles.nav}>
-                            <Link to="/wargame" className={`${styles.link} ${isActive("/wargame") ? styles.active : ""}`}>워게임</Link>
-                            <Link to="/ranking" className={`${styles.link} ${isActive("/ranking") ? styles.active : ""}`}>랭킹</Link>
-                            <Link to="/community" className={`${styles.link} ${isActive("/community") ? styles.active : ""}`}>커뮤니티</Link>
+                            <a href="/wargame" className={styles.link}>워게임</a>
+                            <a href="/ranking" className={styles.link}>랭킹</a>
+                            <a href="/community" className={styles.link}>커뮤니티</a>
                             {isLoggedIn && (
-                                <Link to="/dashboard" className={`${styles.link} ${isActive("/dashboard") ? styles.active : ""}`}>대시보드</Link>
+                                <a href="/dashboard" className={styles.link}>대시보드</a>
                             )}
                         </nav>
                     </div>
@@ -110,7 +100,7 @@ function Header() {
                                         <p className={styles.dropdownEmail}>
                                             <strong>{user.email}</strong>
                                         </p>
-                                        <Link to="/mypage" className={styles.dropdownLink}>마이페이지</Link>
+                                        <a href="/mypage" className={styles.dropdownLink}>마이페이지</a>
                                         <button className={styles.dropdownLink} onClick={handleLogout}>
                                             로그아웃
                                         </button>
@@ -118,9 +108,9 @@ function Header() {
                                 )}
                             </div>
                         ) : (
-                            <Link to="/login">
+                            <a href="/login">
                                 <button className={styles.loginButton}>로그인</button>
-                            </Link>
+                            </a>
                         )}
                     </div>
                 </div>
