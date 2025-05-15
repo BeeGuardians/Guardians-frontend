@@ -289,23 +289,80 @@ function WargameDetailPage() {
                                 </h1>
                             </div>
                             <div className={styles["action-box"]}>
-                                <button onClick={toggleBookmark}
-                                        className={`${styles["action-btn"]} ${wargame.bookmarked ? styles.active : ""}`}>
-                                    {wargame.bookmarked ? "⭐" : "☆"} 북마크
+                                <button
+                                    onClick={toggleBookmark}
+                                    className={`${styles["action-btn"]} ${wargame.bookmarked ? styles.active : ""}`}
+                                >
+                                    <img
+                                        src={`/src/assets/${wargame.bookmarked ? "star.png" : "star_bin.png"}`}
+                                        style={{
+                                            width: "1.1em",
+                                            height: "1.1em",
+                                            verticalAlign: "text-bottom",
+                                            marginRight: "0.3em",
+                                        }}
+                                    />
+                                    북마크
                                 </button>
-                                <button onClick={toggleLike}
-                                        className={`${styles["action-btn"]} ${wargame.liked ? styles.active : ""}`}>
-                                    {wargame.liked ? "❤️" : "🤍"} {wargame.likeCount}
+
+                                <button
+                                    onClick={toggleLike}
+                                    className={`${styles["action-btn"]} ${wargame.liked ? styles.active : ""}`}
+                                >
+                                    <img
+                                        src={`/src/assets/${wargame.liked ? "heart.png" : "heart_bin.png"}`}
+                                        style={{
+                                            width: "1.1em",
+                                            height: "1.1em",
+                                            verticalAlign: "text-bottom",
+                                            marginRight: "0.3em",
+                                        }}
+                                    />
+                                    {wargame.likeCount}
                                 </button>
                             </div>
                         </div>
                         <div className={styles["badge-meta-wrapper"]}>
                             <div className={styles["badge-row"]}>
-                                <span className={styles["info-badge"]}>📁 {categoryMap[wargame.category]}</span>
-                                <span className={styles["info-badge"]}>🔥 {wargame.difficulty}</span>
+  <span className={styles["info-badge"]}>
+    <img
+        src="/src/assets/folder.png"
+        style={{
+            width: "1.05em",
+            height: "1.05em",
+            verticalAlign: "text-bottom",
+            marginRight: "0.3em",
+        }}
+    />
+      {categoryMap[wargame.category]}
+  </span>
+                                <span className={styles["info-badge"]}>
+    <img
+        src="/src/assets/fire.png"
+        style={{
+            width: "1.05em",
+            height: "1.05em",
+            verticalAlign: "text-bottom",
+            marginRight: "0.3em",
+        }}
+    />
+                                    {wargame.difficulty}
+  </span>
                             </div>
+
                             <div className={styles.meta}>
-                                <span>🕒 {wargame.createdAt.split("T")[0]}</span>
+                                <span>
+  <img
+      src="/src/assets/clock.png"
+      style={{
+          width: "1.05em",
+          height: "1.05em",
+          verticalAlign: "text-bottom",
+          marginRight: "0.3em",
+      }}
+  />
+                                    {wargame.createdAt.split("T")[0]}
+</span>
                             </div>
                         </div>
                     </div>
@@ -313,7 +370,16 @@ function WargameDetailPage() {
                     {/* 문제 다운로드 */}
                     <div className={styles["download-box"]}>
                         <a href={wargame.fileUrl} target="_blank" rel="noreferrer" className={styles["file-link"]}>
-                            📦 문제 파일 다운로드
+                            <img
+                                src="/src/assets/box.png"
+                                style={{
+                                    width: "1.05em",
+                                    height: "1.05em",
+                                    verticalAlign: "text-bottom",
+                                    marginRight: "0.3em",
+                                }}
+                            />
+                            문제 파일 다운로드
                         </a>
                     </div>
 
@@ -473,7 +539,19 @@ function WargameDetailPage() {
                     {firstSolver && (
                         <div className={styles.firstSolverCard}>
                             <div>
-                                <div>🎉 First Blood!</div>
+                                <div>
+                                    <img
+                                        src="/src/assets/congratulations.png"
+                                        style={{
+                                            width: "1.3em",
+                                            height: "1.3em",
+                                            verticalAlign: "text-bottom",
+                                            marginLeft: "0.1em",
+                                            marginRight: "0.4em",
+                                        }}
+                                    />
+                                    First Blood!
+                                </div>
                                 <strong>{firstSolver.username}님</strong>
                             </div>
                         </div>

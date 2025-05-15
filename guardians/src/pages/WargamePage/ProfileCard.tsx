@@ -37,7 +37,20 @@ function ProfileCard() {
     }, []);
 
     if (isLoading) {
-        return <div style={{ padding: "1rem" }}>⏳ 로딩 중...</div>;
+        return (
+            <div style={{ padding: "1rem" }}>
+                <img
+                    src="/src/assets/hourglass.png"
+                    style={{
+                        width: "1.1em",
+                        height: "1.1em",
+                        verticalAlign: "text-bottom",
+                        marginRight: "0.5em",
+                    }}
+                />
+                로딩 중...
+            </div>
+        );
     }
 
     return (

@@ -39,7 +39,18 @@ function RankingPage() {
             }}>
                 {/* 상단 설명 */}
                 <h3 style={{ marginTop: "0rem", marginBottom: "1rem", fontWeight: 400, fontSize: "1rem", color: "#666" }}>
-                    🏆 나의 순위는 몇 위? 최고 수치로 실력을 증명해보세요!
+                    <p>
+                        <img
+                            src="/src/assets/trophy.png"
+                            style={{
+                                width: "1.2em",
+                                height: "1.2em",
+                                verticalAlign: "text-bottom",
+                                marginRight: "0.3em",
+                            }}
+                        />
+                        나의 순위는 몇 위? 최고 수치로 실력을 증명해보세요!
+                    </p>
                 </h3>
 
                 <div style={{
@@ -53,7 +64,18 @@ function RankingPage() {
                     lineHeight: "1.5rem",
                 }}>
                     랭킹은 워게임에서 획득한 점수와 해결한 문제 수에 따라 자동 계산됩니다. <br />
-                    다른 유저들과 실력을 비교하고, 더 높은 점수를 향해 도전해보세요! 💥
+                    <p>
+                        다른 유저들과 실력을 비교하고, 더 높은 점수를 향해 도전해보세요!
+                        <img
+                            src="/src/assets/goal.png"
+                            style={{
+                                width: "1.2em",
+                                height: "1.2em",
+                                verticalAlign: "text-bottom",
+                                marginLeft: "0.3em",
+                            }}
+                        />
+                    </p>
                 </div>
 
                 {/* 🥇 상위 3명 카드 */}
@@ -79,12 +101,12 @@ function RankingPage() {
                     )}
                 </div>
 
-                {/* 🔍 검색창 */}
+                {/* 검색창 */}
                 <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "2rem" }}>
                     <SearchBar />
                 </div>
 
-                {/* 📊 전체 순위 테이블 */}
+                {/* 전체 순위 테이블 */}
                 <RankingTable data={allUsers} />
             </div>
         </div>

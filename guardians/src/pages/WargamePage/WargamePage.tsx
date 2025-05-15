@@ -28,10 +28,22 @@ function WargamePage() {
                             color: "#666",
                         }}
                     >
-                        😎 취약점을 찾아내고, 문제를 해결하세요!
+                        <p>
+                            <img
+                                src="/src/assets/sunglass.png"
+                                alt="sunglass emoji"
+                                style={{
+                                    width: "1.1em",
+                                    height: "1.1em",
+                                    verticalAlign: "text-bottom",
+                                    marginRight: "0.5em",
+                                }}
+                            />
+                            취약점을 찾아내고, 문제를 해결하세요!
+                        </p>
                     </h3>
 
-                    {/* ✨ 워게임 소개 영역 */}
+                    {/* 워게임 소개 영역 */}
                     <div
                         style={{
                             backgroundColor: "#fffbe6",
@@ -45,7 +57,19 @@ function WargamePage() {
                         }}
                     >
                         워게임은 실전과 유사한 문제를 풀며 보안 역량을 키울 수 있는 환경입니다. <br />
-                        취약점을 찾아내고 문제를 해결하면서, 재미있게 공부해보세요! 💪
+                        <p>
+                            취약점을 찾아내고 문제를 해결하면서, 재미있게 공부해보세요!
+                            <img
+                                src="/src/assets/high-five.png"
+                                alt="fist bump emoji"
+                                style={{
+                                    width: "1.1em",
+                                    height: "1.1em",
+                                    verticalAlign: "text-bottom",
+                                    marginLeft: "0.5em",
+                                }}
+                            />
+                        </p>
                     </div>
 
                     <SearchBar />

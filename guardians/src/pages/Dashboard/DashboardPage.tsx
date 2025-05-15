@@ -11,7 +11,18 @@ const DashboardPage = () => {
                         color: "#666",
                     }}
                 >
-                    📊 내 성장과 성과를 한 눈에 확인해보세요!
+                    <p>
+                        <img
+                            src="/src/assets/graph.png"
+                            style={{
+                                width: "1.2em",
+                                height: "1.2em",
+                                verticalAlign: "text-bottom",
+                                marginRight: "0.3em",
+                            }}
+                        />
+                        내 성장과 성과를 한 눈에 확인해보세요!
+                    </p>
                 </h3>
 
                 <div
@@ -27,7 +38,18 @@ const DashboardPage = () => {
                     }}
                 >
                     대시보드는 사용자 활동을 기반으로 배지와 역할을 시각화하는 공간입니다. <br />
-                    획득한 보상과 활동 데이터를 바탕으로, 학습 현황을 종합적으로 파악해보세요! 💎
+                    <p>
+                        획득한 보상과 활동 데이터를 바탕으로, 학습 현황을 종합적으로 파악해보세요!
+                        <img
+                            src="/src/assets/dashboard.png"
+                            style={{
+                                width: "1.1em",
+                                height: "1.1em",
+                                verticalAlign: "text-bottom",
+                                marginLeft: "0.3em",
+                            }}
+                        />
+                    </p>
                 </div>
 
                 <div

@@ -29,10 +29,10 @@ function SearchBar() {
                     height: "2rem",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "flex-end", // ✅ 오른쪽으로 밀어!
+                    justifyContent: "flex-end",
                     borderRadius: "50%",
                     pointerEvents: "auto",
-                    paddingRight: "0.2rem", // ✅ 아이콘 더 끝에 딱 붙이기
+                    paddingRight: "0.2rem",
                 }}
             >
                     <img

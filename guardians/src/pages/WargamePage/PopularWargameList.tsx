@@ -1,3 +1,4 @@
+
 import {Link} from "react-router-dom";
 
 function PopularWargameList() {
@@ -33,7 +34,18 @@ function PopularWargameList() {
                     gap: "0.4rem",
                 }}
             >
-                <span style={{ fontSize: "1.6rem" }}>🔥</span> 현재 핫한 워게임
+                <span style={{ fontSize: "1.6rem" }}>
+  <img
+      src="/src/assets/fire.png"
+      style={{
+          width: "1.6rem",
+          height: "1.6rem",
+          verticalAlign: "text-bottom",
+          marginRight: "0em",
+      }}
+  />
+</span>
+                현재 핫한 워게임
             </h3>
 
             <ul style={{ padding: 0, margin: 0 }}>
