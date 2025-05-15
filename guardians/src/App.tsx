@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/HomePage/Home.tsx";
 import Login from "./pages/LoginPage/Login";
-import Dashboard from "./pages/Dashboard/DashboardPage"; // ✅ 수정된 부분
+import Dashboard from "./pages/Dashboard/DashboardPage";
 import RankingPage from "./pages/RankingPage/RankingPage";
 import Header from "./components/Header";
 import AuthHeader from "./components/AuthHeader";
@@ -9,7 +9,6 @@ import WargamePage from "./pages/WargamePage/WargamePage";
 import FindPassword from "./pages/LoginPage/FindPassword.tsx";
 import WargameDetailPage from "./pages/WargamePage/WargameDetailPage.tsx";
 
-// 커뮤니티 관련
 import CommunityPage from "./pages/community/CommunityPage";
 import FreeBoardPage from "./pages/community/FreeBoardPage";
 import QnaBoardPage from "./pages/community/QnaBoardPage";
@@ -25,10 +24,10 @@ import FreeBoardDetailPage from "./pages/community/FreeBoardDetailPage.tsx";
 import StudyBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
 import InquiryBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
 
-// ✅ 마이페이지 관련
 import MypagePage from "./pages/MyPage/MypagePage";
 import MypageInfoCard from "./pages/MyPage/MypageInfoCard";
 import PostsPage from "./pages/MyPage/posts/PostsPage.tsx";
+import Footer from "./components/Footer.tsx";
 
 function App() {
     const location = useLocation();
@@ -42,14 +41,12 @@ function App() {
             <div
                 style={{
                     paddingTop: isAuthPage ? "0" : "5rem",
-                    // paddingLeft: isAuthPage ? "0" : "5rem",
-                    maxWidth: "100%",
+                    minHeight: "calc(100vh - 5rem - 200px)", // 헤더 + 푸터 높이 고려
                 }}
             >
                 <Routes>
                     <Route path="/" element={<Home />} />
 
-                    {/* 🔐 인증 페이지 */}
                     <Route
                         path="/login"
                         element={
@@ -124,6 +121,7 @@ function App() {
                     <Route path="/community/inquiry/write" element={<BoardWrite type="INQUIRY" />} />
                     <Route path="/community/inquiry/:id" element={<InquiryBoardDetailPage />} />
                 </Routes>
+                {!isAuthPage && <Footer />}
             </div>
         </AuthProvider>
     );
