@@ -43,7 +43,7 @@ function ProfileCard() {
     return (
         <div
             style={{
-                width: "360px",
+                width: "340px",
                 height: "220px",
                 border: "1px solid #ccc",
                 borderRadius: "10px",

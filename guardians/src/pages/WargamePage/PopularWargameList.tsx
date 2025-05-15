@@ -18,7 +18,7 @@ function PopularWargameList() {
 
     return (
         <div style={{
-            width: "330px",
+            width: "340px",
             backgroundColor: "transparent",
             // padding: "1rem 0",
         }}>
