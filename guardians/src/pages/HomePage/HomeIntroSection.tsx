@@ -119,7 +119,7 @@ function HomeIntroSection() {
                 viewport={{ once: true, amount: 0.3 }}
                 style={{
                     fontSize: "2rem",
-                    marginBottom: "5rem",
+                    marginBottom: "4rem",
                     fontWeight: "650",
                     color: "#333",
                     textAlign: "center"
@@ -137,17 +137,17 @@ function HomeIntroSection() {
                     fontSize: "1.1rem",
                     color: "#444",
                     lineHeight: "2",
-                    marginBottom: "7rem",
-                    maxWidth: "820px",
+                    marginBottom: "0rem",
+                    maxWidth: "50rem",
                     whiteSpace: "pre-line",
                     textAlign: "center",
                     margin: "0 auto"
                 }}
             >
-                <strong>가디언즈</strong>는 단순한 문제 풀이가 아닌,
-                실제 서비스처럼 동작하는 <strong>컨테이너 기반 워게임 환경</strong>을 제공합니다.
-                클릭 한 번이면 <strong>나만의 실습 환경</strong>이 바로 생성되고,
-                설치나 복잡한 설정 없이 <strong>브라우저만으로 해킹 실습</strong>이 가능합니다.
+                <strong>가디언즈</strong>는 단순한 문제 풀이가 아닌
+                실제 서비스처럼 동작하는 <strong>컨테이너 기반 워게임 환경</strong>을 제공합니다.<br />
+                클릭 한 번이면 <strong>나만의 실습 환경</strong>이 바로 생성되고
+                설치나 복잡한 설정 없이 <strong>브라우저만으로 해킹 실습</strong>이 가능합니다.<br />
                 입문자부터 전문가까지,
                 누구나 사용할 수 있도록 <strong>최적화된 환경</strong>을 제공합니다.
                 <br />
@@ -156,7 +156,7 @@ function HomeIntroSection() {
                         style={{
                             color: "#ff922b",
                             fontWeight: 650,
-                            fontSize: "1.5rem",
+                            fontSize: "1.8rem",
                             display: "inline-block",
                             marginTop: "1.5rem",
                             marginBottom: "5.5rem",
@@ -186,7 +186,7 @@ function HomeIntroSection() {
                     {
                         title: "⚔️ 실전과 같은 문제",
                         desc: "단순한 퀴즈가 아닙니다. 실제 서비스 환경에서 발생할 수 있는 취약점을 기반으로 구성된 워게임을 제공합니다.",
-                        color: "#ff922b"
+                        color: "#3B82F6"
                     },
                     {
                         title: "🏆 랭킹과 성과",
