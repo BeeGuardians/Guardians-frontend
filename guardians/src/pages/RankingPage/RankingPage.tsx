@@ -9,6 +9,7 @@ interface UserRanking {
     username: string;
     score: number;
     totalSolved: number;
+    userProfileUrl: string;
 }
 
 function RankingPage() {
