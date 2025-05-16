@@ -1,0 +1,19 @@
+# node 패키지 및 캐시
+node_modules
+npm-debug.log
+
+# Vite 빌드 결과물
+dist
+
+# Git 관련
+.git
+.gitignore
+
+# IDE/Editor 설정
+.vscode
+.idea
+*.iml
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
