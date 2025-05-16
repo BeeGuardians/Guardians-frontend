@@ -1,7 +1,7 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
-import styles from './components/BoardDetailPage.module.css';
+import styles from './components/FreeBoardDetailPage.module.css';
 
 interface Board {
     boardId: number;
@@ -24,7 +24,7 @@ interface Comment {
 }
 
 const FreeBoardDetailPage = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [board, setBoard] = useState<Board | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
@@ -46,17 +46,17 @@ const FreeBoardDetailPage = () => {
     }, [id]);
 
     const fetchBoard = () => {
-        axios.get(`/api/boards/${id}`, { withCredentials: true })
+        axios.get(`/api/boards/${id}`, {withCredentials: true})
             .then(res => setBoard(res.data.result.data));
     };
 
     const fetchComments = () => {
-        axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
+        axios.get(`/api/boards/${id}/comments`, {withCredentials: true})
             .then(res => setComments(res.data.result.data));
     };
 
     const checkLoginStatus = () => {
-        axios.get('/api/users/me', { withCredentials: true })
+        axios.get('/api/users/me', {withCredentials: true})
             .then(res => {
                 const id = res.data.result.data.id;
                 setIsLoggedIn(true);
@@ -70,7 +70,7 @@ const FreeBoardDetailPage = () => {
 
     const toggleLike = () => {
         if (!id) return;
-        axios.post(`/api/boards/${id}/like`, {}, { withCredentials: true })
+        axios.post(`/api/boards/${id}/like`, {}, {withCredentials: true})
             .then(res => {
                 const liked = res.data.result.data.liked;
                 setIsLiked(liked);
@@ -83,7 +83,7 @@ const FreeBoardDetailPage = () => {
 
     const handleDelete = () => {
         if (!window.confirm('정말 삭제하시겠습니까?')) return;
-        axios.delete(`/api/boards/${board?.boardId}`, { withCredentials: true })
+        axios.delete(`/api/boards/${board?.boardId}`, {withCredentials: true})
             .then(() => {
                 alert('게시글이 삭제되었습니다.');
                 navigate('/community/free');
@@ -96,7 +96,7 @@ const FreeBoardDetailPage = () => {
             return;
         }
 
-        axios.post(`/api/boards/${id}/comments`, { content: newComment }, { withCredentials: true })
+        axios.post(`/api/boards/${id}/comments`, {content: newComment}, {withCredentials: true})
             .then(() => {
                 setNewComment('');
                 fetchComments();
@@ -118,7 +118,7 @@ const FreeBoardDetailPage = () => {
         try {
             await axios.patch(`/api/boards/${id}/comments/${commentId}`, {
                 content: editingCommentContent
-            }, { withCredentials: true });
+            }, {withCredentials: true});
             setEditingCommentId(null);
             setEditingCommentContent('');
             fetchComments();
@@ -129,7 +129,7 @@ const FreeBoardDetailPage = () => {
 
     const handleDeleteComment = async (commentId: number) => {
         try {
-            await axios.delete(`/api/boards/${id}/comments/${commentId}`, { withCredentials: true });
+            await axios.delete(`/api/boards/${id}/comments/${commentId}`, {withCredentials: true});
             setConfirmDeleteCommentId(null);
             fetchComments();
         } catch {
@@ -138,7 +138,7 @@ const FreeBoardDetailPage = () => {
     };
 
     if (!board) {
-        return <div style={{ textAlign: 'center', marginTop: '2rem' }}>로딩 중...</div>;
+        return <div style={{textAlign: 'center', marginTop: '2rem'}}>로딩 중...</div>;
     }
 
     return (
@@ -159,7 +159,7 @@ const FreeBoardDetailPage = () => {
                                 onClick={toggleLike}
                                 disabled={!isLoggedIn}
                                 className={`${styles["action-btn"]} ${isLiked ? styles.active : ""}`}
-                                style={{ cursor: isLoggedIn ? 'pointer' : 'not-allowed' }}
+                                style={{cursor: isLoggedIn ? 'pointer' : 'not-allowed'}}
                             >
                                 {isLiked ? "❤️ 좋아요 취소" : "🤍 좋아요"}
                             </button>
@@ -187,7 +187,7 @@ const FreeBoardDetailPage = () => {
                                     onChange={(e) => setNewComment(e.target.value)}
                                     placeholder="댓글을 입력하세요"
                                 />
-                                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <div style={{display: "flex", justifyContent: "flex-end"}}>
                                     <button
                                         className={styles.submitBtn}
                                         onClick={handleCommentSubmit}
@@ -219,7 +219,9 @@ const FreeBoardDetailPage = () => {
                                                     onChange={(e) => setEditingCommentContent(e.target.value)}
                                                 />
                                                 <div className={styles.reviewActionBtns}>
-                                                    <button onClick={() => handleConfirmEditComment(comment.commentId)}>저장</button>
+                                                    <button
+                                                        onClick={() => handleConfirmEditComment(comment.commentId)}>저장
+                                                    </button>
                                                     <button onClick={cancelEditComment}>취소</button>
                                                 </div>
                                             </>
@@ -228,8 +230,12 @@ const FreeBoardDetailPage = () => {
                                                 <p className={styles.commentContent}>{comment.content}</p>
                                                 {isLoggedIn && String(sessionUserId) === String(comment.userId) && (
                                                     <div className={styles.reviewActionBtns}>
-                                                        <button onClick={() => startEditComment(comment.commentId, comment.content)}>수정</button>
-                                                        <button onClick={() => setConfirmDeleteCommentId(comment.commentId)}>삭제</button>
+                                                        <button
+                                                            onClick={() => startEditComment(comment.commentId, comment.content)}>수정
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setConfirmDeleteCommentId(comment.commentId)}>삭제
+                                                        </button>
                                                     </div>
                                                 )}
                                             </>
@@ -246,8 +252,8 @@ const FreeBoardDetailPage = () => {
             {confirmDeleteCommentId !== null && (
                 <div className={styles["modal-overlay"]} onClick={() => setConfirmDeleteCommentId(null)}>
                     <div className={styles["modal-box"]} onClick={(e) => e.stopPropagation()}>
-                        <p style={{ fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem" }}>댓글을 삭제할까요?</p>
-                        <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
+                        <p style={{fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem"}}>댓글을 삭제할까요?</p>
+                        <div style={{display: "flex", justifyContent: "center", gap: "0.5rem"}}>
                             <button
                                 className={styles["submit-btn"]}
                                 onClick={() => handleDeleteComment(confirmDeleteCommentId)}
@@ -256,7 +262,7 @@ const FreeBoardDetailPage = () => {
                             </button>
                             <button
                                 className={styles["submit-btn"]}
-                                style={{ backgroundColor: "#ddd", color: "#333" }}
+                                style={{backgroundColor: "#ddd", color: "#333"}}
                                 onClick={() => setConfirmDeleteCommentId(null)}
                             >
                                 취소

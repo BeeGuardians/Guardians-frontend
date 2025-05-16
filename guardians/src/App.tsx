@@ -22,7 +22,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import BoardWrite from "./pages/community/BoardWrite.tsx";
 import FreeBoardDetailPage from "./pages/community/FreeBoardDetailPage.tsx";
 import StudyBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
-import InquiryBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
+import InquiryBoardDetailPage from "./pages/community/InquiryBoardDetailPage.tsx";
 
 import MypagePage from "./pages/MyPage/MypagePage";
 import MypageInfoCard from "./pages/MyPage/MypageInfoCard";
