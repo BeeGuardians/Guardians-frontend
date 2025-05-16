@@ -8,6 +8,8 @@ import AuthHeader from "./components/AuthHeader";
 import WargamePage from "./pages/WargamePage/WargamePage";
 import FindPassword from "./pages/LoginPage/FindPassword.tsx";
 import WargameDetailPage from "./pages/WargamePage/WargameDetailPage.tsx";
+import JobPage from "./pages/JobPage/JobPage";
+import JobDetailPage from "./pages/JobPage/JobDetailPage";
 
 import CommunityPage from "./pages/community/CommunityPage";
 import FreeBoardPage from "./pages/community/FreeBoardPage";
@@ -107,6 +109,7 @@ function App() {
                     <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
                     <Route path="/wargame/:id" element={<WargameDetailPage />} />
+                    <Route path="/job" element={<JobPage />} /> {/* 일단 여기 두겠음 */}
 
                     {/* 💬 커뮤니티 */}
                     <Route path="/community" element={<CommunityPage />} />
@@ -120,6 +123,7 @@ function App() {
                     <Route path="/community/inquiry" element={<InquiryBoardPage />} />
                     <Route path="/community/inquiry/write" element={<BoardWrite type="INQUIRY" />} />
                     <Route path="/community/inquiry/:id" element={<InquiryBoardDetailPage />} />
+                    <Route path="/job/:id" element={<JobDetailPage />} />
                 </Routes>
                 {!isAuthPage && <Footer />}
             </div>
