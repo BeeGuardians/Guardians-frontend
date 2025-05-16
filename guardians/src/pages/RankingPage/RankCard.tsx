@@ -4,10 +4,11 @@ interface RankCardProps {
     username: string;     // 사용자 이름
     score: number;        // 점수
     totalSolved: number;  // 푼 문제 수
+    userProfileUrl: string;
 }
 
 // 랭킹 카드 UI 컴포넌트
-const RankCard: React.FC<RankCardProps> = ({ rank, username, score, totalSolved }) => {
+const RankCard: React.FC<RankCardProps> = ({ rank, username, score, totalSolved, userProfileUrl }) => {
     return (
         <div
             style={{
@@ -24,17 +25,32 @@ const RankCard: React.FC<RankCardProps> = ({ rank, username, score, totalSolved 
                 {rank}위
             </div>
 
-            {/* 🧑 프로필 원형 이미지 자리 (지금은 배경색 원으로 대체됨) */}
+            {/* 🧑 프로필 이미지 (없으면 회색 원) */}
             <div
                 style={{
                     width: "70px",
                     height: "70px",
-                    borderRadius: "50%",      // 완전한 원형
-                    backgroundColor: "#ddd",  // 회색 배경
-                    margin: "0 auto",         // 수평 중앙 정렬
-                    marginBottom: "1rem"
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    margin: "0 auto",
+                    marginBottom: "1rem",
+                    backgroundColor: "#ddd", // 이미지 없을 때 대비
                 }}
-            />
+            >
+                <img
+                    src={userProfileUrl}
+                    alt="profile"
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                    }}
+                    onError={(e) => {
+                        e.currentTarget.src = "/default-profile.png"; // 기본 이미지 경로 설정
+                    }}
+                />
+            </div>
 
             {/* 사용자 이름 표시 */}
             <p style={{ marginTop: '0.5rem', fontWeight: 'bold' }}>{username}</p>

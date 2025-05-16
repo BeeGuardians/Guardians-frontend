@@ -13,7 +13,7 @@ const FreeBoardPage = () => {
         username: string;
         createdAt: string;
         likeCount: number;
-        viewCount: number;
+        viewCount?: number;
         boardType: string;
     }
 

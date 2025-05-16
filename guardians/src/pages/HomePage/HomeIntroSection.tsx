@@ -36,7 +36,7 @@ function HomeIntroSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
                 viewport={{ once: true, amount: 0.7 }}
-                style={{ fontSize: "2rem", marginBottom: "8rem", fontWeight: "650", color: "#333" }}
+                style={{ fontSize: "2rem", marginBottom: "8rem", fontWeight: "650", color: "#333", textAlign: "center" }}
             >
                 🤔 이런 고민, 해보신 적 있으신가요?
             </motion.h3>
@@ -119,9 +119,10 @@ function HomeIntroSection() {
                 viewport={{ once: true, amount: 0.3 }}
                 style={{
                     fontSize: "2rem",
-                    marginBottom: "3rem",
+                    marginBottom: "4rem",
                     fontWeight: "650",
-                    color: "#333"
+                    color: "#333",
+                    textAlign: "center"
                 }}
             >
                 👨‍💻 보안, 더는 어렵지 않아요. 가디언즈가 도와드릴게요!
@@ -136,30 +137,33 @@ function HomeIntroSection() {
                     fontSize: "1.1rem",
                     color: "#444",
                     lineHeight: "2",
-                    marginBottom: "6rem",
-                    maxWidth: "820px",
-                    whiteSpace: "pre-line"
+                    marginBottom: "0rem",
+                    maxWidth: "50rem",
+                    whiteSpace: "pre-line",
+                    textAlign: "center",
+                    margin: "0 auto"
                 }}
             >
-                <strong>가디언즈</strong>는 단순한 문제 풀이가 아닌,
-                실제 서비스처럼 동작하는 <strong>컨테이너 기반 워게임 환경</strong>을 제공합니다.
-                클릭 한 번이면 <strong>나만의 실습 환경</strong>이 바로 생성되고,
-                설치나 복잡한 설정 없이 <strong>브라우저만으로 해킹 실습</strong>이 가능합니다.
+                <strong>가디언즈</strong>는 단순한 문제 풀이가 아닌
+                실제 서비스처럼 동작하는 <strong>컨테이너 기반 워게임 환경</strong>을 제공합니다.<br />
+                클릭 한 번이면 <strong>나만의 실습 환경</strong>이 바로 생성되고
+                설치나 복잡한 설정 없이 <strong>브라우저만으로 해킹 실습</strong>이 가능합니다.<br />
                 입문자부터 전문가까지,
                 누구나 사용할 수 있도록 <strong>최적화된 환경</strong>을 제공합니다.
-                <p>
+                <br />
+                <br />
                     <span
                         style={{
                             color: "#ff922b",
                             fontWeight: 650,
-                            fontSize: "1.5rem",
+                            fontSize: "1.8rem",
                             display: "inline-block",
-                            marginTop: "1.5rem"
+                            marginTop: "1.5rem",
+                            marginBottom: "5.5rem",
                         }}
                     >
                       지금, 당신의 보안 여정을 시작해보세요!
                     </span>
-                </p>
             </motion.p>
 
             {/* 기능 강조 섹션 */}
@@ -182,7 +186,7 @@ function HomeIntroSection() {
                     {
                         title: "⚔️ 실전과 같은 문제",
                         desc: "단순한 퀴즈가 아닙니다. 실제 서비스 환경에서 발생할 수 있는 취약점을 기반으로 구성된 워게임을 제공합니다.",
-                        color: "#ff922b"
+                        color: "#3B82F6"
                     },
                     {
                         title: "🏆 랭킹과 성과",
@@ -232,7 +236,7 @@ function HomeIntroSection() {
                         marginBottom: "3rem",
                         fontWeight: 650,
                         color: "#333",
-                        textAlign: "left",
+                        textAlign: "center",
                     }}
                 >
                     💬 가디언즈 유저들의 생생한 후기!
@@ -267,7 +271,7 @@ function HomeIntroSection() {
                         },
                         {
                             quote: "대시보드 기능이 진짜 미쳤어요. 내 실력 곡선이 보여요.",
-                            author: "– 나홍박사님, 직장인"
+                            author: "– 나홍박사님을아세요, 직장인"
                         },
                         {
                             quote: "다른 플랫폼과 비교 불가. 랭킹 시스템이 몰입감 최고!",
@@ -375,7 +379,7 @@ function HomeIntroSection() {
                         maxWidth: "520px",
                         color: "#555",
                         lineHeight: "1.1",
-                        marginBottom: "2.5rem",
+                        marginBottom: "3.5rem",
                     }}
                 >
                     실습으로 배우고, 성장하고, 증명하는 <strong>진짜 여정</strong>이 시작됩니다.

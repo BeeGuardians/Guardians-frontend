@@ -1,0 +1,69 @@
+.wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 3rem auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pageTitle {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.input {
+    width: 97%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.textarea {
+    width: 97%;
+    height: 300px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    margin-bottom: 1.5rem;
+}
+
+.btnGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.submitBtn {
+    background-color: #FFA94D;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.submitBtn:hover {
+    background-color: #ff922b;
+}
+
+.cancelBtn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.cancelBtn:hover {
+    background-color: #e0e0e0;
+}
