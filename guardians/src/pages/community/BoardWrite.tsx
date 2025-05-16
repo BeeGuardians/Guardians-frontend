@@ -1,6 +1,7 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import styles from "./BoardWrite.module.css";
 
 interface BoardWriteProps {
     type: string;
@@ -12,7 +13,6 @@ const BoardWrite = ({ type }: BoardWriteProps) => {
     const navigate = useNavigate();
 
     const handleSubmit = () => {
-
         axios.post(`/api/boards?type=${type}`, {
             title,
             content
@@ -30,30 +30,28 @@ const BoardWrite = ({ type }: BoardWriteProps) => {
         navigate(`/community/${type.toLowerCase()}`);
     };
 
-
-
     return (
-        <div style={{ width: '70%', margin: '2rem auto', padding: '1.5rem', border: '1px solid #ddd', borderRadius: '8px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className={styles.wrapper}>
+            <h2 className={styles.pageTitle}> 게시글 작성</h2>
             <input
                 type="text"
-                placeholder="제목을 입력해주세요"
+                placeholder="제목을 입력하세요"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                style={{ width: '100%', padding: '0.75rem', marginBottom: '1.5rem', fontSize: '1rem' }}
+                className={styles.input}
             />
             <textarea
-                placeholder="내용을 입력해주세요"
+                placeholder="내용을 입력하세요"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                style={{ width: '100%', height: '370px', marginBottom: '1rem', padding: '0.75rem', fontSize: '1rem' }}
+                className={styles.textarea}
             />
-            <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-                <button onClick={handleSubmit} style={{ marginRight: '0.5rem', padding: '0.5rem 1rem', backgroundColor: '#FFA94D', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>등록</button>
-                <button onClick={handleCancel} style={{ padding: '0.5rem 1rem', backgroundColor: '#f0f0f0', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>취소</button>
+            <div className={styles.btnGroup}>
+                <button onClick={handleSubmit} className={styles.submitBtn}>등록</button>
+                <button onClick={handleCancel} className={styles.cancelBtn}>취소</button>
             </div>
         </div>
     );
 };
-
 
 export default BoardWrite;

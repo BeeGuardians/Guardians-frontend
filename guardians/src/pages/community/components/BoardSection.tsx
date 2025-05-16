@@ -1,10 +1,9 @@
 import {Link} from "react-router-dom";
-import viewIcon from "../../../assets/view.png"; // 경로는 너 구조에 맞게 조정
 
 type Post = {
     id: number;
     title: string;
-    views: number;
+    views?: number;
 };
 
 type Props = {
@@ -30,7 +29,6 @@ const BoardSection = ({ title, description, posts, color = "#f5f5f5", link }: Pr
                 justifyContent: "space-between",
             }}
         >
-            {/* ✅ 상단: 색 배경 영역 */}
             <div style={{ backgroundColor: color, padding: "1rem" }}>
                 <h3 style={{ margin: 0 }}>{title}</h3>
                 <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>{description}</p>
@@ -38,10 +36,15 @@ const BoardSection = ({ title, description, posts, color = "#f5f5f5", link }: Pr
 
             {/* ✅ 하단: 게시글 테이블 영역 */}
             <div style={{ padding: "1rem", flexGrow: 1 }}>
-                <table style={{ width: "100%", fontSize: "0.9rem" }}>
+                <table style={{ width: "100%", fontSize: "0.9rem", borderCollapse: "collapse", }}>
                     <tbody>
                     {posts.map((post) => (
-                        <tr key={post.id}>
+                        <tr
+                            key={post.id}
+                            style={{
+                                borderBottom: "1px solid #eee",
+                            }}
+                        >
                             <td style={{ padding: "0.4rem 0" }}>
                                 <Link
                                     to={`${link}/${post.id}`}
@@ -56,14 +59,6 @@ const BoardSection = ({ title, description, posts, color = "#f5f5f5", link }: Pr
                                     {post.title}
                                 </Link>
 
-                            </td>
-                            <td style={{ padding: "0.4rem 0", textAlign: "right", color: "#aaa", width: "80px" }}>
-                                <img
-                                    src={viewIcon}
-                                    alt="view"
-                                    style={{ width: "14px", height: "14px", verticalAlign: "middle", marginRight: "4px" }}
-                                />
-                                <span> {post.views}</span>
                             </td>
                         </tr>
                     ))}
