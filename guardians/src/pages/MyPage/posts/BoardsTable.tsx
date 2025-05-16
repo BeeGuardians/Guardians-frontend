@@ -39,8 +39,8 @@ const BoardsTable = () => {
                 withCredentials: true,
             });
 
-            const boards = res.data?.result?.data ?? [];
-            setBoardData(boards);
+                const posts = res.data?.result?.data?.posts ?? [];
+                setBoardData(posts);
         } catch (err) {
             console.error("게시글 불러오기 실패:", err);
             setBoardData([]);

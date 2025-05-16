@@ -24,8 +24,8 @@ const ReviewsTable = () => {
             });
 
             // ✅ 옵셔널 체이닝 + fallback으로 undefined 방어
-            const reviews = res.data?.result?.data ?? [];
-            setReviewData(reviews);
+                const reviews = res.data?.result?.data?.reviews ?? [];
+                setReviewData(reviews);
         } catch (err) {
             console.error("리뷰 데이터를 불러오는 중 오류 발생:", err);
             setReviewData([]); // 에러 발생 시 빈 배열로
