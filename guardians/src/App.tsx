@@ -30,6 +30,8 @@ import MypagePage from "./pages/MyPage/MypagePage";
 import MypageInfoCard from "./pages/MyPage/MypageInfoCard";
 import PostsPage from "./pages/MyPage/posts/PostsPage.tsx";
 import Footer from "./components/Footer.tsx";
+import QnaDetailPage from "./pages/community/QnaDetailPage.tsx";
+import QnaWrite from "./pages/community/QnaWrite.tsx";
 
 function App() {
     const location = useLocation();
@@ -109,7 +111,7 @@ function App() {
                     <Route path="/ranking" element={<RankingPage />} />
                     <Route path="/wargame" element={<WargamePage />} />
                     <Route path="/wargame/:id" element={<WargameDetailPage />} />
-                    <Route path="/job" element={<JobPage />} /> {/* 일단 여기 두겠음 */}
+                    <Route path="/job" element={<JobPage />} />
 
                     {/* 💬 커뮤니티 */}
                     <Route path="/community" element={<CommunityPage />} />
@@ -117,6 +119,8 @@ function App() {
                     <Route path="/community/free/write" element={<BoardWrite type="FREE" />} />
                     <Route path="/community/free/:id" element={<FreeBoardDetailPage />} />
                     <Route path="/community/qna" element={<QnaBoardPage />} />
+                    <Route path="/qna/write" element={<QnaWrite />} />
+                    <Route path="/qna/:id" element={<QnaDetailPage />} />
                     <Route path="/community/study" element={<StudyBoardPage />} />
                     <Route path="/community/study/write" element={<BoardWrite type="STUDY" />} />
                     <Route path="/community/study/:id" element={<StudyBoardDetailPage />} />
