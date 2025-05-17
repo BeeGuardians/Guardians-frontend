@@ -1,0 +1,120 @@
+.pageWrapper {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #fafafa;
+}
+
+.mainContent {
+    max-width: 1200px;
+    width: 100%;
+}
+
+/* ✅ 상단 문구 */
+.pageTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+/* ✅ 노란 박스 */
+.noticeBox {
+    background-color: #fff4e6;
+    border: 1px solid #ffc078;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-bottom: 3rem;
+    font-size: 0.95rem;
+    color: #664d03;
+    line-height: 1.6;
+}
+
+/* ✅ 검색창 + 버튼 */
+.searchWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.searchButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.searchButton img {
+    width: 18px;
+    height: 18px;
+}
+
+/* ✅ 필터 행 */
+.filterRow {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+}
+
+.dropdown {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    min-width: 160px;
+}
+
+/* ✅ 카드 목록 */
+.cardGrid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.jobCard {
+    flex: 1;
+    min-width: 240px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
+}
+
+.jobCard:hover {
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+.logoBox {
+    width: 100%;
+    height: 120px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.cardTitle {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    color: #111;
+}
+
+.cardMeta {
+    font-size: 0.9rem;
+    color: #666;
+}
