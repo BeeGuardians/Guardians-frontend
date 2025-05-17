@@ -80,7 +80,7 @@ spec:
                     sh """
                     echo "[INFO] Injecting .env"
                     cat <<EOF > \$WORKSPACE/guardians/.env
-VITE_API_BASE_URL=http://192.168.0.11:30090
+VITE_API_BASE_URL=https://bee-guardians.com
 EOF
                     """
                 }
