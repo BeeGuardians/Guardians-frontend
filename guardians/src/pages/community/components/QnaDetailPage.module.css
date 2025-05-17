@@ -1,0 +1,226 @@
+.pageWrapper {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #fafafa;
+}
+
+.mainContent {
+    width: 100%;
+    max-width: 900px;
+}
+
+.leftColumn {
+    width: 100%;
+}
+
+.headerCard {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.wargameLink {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #ffa94d;
+    text-decoration: none;
+}
+
+.wargameLink:hover {
+    text-decoration: underline;
+}
+
+.titleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.titleInput {
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.plainContent {
+    margin: 2rem 1rem;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+    min-height: 10rem;
+    white-space: pre-line;
+}
+
+.editContentArea {
+    width: 100%;
+    min-height: 200px;
+    font-size: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.backBtn {
+    background: none;
+    border: none;
+    color: #444;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding-left: 0.3rem;
+}
+
+.backBtn:hover {
+    text-decoration: underline;
+}
+
+.deleteBtn {
+    background: none;
+    border: none;
+    color: #d33;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+}
+
+.deleteBtn:hover {
+    text-decoration: underline;
+}
+
+/* 댓글(답변) 영역 */
+.commentSection {
+    margin-top: 3rem;
+}
+
+.commentTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ffa94d;
+    padding-bottom: 0.4rem;
+    color: #333;
+}
+
+.commentForm {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.commentTextarea {
+    width: 100%;
+    height: 90px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+.submitBtn {
+    background-color: #ffa94d;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+.commentList {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.commentItem {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.commentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.username {
+    font-weight: 600;
+}
+
+.createdAt {
+    color: #666;
+}
+
+.commentContent {
+    white-space: pre-wrap;
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+}
+
+.reviewActionBtns {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.reviewActionBtns button {
+    font-size: 0.8rem;
+    background-color: transparent;
+    border: 1px solid #ffa94d;
+    color: #ffa94d;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.reviewActionBtns button:hover {
+    background-color: #fff7ed;
+}

@@ -1,4 +1,5 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ 추가
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
 import viewIcon from "../../assets/view.png";
@@ -18,6 +19,7 @@ type QnaPost = {
 const QnaBoardPage = () => {
     const [posts, setPosts] = useState<QnaPost[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate(); // ✅ 추가
     const postsPerPage = 10;
 
     useEffect(() => {
@@ -96,7 +98,7 @@ const QnaBoardPage = () => {
                                 marginRight: "0.5rem",
                                 width: "10%",
                             }}
-                            onClick={() => alert("글쓰기 클릭!")}
+                            onClick={() => navigate("/qna/write")} // 🔥 여기도 수정 가능
                         >
                             질문하기
                         </button>
@@ -115,7 +117,7 @@ const QnaBoardPage = () => {
                                     cursor: "pointer",
                                     transition: "box-shadow 0.2s",
                                 }}
-                                onClick={() => alert(`Q&A 상세로 이동 ID: ${post.id}`)}
+                                onClick={() => navigate(`/qna/${post.id}`)} // ✅ 요기 변경!
                                 onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.1)")}
                                 onMouseOut={(e) => (e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.04)")}
                             >
@@ -162,8 +164,8 @@ const QnaBoardPage = () => {
                                             borderRadius: "999px",
                                         }}
                                     >
-                                    {post.answerCount && post.answerCount > 0 ? "답변완료" : "미답변"}
-                                </span>
+                                        {post.answerCount && post.answerCount > 0 ? "답변완료" : "미답변"}
+                                    </span>
                                 </div>
                             </div>
                         ))}

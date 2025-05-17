@@ -71,6 +71,7 @@ function Header() {
                             <a href="/wargame" className={styles.link}>워게임</a>
                             <a href="/ranking" className={styles.link}>랭킹</a>
                             <a href="/community" className={styles.link}>커뮤니티</a>
+                            <a href="/job" className={styles.link}>커리어</a>
                             {isLoggedIn && (
                                 <a href="/dashboard" className={styles.link}>대시보드</a>
                             )}
