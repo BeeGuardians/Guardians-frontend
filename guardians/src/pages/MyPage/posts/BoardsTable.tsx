@@ -1,118 +1,143 @@
-import { useState } from "react";
-import styles from "./PostsPage.module.css";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../../../context/AuthContext";
+
+// ✅ 게시글 인터페이스
+interface Board {
+    id: number;
+    title: string;
+    content: string;
+    boardType: string;
+}
+
+// ✅ 영어 → 한글 매핑
+const categoryKorean: Record<string, string> = {
+    FREE: "자유",
+    INQUIRY: "문의",
+    STUDY: "스터디",
+};
+
+// ✅ 한글 → 색상 매핑
+const categoryColors: Record<string, string> = {
+    자유: "#f0b429",
+    스터디: "#d38df2",
+    문의: "#46c5c0",
+};
 
 const BoardsTable = () => {
-    const boardData = [
-        { id: 1, title: "궁금한건 못 참아", category: "자유", date: "2025-05-07", likes: 3, views: 20 },
-        { id: 2, title: "웹프로그래밍 같이 공부해여", category: "스터디", date: "2025-05-05", likes: 5, views: 30 },
-        { id: 3, title: "관리자에게 바란다", category: "문의", date: "2025-04-28", likes: 0, views: 10 },
-        { id: 4, title: "커뮤니티 개선사항", category: "자유", date: "2025-04-20", likes: 1, views: 15 },
-        { id: 5, title: "프론트엔드 모집", category: "스터디", date: "2025-04-18", likes: 2, views: 25 },
-        { id: 6, title: "서버 속도 개선해주세요", category: "문의", date: "2025-04-15", likes: 0, views: 9 },
-    ];
-
+    const { user } = useAuth();
+    const [boardData, setBoardData] = useState<Board[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
-    const totalPages = Math.ceil(boardData.length / itemsPerPage);
 
-    const currentData = boardData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
+    useEffect(() => {
+        if (!user) return;
 
-    const categoryColors: Record<string, string> = {
-        자유: "#f0b429",
-        스터디: "#d38df2",
-        문의: "#46c5c0",
+        const fetchBoards = async () => {
+            try {
+                const res = await axios.get(`/api/users/${user.id}/boards`, {
+                withCredentials: true,
+            });
+
+                const posts = res.data?.result?.data?.posts ?? [];
+                setBoardData(posts);
+        } catch (err) {
+            console.error("게시글 불러오기 실패:", err);
+            setBoardData([]);
+        }
     };
 
-    return (
-        <div style={{ marginBottom: "3rem" }}>
-            {/* ✅ 카드 형태의 테이블 외부 래퍼 */}
-            <div
+    fetchBoards();
+}, [user]);
+
+const totalPages = Math.ceil(boardData.length / itemsPerPage);
+const currentData = boardData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+);
+
+return (
+    <div style={{ marginBottom: "3rem" }}>
+        <div
+            style={{
+                backgroundColor: "white",
+                padding: "1.5rem",
+                borderRadius: "8px",
+                border: "1px solid #ddd",
+            }}
+        >
+            <table
                 style={{
-                    backgroundColor: "white",
-                    padding: "1.5rem",
-                    borderRadius: "8px",
-                    border: "1px solid #ddd",
+                    width: "100%",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 8px",
                 }}
             >
-                <table
-                    style={{
-                        width: "100%",
-                        borderCollapse: "separate",
-                        borderSpacing: "0 8px",
-                    }}
-                >
-                    <thead>
-                    <tr
-                        style={{
-                            textAlign: "left",
-                            fontSize: "0.9rem",
-                            color: "#555",
-                        }}
-                    >
-                        <th style={{ ...thStyle }}>#</th>
-                        <th style={{ ...thStyle }}>제목</th>
-                        <th style={{ ...thStyle }}>분류</th>
-                        <th style={{ ...thStyle }}>작성일</th>
-                        <th style={{ ...thStyle }}>추천수</th>
-                        <th style={{ ...thStyle }}>조회수</th>
+                <thead>
+                <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
+                    <th style={thStyle}>#</th>
+                    <th style={thStyle}>제목</th>
+                    <th style={thStyle}>분류</th>
+                    <th style={thStyle}>작성일</th>
+                    <th style={thStyle}>추천수</th>
+                    <th style={thStyle}>조회수</th>
+                </tr>
+                </thead>
+                <tbody>
+                {currentData.length === 0 ? (
+                    <tr>
+                        <td colSpan={6} style={{ textAlign: "center", padding: "3rem" }}>
+                            작성한 게시글이 없습니다.
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {currentData.map((post) => (
-                        <tr
-                            key={post.id}
-                            style={{
-                                backgroundColor: "white",
-                                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-                                borderRadius: "6px",
-                                transition: "background 0.2s",
-                            }}
-                            onMouseOver={(e) =>
-                                (e.currentTarget.style.backgroundColor = "#fcddb6")
-                            }
-                            onMouseOut={(e) =>
-                                (e.currentTarget.style.backgroundColor = "white")
-                            }
-                        >
-                            <td style={tdStyle}>{post.id}</td>
-                            <td style={tdStyle}>{post.title}</td>
+                ) : (
+                    currentData.map((board, idx) => (
+                        <tr key={board.id} style={{ backgroundColor: "white" }}>
+                            <td style={tdStyle}>{(currentPage - 1) * itemsPerPage + idx + 1}</td> {/* 순번 */}
+                            <td style={tdStyle}>{board.title}</td> {/* 제목 */}
                             <td
                                 style={{
                                     ...tdStyle,
                                     fontWeight: 600,
-                                    color: categoryColors[post.category],
+                                    color: categoryColors[categoryKorean[board.boardType]] || "#555",
                                 }}
                             >
-                                {post.category}
-                            </td>
-                            <td style={tdStyle}>{post.date}</td>
-                            <td style={tdStyle}>{post.likes}</td>
-                            <td style={tdStyle}>{post.views}</td>
+                                {categoryKorean[board.boardType] || board.boardType}
+                            </td> {/* 분류 */}
+                            <td style={tdStyle}>-</td> {/* 작성일 (현재 DTO에 없음) */}
+                            <td style={tdStyle}>-</td> {/* 추천수 (현재 DTO에 없음) */}
+                            <td style={tdStyle}>-</td> {/* 조회수 (현재 DTO에 없음) */}
                         </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* ✅ 페이지네이션 버튼 */}
-            <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
-                {Array.from({ length: totalPages }, (_, idx) => (
-                    <button
-                        key={idx + 1}
-                        className={`${styles.paginationButton} ${
-                            currentPage === idx + 1 ? styles.activePage : ""
-                        }`}
-                        onClick={() => setCurrentPage(idx + 1)}
-                    >
-                        {idx + 1}
-                    </button>
-                ))}
-            </div>
+                    ))
+                )}
+                </tbody>
+            </table>
         </div>
-    );
+
+        <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
+            {Array.from({ length: totalPages }, (_, idx) => (
+                <button
+                    key={idx + 1}
+                    style={{
+                        margin: "0 0.25rem",
+                        padding: "0.4rem 0.75rem",
+                        backgroundColor:
+                            currentPage === idx + 1 ? "#fcb24b" : "#e0e0e0",
+                        color: currentPage === idx + 1 ? "white" : "#333",
+                        border: "none",
+                        borderRadius: "4px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        outline: "none",
+                    }}
+                    onClick={() => setCurrentPage(idx + 1)}
+                >
+                    {idx + 1}
+                </button>
+            ))}
+        </div>
+    </div>
+);
 };
 
 const thStyle = {
