@@ -83,10 +83,12 @@ const JobPage = () => {
                             style={{ cursor: "pointer" }}
                         >
                             <JobCard
+                                id={job.id}
                                 region={job.region}
                                 title={job.title}
                                 company={job.company}
                             />
+
                         </div>
                     ))}
                 </div>
