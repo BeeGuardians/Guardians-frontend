@@ -390,3 +390,9 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
+.score-badge {
+    background-color: #ffe8cc;         /* 연한 주황빛 배경 */
+    border: 1px solid #ffa94d;         /* 기존 테두리 색 계열 유지 */
+    color: #995c00;                    /* 진한 브라운 텍스트 */
+    font-weight: 600;
+}

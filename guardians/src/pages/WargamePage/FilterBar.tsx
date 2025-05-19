@@ -42,8 +42,11 @@ function FilterBar() {
         setSelectedStatus([]);
     };
 
-    const removeOption = (setter: any, value: string) => {
-        setter((prev: OptionType[]) => prev.filter(opt => opt.value !== value));
+    const removeOption = (
+        setter: React.Dispatch<React.SetStateAction<OptionType[]>>,
+        value: string
+    ) => {
+        setter((prev) => prev.filter((opt) => opt.value !== value));
     };
 
     const customComponents = (placeholderText: string) => ({
