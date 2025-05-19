@@ -25,7 +25,7 @@ function QACard({ question, isAnswered }: QACardProps) {
     return (
         <div
             className={styles.card}
-            onClick={() => navigate(`/qna/questions/${question.id}`)}
+            onClick={() => navigate(`/community/qna/${question.id}`)}
             onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.1)")}
             onMouseOut={(e) => (e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.04)")}
         >

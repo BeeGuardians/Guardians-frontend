@@ -121,8 +121,8 @@ function App() {
                     <Route path="/community/free/:id" element={<FreeBoardDetailPage />} />
                     <Route path="/community/free/edit/:id" element={<BoardEdit />} />
                     <Route path="/community/qna" element={<QnaBoardPage />} />
-                    <Route path="/qna/write" element={<QnaWrite />} />
-                    <Route path="/qna/:id" element={<QnaDetailPage />} />
+                    <Route path="/community/qna/write" element={<QnaWrite />} />
+                    <Route path="/community/qna/:id" element={<QnaDetailPage />} />
                     <Route path="/community/study" element={<StudyBoardPage />} />
                     <Route path="/community/study/write" element={<BoardWrite type="STUDY" />} />
                     <Route path="/community/study/:id" element={<StudyBoardDetailPage />} />

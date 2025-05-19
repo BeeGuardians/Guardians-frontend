@@ -1,4 +1,4 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import styles from "./WargameDetailPage.module.css";
@@ -16,6 +16,7 @@ type Wargame = {
     category: number;
     difficulty: string;
     createdAt: string;
+    score: number;
     updatedAt: string;
     solved: boolean;
     bookmarked: boolean;
@@ -60,9 +61,10 @@ function WargameDetailPage() {
     const [podUrl, setPodUrl] = useState<string | null>(null);
     const [isPodRunning, setIsPodRunning] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalResult, setModalResult] = useState<null | { correct: boolean; message: string }>(null);
     const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isStartingPod, setIsStartingPod] = useState(false);
+    const [isStoppingPod, setIsStoppingPod] = useState(false);
     const [newReview, setNewReview] = useState("");
     const [currentUserId, setCurrentUserId] = useState<number | null>(null);
     const [editingReviewId, setEditingReviewId] = useState<number | null>(null);
@@ -70,7 +72,7 @@ function WargameDetailPage() {
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
     const [confirmEditDone, setConfirmEditDone] = useState(false);
-
+    const [modalResult, setModalResult] = useState<null | { correct: boolean; message: string; accessUrl?: string }>(null);
 
     useEffect(() => {
         checkLoginStatus();
@@ -221,30 +223,38 @@ function WargameDetailPage() {
     // }
 
     const startWargamePod = async () => {
+        setIsStartingPod(true);
         try {
             const res = await axios.post(`${API_BASE}/api/wargames/${id}/start`);
-            const {url} = res.data.result.data;
-            setPodUrl(url);
-            setIsPodRunning(true);
+            setTimeout(() => {
+                const { url } = res.data.result.data;
+                setPodUrl(url);
+                setIsPodRunning(true);
+                setIsStartingPod(false);
+            }, 3000);
         } catch {
             alert("파드 생성 실패!");
+            setIsStartingPod(false);
         }
     };
 
     const stopWargamePod = async () => {
+        setIsStoppingPod(true);
         try {
             await axios.delete(`${API_BASE}/api/wargames/${id}/stop`);
             setPodUrl(null);
             setIsPodRunning(false);
         } catch {
             alert("파드 삭제 실패!");
+        } finally {
+            setIsStoppingPod(false);
         }
     };
 
     const submitFlag = () => {
         axios.post(`${API_BASE}/api/wargames/${id}/submit`, {flag})
             .then((res) => {
-                setModalResult(res.data.result.data);
+                setModalResult(res.data.result.data); // accessUrl 포함됨
                 setIsModalOpen(true);
                 fetchWargame();
             })
@@ -271,6 +281,9 @@ function WargameDetailPage() {
             window.location.reload();
         }
     };
+
+    const navigate = useNavigate();
+
 
     if (!wargame) return <p style={{padding: "3rem"}}>로딩 중...</p>;
 
@@ -303,6 +316,9 @@ function WargameDetailPage() {
                             <div className={styles["badge-row"]}>
                                 <span className={styles["info-badge"]}>📁 {categoryMap[wargame.category]}</span>
                                 <span className={styles["info-badge"]}>🔥 {wargame.difficulty}</span>
+                                <span className={`${styles["info-badge"]} ${styles["score-badge"]}`}>
+                                  💯 {wargame.score}점
+                                </span>
                             </div>
                             <div className={styles.meta}>
                                 <span>🕒 {wargame.createdAt.split("T")[0]}</span>
@@ -326,12 +342,21 @@ function WargameDetailPage() {
                     <div className={styles["pod-card"]}>
                         <div className={styles["submit-box"]}>
                             {isPodRunning ? (
-                                <button onClick={stopWargamePod} className={styles["submit-btn"]}>워게임 종료</button>
+                                <button onClick={stopWargamePod} className={styles["submit-btn"]} disabled={isStoppingPod}>
+                                    {isStoppingPod ? "인스턴스 종료 중..." : "워게임 종료"}
+                                </button>
+                            ) : isStartingPod ? (
+                                <button className={styles["submit-btn"]} disabled>인스턴스 시작 중...</button>
                             ) : (
                                 <button onClick={startWargamePod} className={styles["submit-btn"]}>워게임 시작</button>
                             )}
                         </div>
-                        {podUrl && (
+                        {(isStartingPod || isStoppingPod) && (
+                            <p className={styles["pod-url"]} style={{ color: '#888' }}>
+                                최대 60초 정도 소요될 수 있어요.
+                            </p>
+                        )}
+                        {podUrl && !isStartingPod && (
                             <p className={styles["pod-url"]}>
                                 접속 URL: <a href={podUrl} target="_blank" rel="noreferrer">{podUrl}</a>
                             </p>
@@ -365,6 +390,13 @@ function WargameDetailPage() {
                                     </p>
                                 )}
                                 <p style={{marginTop: "0.5rem", color: "#555"}}>{modalResult.message}</p>
+
+                                {modalResult.accessUrl && modalResult.correct && (
+                                    <div style={{marginTop: "1rem", fontSize: "0.9rem", wordBreak: "break-all"}}>
+                                        접속 URL: <a href={modalResult.accessUrl} target="_blank" rel="noreferrer">{modalResult.accessUrl}</a>
+                                    </div>
+                                )}
+
                                 <button onClick={handleCloseModal} className={styles["submit-btn"]}>닫기</button>
                             </div>
                         </div>
@@ -376,7 +408,8 @@ function WargameDetailPage() {
                         {isLoggedIn && (
                             <button
                                 className={styles["submit-btn"]}
-                                style={{marginBottom: '1rem', marginLeft: 'auto', display: 'block'}}
+                                style={{ marginBottom: '1rem', marginLeft: 'auto', display: 'block' }}
+                                onClick={() => navigate("/community/qna/write")} // 클릭 시 이동 추가
                             >
                                 질문하기
                             </button>
@@ -413,10 +446,10 @@ function WargameDetailPage() {
                                     onChange={(e) => setNewReview(e.target.value)}
                                     placeholder="리뷰를 작성해보세요!"
                                 />
-                                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                                <div style={{display: "flex", justifyContent: "flex-end"}}>
                                     <button
                                         className={styles["submit-btn"]}
-                                        style={{ width: "80px" }}
+                                        style={{width: "80px"}}
                                         onClick={() => setIsReviewModalOpen(true)}
                                     >
                                         등록
@@ -487,13 +520,16 @@ function WargameDetailPage() {
                         className={styles["modal-box"]}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <p style={{ fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem" }}>리뷰를 등록할까요?</p>
-                        <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
+                        <p style={{fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem"}}>리뷰를 등록할까요?</p>
+                        <div style={{display: "flex", justifyContent: "center", gap: "0.5rem"}}>
                             <button className={styles["submit-btn"]} onClick={() => {
                                 handleCreateReview();
                                 setIsReviewModalOpen(false);
-                            }}>확인</button>
-                            <button className={styles["submit-btn"]} style={{ backgroundColor: "#ddd", color: "#333" }} onClick={() => setIsReviewModalOpen(false)}>취소</button>
+                            }}>확인
+                            </button>
+                            <button className={styles["submit-btn"]} style={{backgroundColor: "#ddd", color: "#333"}}
+                                    onClick={() => setIsReviewModalOpen(false)}>취소
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -501,8 +537,8 @@ function WargameDetailPage() {
             {confirmDeleteId !== null && (
                 <div className={styles["modal-overlay"]} onClick={() => setConfirmDeleteId(null)}>
                     <div className={styles["modal-box"]} onClick={(e) => e.stopPropagation()}>
-                        <p style={{ fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem" }}>리뷰를 삭제할까요?</p>
-                        <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
+                        <p style={{fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem"}}>리뷰를 삭제할까요?</p>
+                        <div style={{display: "flex", justifyContent: "center", gap: "0.5rem"}}>
                             <button
                                 className={styles["submit-btn"]}
                                 onClick={() => {
@@ -514,7 +550,7 @@ function WargameDetailPage() {
                             </button>
                             <button
                                 className={styles["submit-btn"]}
-                                style={{ backgroundColor: "#ddd", color: "#333" }}
+                                style={{backgroundColor: "#ddd", color: "#333"}}
                                 onClick={() => setConfirmDeleteId(null)}
                             >
                                 취소
@@ -526,8 +562,8 @@ function WargameDetailPage() {
             {confirmEditDone && (
                 <div className={styles["modal-overlay"]} onClick={() => setConfirmEditDone(false)}>
                     <div className={styles["modal-box"]} onClick={(e) => e.stopPropagation()}>
-                        <p style={{ fontWeight: 600, fontSize: "1.1rem" }}>리뷰가 수정되었습니다!</p>
-                        <div style={{ display: "flex", justifyContent: "center", marginTop: "1.5rem" }}>
+                        <p style={{fontWeight: 600, fontSize: "1.1rem"}}>리뷰가 수정되었습니다!</p>
+                        <div style={{display: "flex", justifyContent: "center", marginTop: "1.5rem"}}>
                             <button className={styles["submit-btn"]} onClick={() => setConfirmEditDone(false)}>
                                 닫기
                             </button>

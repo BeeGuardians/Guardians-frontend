@@ -11,6 +11,14 @@ type WargameRow = {
     level: string;
     solved: boolean;
 };
+// 이 타입 추가
+type RawWargameItem = {
+    id: number;
+    title: string;
+    category: number;
+    difficulty: string;
+    solved: boolean;
+};
 
 function WargameTable() {
     const [data, setData] = useState<WargameRow[]>([]);
@@ -32,7 +40,7 @@ function WargameTable() {
                     5: "시스템",
                 };
 
-                const transformed: WargameRow[] = rawData.map((item: any) => ({
+                const transformed: WargameRow[] = rawData.map((item: RawWargameItem) => ({
                     id: item.id,
                     title: item.title,
                     category: categoryMap[item.category] || "기타",
