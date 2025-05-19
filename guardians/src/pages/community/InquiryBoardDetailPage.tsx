@@ -28,6 +28,7 @@ const InquiryBoardDetailPage = () => {
     const navigate = useNavigate();
     const [board, setBoard] = useState<Board | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
+    const [isLiked, setIsLiked] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [sessionUserId, setSessionUserId] = useState<string | null>(null);
     const [newComment, setNewComment] = useState('');
@@ -66,6 +67,19 @@ const InquiryBoardDetailPage = () => {
             });
     };
 
+    const toggleLike = () => {
+        if (!id) return;
+        axios.post(`/api/boards/${id}/like`, {}, {withCredentials: true})
+            .then(res => {
+                const liked = res.data.result.data.liked;
+                setIsLiked(liked);
+                setBoard(prev => prev ? {
+                    ...prev,
+                    likeCount: prev.likeCount + (liked ? 1 : -1)
+                } : prev);
+            });
+    };
+
     const handleDelete = () => {
         if (!window.confirm('정말 삭제하시겠습니까?')) return;
         axios.delete(`/api/boards/${board?.boardId}`, { withCredentials: true })
@@ -73,6 +87,11 @@ const InquiryBoardDetailPage = () => {
                 alert('게시글이 삭제되었습니다.');
                 navigate('/community/inquiry');
             });
+    };
+
+    const handleEdit = () => {
+        if (!board) return;
+        navigate(`/community/inquiry/edit/${board.boardId}`);
     };
 
     const handleCommentSubmit = () => {
@@ -132,14 +151,24 @@ const InquiryBoardDetailPage = () => {
                 <div className={styles.topBar}>
                     <button className={styles.backBtn} onClick={() => navigate(-1)}>← 뒤로가기</button>
                     {isLoggedIn && String(sessionUserId) === String(board.userId) && (
-                        <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
-                    )}
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
+                            <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                        </div>                    )}
                 </div>
 
                 <div className={styles.leftColumn}>
                     <div className={styles["header-card"]}>
                         <div className={styles["title-row"]}>
                             <h1 className={styles.title}>{board.title}</h1>
+                            <button
+                                onClick={toggleLike}
+                                disabled={!isLoggedIn}
+                                className={`${styles["action-btn"]} ${isLiked ? styles.active : ""}`}
+                                style={{cursor: isLoggedIn ? 'pointer' : 'not-allowed'}}
+                            >
+                                {isLiked ? "❤️" : "🤍"} {board.likeCount}
+                            </button>
                         </div>
                         <div className={styles.meta}>
                             <span>✍ 작성자: {board.username}</span>

@@ -47,7 +47,11 @@ const FreeBoardDetailPage = () => {
 
     const fetchBoard = () => {
         axios.get(`/api/boards/${id}`, {withCredentials: true})
-            .then(res => setBoard(res.data.result.data));
+            .then(res => {
+                const data = res.data.result.data;
+                setBoard(data);
+                setIsLiked(data.liked);
+            });
     };
 
     const fetchComments = () => {
@@ -88,6 +92,11 @@ const FreeBoardDetailPage = () => {
                 alert('게시글이 삭제되었습니다.');
                 navigate('/community/free');
             });
+    };
+
+    const handleEdit = () => {
+        if (!board) return;
+        navigate(`/community/free/edit/${board.boardId}`);
     };
 
     const handleCommentSubmit = () => {
@@ -147,8 +156,10 @@ const FreeBoardDetailPage = () => {
                 <div className={styles.topBar}>
                     <button className={styles.backBtn} onClick={() => navigate(-1)}>← 뒤로가기</button>
                     {isLoggedIn && String(sessionUserId) === String(board.userId) && (
-                        <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
-                    )}
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
+                            <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                        </div>         )}
                 </div>
 
                 <div className={styles.leftColumn}>
@@ -161,7 +172,7 @@ const FreeBoardDetailPage = () => {
                                 className={`${styles["action-btn"]} ${isLiked ? styles.active : ""}`}
                                 style={{cursor: isLoggedIn ? 'pointer' : 'not-allowed'}}
                             >
-                                {isLiked ? "❤️ 좋아요 취소" : "🤍 좋아요"}
+                                {isLiked ? "❤️" : "🤍"} {board.likeCount}
                             </button>
                         </div>
                         <div className={styles.meta}>
