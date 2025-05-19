@@ -32,6 +32,7 @@ import PostsPage from "./pages/MyPage/posts/PostsPage.tsx";
 import Footer from "./components/Footer.tsx";
 import QnaDetailPage from "./pages/community/QnaDetailPage.tsx";
 import QnaWrite from "./pages/community/QnaWrite.tsx";
+import BoardEdit from "./pages/community/BoardEdit.tsx";
 
 function App() {
     const location = useLocation();
@@ -118,16 +119,20 @@ function App() {
                     <Route path="/community/free" element={<FreeBoardPage />} />
                     <Route path="/community/free/write" element={<BoardWrite type="FREE" />} />
                     <Route path="/community/free/:id" element={<FreeBoardDetailPage />} />
+                    <Route path="/community/free/edit/:id" element={<BoardEdit />} />
                     <Route path="/community/qna" element={<QnaBoardPage />} />
                     <Route path="/community/qna/write" element={<QnaWrite />} />
                     <Route path="/community/qna/:id" element={<QnaDetailPage />} />
                     <Route path="/community/study" element={<StudyBoardPage />} />
                     <Route path="/community/study/write" element={<BoardWrite type="STUDY" />} />
                     <Route path="/community/study/:id" element={<StudyBoardDetailPage />} />
+                    <Route path="/community/study/edit/:id" element={<BoardEdit />} />
                     <Route path="/community/inquiry" element={<InquiryBoardPage />} />
                     <Route path="/community/inquiry/write" element={<BoardWrite type="INQUIRY" />} />
                     <Route path="/community/inquiry/:id" element={<InquiryBoardDetailPage />} />
+                    <Route path="/community/inquiry/edit/:id" element={<BoardEdit />} />
                     <Route path="/job/:id" element={<JobDetailPage />} />
+
                 </Routes>
                 {!isAuthPage && <Footer />}
             </div>
