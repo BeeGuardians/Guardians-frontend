@@ -33,7 +33,7 @@ const JobFilterBar = () => {
     });
 
     return (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginBottom: "3rem" }}>
             <div style={{ minWidth: "180px" }}>
                 <Select
                     options={typeOptions}

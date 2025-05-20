@@ -1,3 +1,5 @@
+import SolvedLineChart from "./SolvedLineChart";
+
 const DashboardPage = () => {
     return (
         <div style={{ display: "flex", justifyContent: "center", padding: "2rem 1rem" }}>
@@ -114,29 +116,9 @@ const DashboardPage = () => {
                     </div>
 
                     {/* 📈 주차별 문제 풀이 추이 */}
-                    <div style={{ flex: 1, minWidth: "300px" }}>
-                        <h4 style={{
-                            textAlign: "center",
-                            fontSize: "1.1rem",
-                            marginBottom: "1.5rem",
-                        }}>
-                            &lt; 5월에 푼 문제 수 &gt;
-                        </h4>
-                        <div
-                            style={{
-                                height: "40vh",
-                                backgroundColor: "#fafafa",
-                                border: "1px dashed #ccc",
-                                borderRadius: "0.75rem",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: "#999",
-                                fontSize: "1rem",
-                            }}
-                        >
-                            [라인 그래프 영역]
-                        </div>
+                    <div style={{ flex: 1, minWidth: "300px", height: "40vh" }}>
+                        {/* ✅ 제목 제거 */}
+                        <SolvedLineChart />
                     </div>
                 </div>
             </div>
