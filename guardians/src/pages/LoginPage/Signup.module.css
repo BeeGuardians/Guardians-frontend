@@ -5,7 +5,9 @@ body {
 .container {
     display: flex;
     height: 100vh;
-    width: 100vw;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(135deg, #FCD7A2, #FF944D); /* ✨ 부드러운 주황 계열 그라데이션 */
 }
 
 /* 왼쪽 영역 (이미지 + 텍스트) */
@@ -200,4 +202,9 @@ body {
 
 .placeholder {
     /*visibility: hidden;*/
+}
+
+.left,
+.right {
+    background: var(--main-gradient); /* ✨ 완전 일치하게 */
 }

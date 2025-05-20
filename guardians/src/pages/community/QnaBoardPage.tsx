@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ 추가
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import SearchBar from "./components/SearchBar";
 import viewIcon from "../../assets/view.png";
@@ -98,7 +98,7 @@ const QnaBoardPage = () => {
                                 marginRight: "0.5rem",
                                 width: "10%",
                             }}
-                            onClick={() => navigate("/qna/write")} // 🔥 여기도 수정 가능
+                            onClick={() => navigate("/community/qna/write")}
                         >
                             질문하기
                         </button>
@@ -117,7 +117,7 @@ const QnaBoardPage = () => {
                                     cursor: "pointer",
                                     transition: "box-shadow 0.2s",
                                 }}
-                                onClick={() => navigate(`/qna/${post.id}`)} // ✅ 요기 변경!
+                                onClick={() => navigate(`/community/qna/${post.id}`)}
                                 onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.1)")}
                                 onMouseOut={(e) => (e.currentTarget.style.boxShadow = "0 4px 10px rgba(0, 0, 0, 0.04)")}
                             >

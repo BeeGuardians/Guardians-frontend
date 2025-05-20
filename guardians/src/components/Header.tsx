@@ -2,10 +2,14 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import styles from "./Header.module.css";
+import { useLocation } from "react-router-dom";
+
 
 function Header() {
     const { user, logout } = useAuth();
     const isLoggedIn = !!user;
+    const location = useLocation();
+    const isActive = (path: string) => location.pathname.startsWith(path);
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -68,12 +72,12 @@ function Header() {
                         </a>
 
                         <nav className={styles.nav}>
-                            <a href="/wargame" className={styles.link}>워게임</a>
-                            <a href="/ranking" className={styles.link}>랭킹</a>
-                            <a href="/community" className={styles.link}>커뮤니티</a>
-                            <a href="/job" className={styles.link}>커리어</a>
+                            <a href="/wargame" className={`${styles.link} ${isActive("/wargame") ? styles.active : ""}`}>워게임</a>
+                            <a href="/ranking" className={`${styles.link} ${isActive("/ranking") ? styles.active : ""}`}>랭킹</a>
+                            <a href="/community" className={`${styles.link} ${isActive("/community") ? styles.active : ""}`}>커뮤니티</a>
+                            <a href="/job" className={`${styles.link} ${isActive("/job") ? styles.active : ""}`}>커리어</a>
                             {isLoggedIn && (
-                                <a href="/dashboard" className={styles.link}>대시보드</a>
+                                <a href="/dashboard" className={`${styles.link} ${isActive("/dashboard") ? styles.active : ""}`}>대시보드</a>
                             )}
                         </nav>
                     </div>

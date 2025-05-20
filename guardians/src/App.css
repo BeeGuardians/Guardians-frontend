@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  --main-gradient: linear-gradient(to right, #FCD7A2, #FF7A1A);
 }
 
 .logo {

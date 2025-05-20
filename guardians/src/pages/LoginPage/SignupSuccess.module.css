@@ -1,12 +1,24 @@
 .fullPage {
     width: 100vw;
     height: 100vh;
-    background: #ffaf59;
+    background: linear-gradient(135deg, #FCD7A2, #FF944D);
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Pretendard', sans-serif;
 }
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 50;
+    background: linear-gradient(135deg, #FCD7A2, #FF944D);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 
 .card {
     background-color: #fff;
@@ -50,4 +62,8 @@
 
 .loginButton:hover {
     background-color: #FFA94D;
+}
+.left,
+.right {
+    background: var(--main-gradient); /* ✅ 헤더와 통일 */
 }

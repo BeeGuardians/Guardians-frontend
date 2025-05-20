@@ -5,7 +5,8 @@
     right: 0;
     width: 100%;
     z-index: 50;
-    background-color: #ffaf59;;
+    background: var(--main-gradient); /* 공통 그라데이션 사용 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .container {

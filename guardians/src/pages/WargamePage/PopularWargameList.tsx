@@ -1,27 +1,32 @@
-import {Link} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 function PopularWargameList() {
-    const popularWargames = [
-        { id: 1, title: "SQL Injection 초급" },
-        { id: 2, title: "XSS Basic" },
-        { id: 3, title: "Forensic 입문" },
-        { id: 4, title: "Reverse Engineering 101" },
-        { id: 5, title: "System Exploit 초급" },
-        { id: 6, title: "Crypto Baby" },
-        { id: 7, title: "Webhacking 중급" },
-        { id: 8, title: "Forensic 메모리덤프" },
-        { id: 9, title: "XSS Stored" },
-        { id: 10, title: "SQL Injection Blind" },
-    ];
+    const [popularWargames, setPopularWargames] = useState<
+        { wargameId: number; title: string; solveCount: number }[]
+    >([]);
 
     const rankColors = ["#FFD700", "#C0C0C0", "#CD7F32"]; // 금, 은, 동
 
+    useEffect(() => {
+        axios
+            .get("/api/wargames/hot")
+            .then((res) => {
+                setPopularWargames(res.data.result.data || []);
+            })
+            .catch((err) => {
+                console.error("🔥 핫 워게임 로딩 실패:", err);
+            });
+    }, []);
+
     return (
-        <div style={{
-            width: "340px",
-            backgroundColor: "transparent",
-            // padding: "1rem 0",
-        }}>
+        <div
+            style={{
+                width: "340px",
+                backgroundColor: "transparent",
+            }}
+        >
             <h3
                 style={{
                     fontSize: "1.2rem",
@@ -39,7 +44,7 @@ function PopularWargameList() {
             <ul style={{ padding: 0, margin: 0 }}>
                 {popularWargames.map((wargame, index) => (
                     <li
-                        key={wargame.id}
+                        key={wargame.wargameId}
                         style={{
                             display: "flex",
                             alignItems: "center",
@@ -59,25 +64,25 @@ function PopularWargameList() {
                             (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.6)")
                         }
                     >
-        <span
-            style={{
-                display: "inline-block",
-                width: "28px",
-                height: "28px",
-                borderRadius: "50%",
-                backgroundColor: rankColors[index] || "#FFA94D",
-                color: "#fff",
-                fontWeight: "bold",
-                textAlign: "center",
-                lineHeight: "28px",
-                marginRight: "0.8rem",
-                fontSize: "0.9rem",
-            }}
-        >
-          {index + 1}
-        </span>
+                        <span
+                            style={{
+                                display: "inline-block",
+                                width: "28px",
+                                height: "28px",
+                                borderRadius: "50%",
+                                backgroundColor: rankColors[index] || "#FFA94D",
+                                color: "#fff",
+                                fontWeight: "bold",
+                                textAlign: "center",
+                                lineHeight: "28px",
+                                marginRight: "0.8rem",
+                                fontSize: "0.9rem",
+                            }}
+                        >
+                            {index + 1}
+                        </span>
                         <Link
-                            to={`/wargame/${wargame.id}`}
+                            to={`/wargame/${wargame.wargameId}`}
                             style={{
                                 textDecoration: "none",
                                 color: "#333",
