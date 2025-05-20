@@ -77,8 +77,8 @@ const SolvedLineChart = () => {
         axios
             .get(`${API_BASE}/api/users/${userId}/solved`, { withCredentials: true })
             .then((res) => {
-                const list = res.data.result.data.solvedList;
-                console.log("📦 받아온 solvedList:", list.map(l => l.solvedAt));
+                const list: SolvedInfo[] = res.data.result.data.solvedList;
+                console.log("📦 받아온 solvedList:", list.map((l) => l.solvedAt));
                 setSolvedList(list);
             })
             .catch((err) => {
