@@ -36,18 +36,18 @@ const BoardsTable = () => {
         const fetchBoards = async () => {
             try {
                 const res = await axios.get(`/api/users/${user.id}/boards`, {
-                withCredentials: true,
-            });
+                    withCredentials: true,
+                });
 
-                const posts = res.data?.result?.data?.posts ?? [];
+                const posts = res.data?.result?.data?.boards ?? []; // ✅ 여기 고침
                 setBoardData(posts);
-        } catch (err) {
-            console.error("게시글 불러오기 실패:", err);
-            setBoardData([]);
-        }
-    };
+            } catch (err) {
+                console.error("게시글 불러오기 실패:", err);
+                setBoardData([]);
+            }
+        };
 
-    fetchBoards();
+        fetchBoards();
 }, [user]);
 
 const totalPages = Math.ceil(boardData.length / itemsPerPage);
