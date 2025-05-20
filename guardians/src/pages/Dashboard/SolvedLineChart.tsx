@@ -24,11 +24,17 @@ interface SolvedInfo {
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 const parseLocalDate = (dateStr: string): Date => {
+    if (!dateStr || !dateStr.includes("T")) {
+        console.warn("Invalid date string:", dateStr);
+        return new Date();
+    }
+
     const [datePart, timePart] = dateStr.split("T");
     const [year, month, day] = datePart.split("-").map(Number);
     const [hour, minute, second] = timePart.split(":").map(Number);
     return new Date(year, month - 1, day, hour, minute, second);
 };
+
 
 const getWeekOfMonth = (date: Date) => {
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
