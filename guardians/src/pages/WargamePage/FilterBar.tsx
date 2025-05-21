@@ -149,7 +149,7 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                             />
                         </div>
                         <span style={{ marginLeft: "0.5rem", fontSize: "0.9rem", color: "#333" }}>
-                            북마크만 보기
+                            나의 북마크
                         </span>
                     </label>
                 </div>
@@ -193,7 +193,7 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                     </div>
                 ))}
 
-                {(selectedCategories.length + selectedLevels.length + selectedStatus.length > 0 || bookmarkedOnly) && (
+                {(selectedCategories.length + selectedLevels.length + selectedStatus.length > 0) && (
                     <button
                         onClick={resetFilters}
                         style={{
