@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './components/FreeBoardDetailPage.module.css';
+import Modal from "./components/Modal.tsx";
 
 interface Board {
     boardId: number;
@@ -32,9 +33,14 @@ const StudyBoardDetailPage = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [sessionUserId, setSessionUserId] = useState<string | null>(null);
     const [newComment, setNewComment] = useState('');
+
     const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
     const [editingCommentContent, setEditingCommentContent] = useState('');
     const [confirmDeleteCommentId, setConfirmDeleteCommentId] = useState<number | null>(null);
+
+    const [confirmDeletePost, setConfirmDeletePost] = useState(false);
+    const [showInfoModal, setShowInfoModal] = useState(false);
+    const [infoMessage, setInfoMessage] = useState('');
 
     useEffect(() => {
         if (!id) return;
@@ -80,12 +86,17 @@ const StudyBoardDetailPage = () => {
     };
 
     const handleDelete = () => {
-        if (!window.confirm('정말 삭제하시겠습니까?')) return;
-        axios.delete(`/api/boards/${board?.boardId}`, { withCredentials: true })
-            .then(() => {
-                alert('게시글이 삭제되었습니다.');
-                navigate('/community/study');
-            });
+        setConfirmDeletePost(true);
+    };
+
+
+
+    const confirmDeletePostAction = () => {
+        if (!board) return;
+        axios.delete(`/api/boards/${board.boardId}`, { withCredentials: true }).then(() => {
+            setInfoMessage('게시글이 삭제되었습니다.');
+            setShowInfoModal(true);
+        });
     };
 
     const handleEdit = () => {
@@ -126,7 +137,8 @@ const StudyBoardDetailPage = () => {
             setEditingCommentContent('');
             fetchComments();
         } catch {
-            alert('댓글 수정 실패');
+            setInfoMessage('댓글 수정 실패');
+            setShowInfoModal(true);
         }
     };
 
@@ -136,7 +148,15 @@ const StudyBoardDetailPage = () => {
             setConfirmDeleteCommentId(null);
             fetchComments();
         } catch {
-            alert('댓글 삭제 실패');
+            setInfoMessage('댓글 삭제 실패');
+            setShowInfoModal(true);
+        }
+    };
+
+    const handleInfoModalClose = () => {
+        setShowInfoModal(false);
+        if (infoMessage === '게시글이 삭제되었습니다.') {
+            navigate('/community/study');
         }
     };
 
@@ -247,28 +267,30 @@ const StudyBoardDetailPage = () => {
                 </div>
             </div>
 
-            {confirmDeleteCommentId !== null && (
-                <div className={styles["modal-overlay"]} onClick={() => setConfirmDeleteCommentId(null)}>
-                    <div className={styles["modal-box"]} onClick={(e) => e.stopPropagation()}>
-                        <p style={{ fontWeight: 600, fontSize: "1.1rem", marginBottom: "3rem" }}>댓글을 삭제할까요?</p>
-                        <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
-                            <button
-                                className={styles["submit-btn"]}
-                                onClick={() => handleDeleteComment(confirmDeleteCommentId)}
-                            >
-                                확인
-                            </button>
-                            <button
-                                className={styles["submit-btn"]}
-                                style={{ backgroundColor: "#ddd", color: "#333" }}
-                                onClick={() => setConfirmDeleteCommentId(null)}
-                            >
-                                취소
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* ✅ 댓글 삭제 모달 */}
+            <Modal
+                isOpen={confirmDeleteCommentId !== null}
+                onClose={() => setConfirmDeleteCommentId(null)}
+                onConfirm={() => handleDeleteComment(confirmDeleteCommentId!)}
+                message="댓글을 삭제할까요?"
+            />
+
+            {/* ✅ 게시글 삭제 모달 */}
+            <Modal
+                isOpen={confirmDeletePost}
+                onClose={() => setConfirmDeletePost(false)}
+                onConfirm={confirmDeletePostAction}
+                message="정말 삭제하시겠습니까?"
+            />
+
+            {/* ✅ 알림 모달 */}
+            <Modal
+                isOpen={showInfoModal}
+                onClose={handleInfoModalClose}
+                onConfirm={handleInfoModalClose}
+                message={infoMessage}
+                showCancelButton={false}
+            />
         </div>
     );
 };

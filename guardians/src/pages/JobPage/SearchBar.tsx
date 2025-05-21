@@ -11,7 +11,7 @@ const SearchBar = ({ placeholder }: Props) => {
         <div
             style={{
                 position: "relative",
-                width: "40%", //검색창 길이
+                width: "42%", //검색창 길이
                 marginBottom: "1.5rem",
             }}
         >

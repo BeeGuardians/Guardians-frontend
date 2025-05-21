@@ -60,7 +60,7 @@ function WargameDetailPage() {
     const [reviewList, setReviewList] = useState<Review[]>([]);
     const [podUrl, setPodUrl] = useState<string | null>(null);
     const [isPodRunning, setIsPodRunning] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false)
     const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isStartingPod, setIsStartingPod] = useState(false);
@@ -73,10 +73,23 @@ function WargameDetailPage() {
     const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
     const [confirmEditDone, setConfirmEditDone] = useState(false);
     const [modalResult, setModalResult] = useState<null | { correct: boolean; message: string; accessUrl?: string }>(null);
+    const [podStatus, setPodStatus] = useState<string>("");
 
     useEffect(() => {
         checkLoginStatus();
     }, []);
+
+    useEffect(() => {
+        if (id) {
+            fetchWargame();
+            fetchQnA();
+            fetchUserStatus();
+            fetchReviews();
+            fetchPodStatus();
+        }
+    }, [id]);
+
+
 
     const checkLoginStatus = async () => {
         try {
@@ -162,23 +175,36 @@ function WargameDetailPage() {
     };
 
     const fetchUserStatus = () => {
-        // 더미 데이터로 대체
-        const dummyUsers: UserStatus[] = [
-            {
-                username: "flagHunter",
-                startedAt: "2025-05-13T08:40:00",
-                isFirstSolver: true
-            },
-            {
-                username: "debugMaster",
-                startedAt: "2025-05-13T08:45:00"
-            },
-            {
-                username: "zeroCool",
-                startedAt: "2025-05-13T08:47:00"
+        axios
+            .get(`${API_BASE}/api/wargames/${id}/active-users/list`)
+            .then((res) => {
+                setUserStatuses(res.data.result.data || []);
+            })
+            .catch((err) => {
+                console.error("🔥 유저 상태 불러오기 실패", err);
+            });
+    };
+
+    const fetchPodStatus = async () => {
+        try {
+            const res = await axios.get(`${API_BASE}/api/wargames/${id}/status`);
+            const status = res.data.result.data?.status;
+            const url = res.data.result.data?.url;
+
+            setPodStatus(status); // 👈 여기!
+
+            setIsPodRunning(status === "Running" || status === "Pending" || status === "Terminating");
+            if (status === "Not Found") {
+                setIsPodRunning(false);     // 종료 완료 상태
+                setPodUrl(null);            // URL 제거
             }
-        ];
-        setUserStatuses(dummyUsers);
+            setPodUrl(status === "Running" ? url : null);
+        } catch (err) {
+            console.error("🔥 파드 상태 확인 실패", err);
+            setIsPodRunning(false);
+            setPodUrl(null);
+            setPodStatus("Unknown"); // 에러났을 땐 표시용 상태
+        }
     };
 
     const fetchReviews = async () => {
@@ -215,13 +241,6 @@ function WargameDetailPage() {
         }
     };
 
-
-    // const fetchUserStatus = () => {
-    //     axios.get(`${API_BASE}/api/wargames/${id}/status`).then(res => {
-    //         setUserStatuses(res.data.result.data);
-    //     }).catch(err => console.error("유저 상태 불러오기 실패", err));
-    // }
-
     const startWargamePod = async () => {
         setIsStartingPod(true);
         try {
@@ -232,8 +251,9 @@ function WargameDetailPage() {
                 setIsPodRunning(true);
                 setIsStartingPod(false);
             }, 3000);
-        } catch {
-            alert("파드 생성 실패!");
+        } catch (err: any) {
+            const errorMsg = err?.response?.data?.result?.message || "파드 생성 실패!";
+            alert(errorMsg);
             setIsStartingPod(false);
         }
     };
@@ -361,6 +381,7 @@ function WargameDetailPage() {
                                 접속 URL: <a href={podUrl} target="_blank" rel="noreferrer">{podUrl}</a>
                             </p>
                         )}
+                        <p style={{ color: "#aaa", marginTop: "0.5rem" }}>상태: {podStatus === "Not Found" ? "Stopped" : podStatus}</p>
                     </div>
 
                     {/* 플래그 제출 */}

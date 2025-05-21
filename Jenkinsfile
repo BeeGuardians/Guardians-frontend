@@ -84,7 +84,7 @@ spec:
                     sh """
                     echo "[INFO] Injecting .env"
                     cat <<EOF > \$WORKSPACE/guardians/.env
-VITE_API_BASE_URL=https://bee-guardians.com
+VITE_API_BASE_URL=https://dev.bee-guardians.com
 EOF
                     """
                 }
@@ -121,12 +121,12 @@ EOF
                         git clone --single-branch --branch dev https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git infra
 
                         echo "[PATCH] Updating frontend deployment.yaml image tag"
-                        sed -i "s|image: .*|image: ${FULL_IMAGE}|" infra/cloud-cluster/frontend/deployment.yaml
+                        sed -i "s|image: .*|image: ${FULL_IMAGE}|" infra/cloud-cluster/frontend/deployment-dev.yaml
 
                         cd infra
                         git config user.email "ci-bot@example.com"
                         git config user.name "CI Bot"
-                        git add cloud-cluster/frontend/deployment.yaml
+                        git add cloud-cluster/frontend/deployment-dev.yaml
                         git commit -m "release : update frontend image to guardians/frontend:${IMAGE_TAG}" || echo "No changes to commit"
                         git push https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git dev
                         """

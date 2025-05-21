@@ -8,12 +8,10 @@ export type UserStatus = {
 };
 
 interface Props {
-    users?: UserStatus[];
+    users: UserStatus[];
 }
 
 const WargameUserStatusCard: React.FC<Props> = ({ users }) => {
-    if (!users || users.length === 0) return null;
-
     return (
         <div className={styles.card}>
             <h3 className={styles.title}>🔥 현재 해결중인 유저</h3>
@@ -25,15 +23,23 @@ const WargameUserStatusCard: React.FC<Props> = ({ users }) => {
                 </tr>
                 </thead>
                 <tbody>
-                {users.map((user, index) => (
-                    <tr
-                        key={index}
-                        className={user.isFirstSolver ? styles.firstSolver : ""}
-                    >
-                        <td>{user.username}</td>
-                        <td>{new Date(user.startedAt).toLocaleTimeString()}</td>
+                {users.length === 0 ? (
+                    <tr>
+                        <td colSpan={2} style={{ textAlign: "center", color: "#888" }}>
+                            현재 해결중인 사용자가 없습니다.
+                        </td>
                     </tr>
-                ))}
+                ) : (
+                    users.map((user, index) => (
+                        <tr
+                            key={index}
+                            className={user.isFirstSolver ? styles.firstSolver : ""}
+                        >
+                            <td>{user.username}</td>
+                            <td>{new Date(user.startedAt).toLocaleTimeString()}</td>
+                        </tr>
+                    ))
+                )}
                 </tbody>
             </table>
         </div>
