@@ -1,0 +1,48 @@
+/* ──────────────── Modal ──────────────── */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 2px solid #ccc;
+    text-align: center;
+    width: 320px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-box.correct {
+    border-color: #0c8;
+}
+
+.modal-box.wrong {
+    border-color: #f03e3e;
+}
+
+/* 버튼 일관 스타일 */
+.submit-btn {
+    background-color: #ffa94d;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    color: white;
+    font-weight: 550;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #ff922b;
+}

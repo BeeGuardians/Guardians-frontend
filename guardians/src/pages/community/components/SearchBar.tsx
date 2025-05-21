@@ -1,11 +1,31 @@
 import searchIcon from "../../../assets/search.png";
+import {useState} from "react";
 
-function SearchBar() {
+interface SearchBarProps {
+    onSearch: (keyword: string) => void;
+}
+
+const SearchBar = ({ onSearch }: SearchBarProps) => {
+    const [keyword, setKeyword] = useState('');
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            onSearch(keyword.trim());
+        }
+    };
+
+    const handleClick = () => {
+        onSearch(keyword.trim());
+    };
+
     return (
         <div style={{ position: "relative", width: "80%"}}>
             <input
                 type="text"
                 placeholder="제목/내용 검색어를 입력해주세요"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={handleKeyDown}
                 style={{
                     width: "100%",
                     padding: "0.5rem 3rem 0.5rem 1rem", // 오른쪽 여백 확보
@@ -15,6 +35,7 @@ function SearchBar() {
                 }}
             />
             <button
+                onClick={handleClick}
                 style={{
                     position: "absolute",
                     top: "50%",
@@ -29,10 +50,10 @@ function SearchBar() {
                     height: "2rem",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "flex-end", // ✅ 오른쪽으로 밀어!
+                    justifyContent: "flex-end",
                     borderRadius: "50%",
                     pointerEvents: "auto",
-                    paddingRight: "0.2rem", // ✅ 아이콘 더 끝에 딱 붙이기
+                    paddingRight: "0.2rem",
                 }}
             >
                 <img
@@ -40,9 +61,7 @@ function SearchBar() {
                     alt="검색"
                     style={{ width: "16px", height: "16px" }}
                 />
-
             </button>
-
         </div>
     );
 }
