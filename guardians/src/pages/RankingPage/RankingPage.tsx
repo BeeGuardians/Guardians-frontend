@@ -15,6 +15,7 @@ interface UserRanking {
 function RankingPage() {
     const [top3, setTop3] = useState<UserRanking[]>([]);
     const [allUsers, setAllUsers] = useState<UserRanking[]>([]);
+    const [filteredUsers, setFilteredUsers] = useState<UserRanking[]>([]);
 
     useEffect(() => {
         axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/ranking`)
@@ -22,11 +23,19 @@ function RankingPage() {
                 const data = res.data.result?.data ?? [];
                 setTop3(data.slice(0, 3));
                 setAllUsers(data);
+                setFilteredUsers(data);
             })
             .catch((err) => {
                 console.error("❌ 랭킹 불러오기 실패:", err);
             });
     }, []);
+
+    const handleSearch = (keyword: string) => {
+        const filtered = allUsers.filter(user =>
+            user.username.toLowerCase().includes(keyword.toLowerCase())
+        );
+        setFilteredUsers(filtered);
+    };
 
     return (
         <div style={{
@@ -82,11 +91,10 @@ function RankingPage() {
 
                 {/* 🔍 검색창 */}
                 <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "2rem" }}>
-                    <SearchBar />
-                </div>
+                    <SearchBar onSearch={handleSearch} />                </div>
 
                 {/* 📊 전체 순위 테이블 */}
-                <RankingTable data={allUsers} />
+                <RankingTable data={filteredUsers} />
             </div>
         </div>
     );

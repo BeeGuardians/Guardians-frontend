@@ -34,10 +34,10 @@ function WargameTable({ data }: { data: WargameRow[] }) {
             }}>
                 <thead>
                 <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
-                    <th style={thStyle}>상태</th>
-                    <th style={thStyle}>문제</th>
-                    <th style={thStyle}>분야</th>
-                    <th style={thStyle}>난이도</th>
+                    <th style={{ width: "15%", padding: "0.75rem 1rem"}}>해결</th>
+                    <th style={{ width: "45%", padding: "0.75rem 1rem" }}>제목</th>
+                    <th style={{ width: "20%", padding: "0.75rem 1rem" }}>카테고리</th>
+                    <th style={{ width: "20%", padding: "0.75rem 1rem" }}>난이도</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -89,13 +89,13 @@ function WargameTable({ data }: { data: WargameRow[] }) {
     );
 }
 
-const thStyle = {
-    padding: "0.75rem 1rem",
-    fontWeight: 600,
-    borderBottom: "2px solid #ddd",
-    color: "#888",
-    fontSize: "0.9rem",
-};
+// const thStyle = {
+//     padding: "0.75rem 1rem",
+//     fontWeight: 600,
+//     borderBottom: "2px solid #ddd",
+//     color: "#888",
+//     fontSize: "0.9rem",
+// };
 
 const tdStyle = {
     padding: "0.75rem 1rem",

@@ -25,6 +25,7 @@ function WargamePage() {
         status: [] as string[],
         bookmarked: false,
     });
+    const [searchKeyword, setSearchKeyword] = useState<string>("");
 
     useEffect(() => {
         axios.get(`${API_BASE}/api/wargames`, { withCredentials: true })
@@ -35,6 +36,10 @@ function WargamePage() {
                 console.error("워게임 목록 불러오기 실패:", err);
             });
     }, []);
+
+    const handleSearch = (keyword: string) => {
+        setSearchKeyword(keyword); // 필터링에 사용될 키워드 상태 업데이트
+    };
 
     const filteredWargames = useMemo(() => {
         return wargames.filter((w) => {
@@ -47,10 +52,13 @@ function WargamePage() {
                 filters.status.includes(w.solved ? "풀었음" : "못 풀었음");
             const bookmarkedMatch =
                 !filters.bookmarked || w.bookmarked === true;
+            const keywordMatch =
+                searchKeyword.trim().length === 0 ||
+                w.title.toLowerCase().includes(searchKeyword.toLowerCase());
 
-            return categoryMatch && levelMatch && statusMatch && bookmarkedMatch;
+            return categoryMatch && levelMatch && statusMatch && bookmarkedMatch && keywordMatch;
         });
-    }, [wargames, filters]);
+    }, [wargames, filters, searchKeyword]);
 
     return (
         <div style={{
@@ -94,7 +102,7 @@ function WargamePage() {
                         취약점을 찾아내고 문제를 해결하면서, 재미있게 공부해보세요! 💪
                     </div>
 
-                    <SearchBar />
+                    <SearchBar onSearch={handleSearch} />
                     <FilterBar onFilterChange={setFilters} />
                     <WargameTable data={filteredWargames} />
                 </div>

@@ -75,7 +75,7 @@
 .cardGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    column-gap: 8rem; /* 가로 간격 */
+    column-gap: 3.5rem; /* 가로 간격 */
     row-gap: 3.5rem;      /* 세로 간격 */
 }
 

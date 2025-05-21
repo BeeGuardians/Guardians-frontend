@@ -36,12 +36,13 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                     width: "100%",
                     borderCollapse: "separate",
                     borderSpacing: "0 8px",
+                    tableLayout: "fixed",
                 }}
             >
                 <thead>
                 <tr
                     style={{
-                        textAlign: "left",
+                        textAlign: "center",
                         fontSize: "0.9rem",
                         color: "#555",
                     }}
@@ -113,7 +114,7 @@ const thStyle = {
 const tdStyle = {
     padding: "0.75rem 1rem",
     fontSize: "0.95rem",
-    textAlign: "left" as const,
+    textAlign: "center" as const,
 };
 
 export default RankingTable;

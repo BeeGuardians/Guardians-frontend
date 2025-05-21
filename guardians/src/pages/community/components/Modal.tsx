@@ -28,6 +28,11 @@ const Modal = ({
                     {message}
                 </p>
                 <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
+                    {onConfirm && (
+                        <button className="submit-btn" onClick={onConfirm}>
+                            {confirmText || "확인"}
+                        </button>
+                    )}
                     {showCancelButton && (
                         <button
                             className="submit-btn"
@@ -35,11 +40,6 @@ const Modal = ({
                             onClick={onClose}
                         >
                             {cancelText}
-                        </button>
-                    )}
-                    {onConfirm && (
-                        <button className="submit-btn" onClick={onConfirm}>
-                            {confirmText || "확인"}
                         </button>
                     )}
                 </div>
