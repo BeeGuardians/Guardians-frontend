@@ -1,45 +1,64 @@
-import {useState} from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import resetIcon from "../../assets/reset.png";
-
-const categoryOptions = [
-    { value: "웹", label: "웹" },
-    { value: "시스템", label: "시스템" },
-    { value: "리버싱", label: "리버싱" },
-    { value: "포렌식", label: "포렌식" },
-];
-
-const levelOptions = [
-    { value: "EASY", label: "쉬움" },
-    { value: "MEDIUM", label: "보통" },
-    { value: "HARD", label: "어려움" },
-];
-
-const statusOptions = [
-    { value: "풀었음", label: "풀었음" },
-    { value: "못 풀었음", label: "못 풀었음" },
-];
 
 type OptionType = {
     value: string;
     label: string;
 };
 
-const badgeColors: Record<string, string> = {
-    category: "#0ea5e9", // 파랑
-    level: "#10b981",    // 초록
-    status: "#f59e0b",   // 주황
+type Filter = {
+    category: string[];
+    level: string[];
+    status: string[];
+    bookmarked: boolean;
 };
 
-function FilterBar() {
+const categoryOptions: OptionType[] = [
+    { value: "Web", label: "웹" },
+    { value: "Crypto", label: "암호" },
+    { value: "Forensic", label: "포렌식" },
+    { value: "BruteForce", label: "브루트포스" },
+    { value: "SourceLeak", label: "소스리크" },
+];
+
+const levelOptions: OptionType[] = [
+    { value: "EASY", label: "쉬움" },
+    { value: "MEDIUM", label: "보통" },
+    { value: "HARD", label: "어려움" },
+];
+
+const statusOptions: OptionType[] = [
+    { value: "풀었음", label: "풀었음" },
+    { value: "못 풀었음", label: "못 풀었음" },
+];
+
+const badgeColors: Record<string, string> = {
+    category: "#0ea5e9",
+    level: "#10b981",
+    status: "#f59e0b",
+};
+
+function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => void }) {
     const [selectedCategories, setSelectedCategories] = useState<OptionType[]>([]);
     const [selectedLevels, setSelectedLevels] = useState<OptionType[]>([]);
     const [selectedStatus, setSelectedStatus] = useState<OptionType[]>([]);
+    const [bookmarkedOnly, setBookmarkedOnly] = useState(false);
+
+    useEffect(() => {
+        onFilterChange({
+            category: selectedCategories.map(opt => opt.value),
+            level: selectedLevels.map(opt => opt.value),
+            status: selectedStatus.map(opt => opt.value),
+            bookmarked: bookmarkedOnly,
+        });
+    }, [selectedCategories, selectedLevels, selectedStatus, bookmarkedOnly]);
 
     const resetFilters = () => {
         setSelectedCategories([]);
         setSelectedLevels([]);
         setSelectedStatus([]);
+        setBookmarkedOnly(false);
     };
 
     const removeOption = (
@@ -60,13 +79,12 @@ function FilterBar() {
         if (categoryOptions.find(o => o.value === option.value)) return badgeColors.category;
         if (levelOptions.find(o => o.value === option.value)) return badgeColors.level;
         if (statusOptions.find(o => o.value === option.value)) return badgeColors.status;
-        return "#6b7280"; // default gray
+        return "#6b7280";
     };
 
     return (
         <div>
-            {/* 드롭다운 */}
-            <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem"}}>
                 <div style={{ minWidth: "180px" }}>
                     <Select<OptionType, true>
                         options={categoryOptions}
@@ -97,9 +115,45 @@ function FilterBar() {
                         components={customComponents("해결 여부")}
                     />
                 </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginLeft: "5rem"  }}>
+                    <label htmlFor="bookmarkedOnly" style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                        <div style={{
+                            position: "relative",
+                            width: "42px",
+                            height: "22px",
+                            background: bookmarkedOnly ? "#ffc107" : "#ccc",
+                            borderRadius: "9999px",
+                            transition: "background-color 0.3s",
+                        }}>
+                            <div style={{
+                                position: "absolute",
+                                top: "2px",
+                                left: bookmarkedOnly ? "22px" : "2px",
+                                width: "18px",
+                                height: "18px",
+                                background: "white",
+                                borderRadius: "50%",
+                                transition: "left 0.2s",
+                            }} />
+                            <input
+                                type="checkbox"
+                                id="bookmarkedOnly"
+                                checked={bookmarkedOnly}
+                                onChange={() => setBookmarkedOnly(prev => !prev)}
+                                style={{
+                                    opacity: 0,
+                                    width: 0,
+                                    height: 0,
+                                    position: "absolute",
+                                }}
+                            />
+                        </div>
+                        <span style={{ marginLeft: "0.5rem", fontSize: "0.9rem", color: "#333" }}>
+                            북마크만 보기
+                        </span>
+                    </label>
+                </div>
             </div>
-
-            {/* 선택된 필터들 + 초기화 버튼 */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem", alignItems: "center" }}>
                 {[...selectedCategories, ...selectedLevels, ...selectedStatus].map(option => (
                     <div
@@ -139,8 +193,7 @@ function FilterBar() {
                     </div>
                 ))}
 
-                {/* 초기화 버튼 */}
-                {(selectedCategories.length + selectedLevels.length + selectedStatus.length > 0) && (
+                {(selectedCategories.length + selectedLevels.length + selectedStatus.length > 0 || bookmarkedOnly) && (
                     <button
                         onClick={resetFilters}
                         style={{
