@@ -14,7 +14,7 @@ type Props = {
     link: string;
 };
 
-const BoardSection = ({ title, description, posts, color = "#f5f5f5", link }: Props) => {
+const BoardSection = ({title, description, posts, color = "#f5f5f5", link}: Props) => {
     return (
         <div
             style={{
@@ -29,14 +29,14 @@ const BoardSection = ({ title, description, posts, color = "#f5f5f5", link }: Pr
                 justifyContent: "space-between",
             }}
         >
-            <div style={{ backgroundColor: color, padding: "1rem" }}>
-                <h3 style={{ margin: 0 }}>{title}</h3>
-                <p style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>{description}</p>
+            <div style={{backgroundColor: color, padding: "1rem"}}>
+                <h3 style={{margin: 0}}>{title}</h3>
+                <p style={{fontSize: "0.85rem", color: "#555", marginTop: "0.25rem"}}>{description}</p>
             </div>
 
             {/* ✅ 하단: 게시글 테이블 영역 */}
-            <div style={{ padding: "1rem", flexGrow: 1 }}>
-                <table style={{ width: "100%", fontSize: "0.9rem", borderCollapse: "collapse", }}>
+            <div style={{padding: "1rem", flexGrow: 1}}>
+                <table style={{width: "100%", fontSize: "0.9rem", borderCollapse: "collapse",}}>
                     <tbody>
                     {posts.map((post) => (
                         <tr
@@ -45,21 +45,30 @@ const BoardSection = ({ title, description, posts, color = "#f5f5f5", link }: Pr
                                 borderBottom: "1px solid #eee",
                             }}
                         >
-                            <td style={{ padding: "0.4rem 0" }}>
+                            <td style={{ padding: "0.4rem 0", width: "100%" }}>
                                 <Link
                                     to={`${link}/${post.id}`}
                                     style={{
                                         color: "#333",
                                         textDecoration: "none",
                                         transition: "color 0.2s",
+
+                                        display: "block",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap",
+                                        maxWidth: "25rem",
                                     }}
+                                    title={post.title}
                                     onMouseOver={(e) => (e.currentTarget.style.color = "#646cff")}
                                     onMouseOut={(e) => (e.currentTarget.style.color = "#333")}
                                 >
                                     {post.title}
                                 </Link>
 
+
                             </td>
+
                         </tr>
                     ))}
                     </tbody>
@@ -67,8 +76,8 @@ const BoardSection = ({ title, description, posts, color = "#f5f5f5", link }: Pr
             </div>
 
             {/* 더보기 */}
-            <div style={{ padding: "0.5rem 1rem", textAlign: "right", borderTop: "1px solid #eee" }}>
-                <Link to={link} style={{ fontSize: "0.8rem", color: "#007bff" }}>
+            <div style={{padding: "0.5rem 1rem", textAlign: "right", borderTop: "1px solid #eee"}}>
+                <Link to={link} style={{fontSize: "0.8rem", color: "#007bff"}}>
                     더보기 →
                 </Link>
             </div>

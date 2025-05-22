@@ -39,6 +39,19 @@ const JobPage = () => {
     const currentJobs = jobList.slice(startIdx, startIdx + ITEMS_PER_PAGE);
     const totalPages = Math.ceil(jobList.length / ITEMS_PER_PAGE);
 
+    const handleSearch = (keyword: string) => {
+        axios
+            .get(`/api/jobs`, { withCredentials: true })
+            .then((res) => {
+                const filtered = res.data.result.data.filter((job: Job) =>
+                    job.companyName.includes(keyword)
+                );
+                setJobList(filtered);
+                setCurrentPage(1);
+            });
+    };
+
+
     return (
         <div className={styles.pageWrapper}>
             <div className={styles.mainContent}>
@@ -49,7 +62,7 @@ const JobPage = () => {
                     워게임을 통해 갈고닦은 실력으로, 실전 그 이상의 미래를 준비하세요. 🌈
                 </div>
 
-                <SearchBar placeholder="회사명 검색" />
+                <SearchBar onSearch={handleSearch} />
                 <JobFilterBar />
 
                 {/* 카드 영역 */}
