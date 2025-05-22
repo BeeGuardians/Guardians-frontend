@@ -81,11 +81,11 @@ const BoardsTable = () => {
                 >
                     <thead>
                     <tr style={{ fontSize: "0.9rem", color: "#555" }}>
-                        <th style={{ ...thStyle, width: "10%", textAlign: "center" }}>번호</th>
-                        <th style={{ ...thStyle, width: "45%", textAlign: "left" }}>제목</th>
+                        <th style={{ ...thStyle, width: "15%", textAlign: "center" }}>번호</th>
+                        <th style={{ ...thStyle, width: "35%", textAlign: "left" }}>제목</th>
                         <th style={{ ...thStyle, width: "15%", textAlign: "center" }}>분류</th>
-                        <th style={{ ...thStyle, width: "15%", textAlign: "center" }}>작성일</th>
                         <th style={{ ...thStyle, width: "15%", textAlign: "center" }}>추천수</th>
+                        <th style={{ ...thStyle, width: "20%", textAlign: "center" }}>작성일</th>
                     </tr>
                     </thead>
 
@@ -142,10 +142,10 @@ const BoardsTable = () => {
                                     {categoryKorean[board.boardType] || board.boardType}
                                 </td>
                                 <td style={{ ...tdStyle, textAlign: "center" }}>
-                                    {board.createdAt.split("T")[0]}
+                                    {board.likeCount}
                                 </td>
                                 <td style={{ ...tdStyle, textAlign: "center" }}>
-                                    {board.likeCount}
+                                    {board.createdAt.split("T")[0]}
                                 </td>
                             </tr>
                         ))
