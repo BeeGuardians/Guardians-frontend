@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface Board {
-    id: number;
+    boardId: number;
     title: string;
     content: string;
     boardType: string;
+    createdAt: string;
+    likeCount: number;
 }
 
 const categoryKorean: Record<string, string> = {
@@ -26,6 +29,7 @@ const BoardsTable = () => {
     const [boardData, setBoardData] = useState<Board[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!user) return;
@@ -36,7 +40,12 @@ const BoardsTable = () => {
                     withCredentials: true,
                 });
                 const posts = res.data?.result?.data?.boards ?? [];
-                setBoardData(posts);
+
+                const sortedPosts = [...posts].sort(
+                    (a: Board, b: Board) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                setBoardData(sortedPosts);
+
             } catch (err) {
                 console.error("게시글 불러오기 실패:", err);
                 setBoardData([]);
@@ -67,48 +76,82 @@ const BoardsTable = () => {
                         width: "100%",
                         borderCollapse: "separate",
                         borderSpacing: "0 8px",
+                        tableLayout: "fixed",
                     }}
                 >
                     <thead>
-                    <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
-                        <th style={thStyle}>#</th>
-                        <th style={thStyle}>제목</th>
-                        <th style={thStyle}>분류</th>
-                        <th style={thStyle}>작성일</th>
-                        <th style={thStyle}>추천수</th>
-                        <th style={thStyle}>조회수</th>
+                    <tr style={{ fontSize: "0.9rem", color: "#555" }}>
+                        <th style={{ ...thStyle, width: "10%", textAlign: "center" }}>번호</th>
+                        <th style={{ ...thStyle, width: "45%", textAlign: "left" }}>제목</th>
+                        <th style={{ ...thStyle, width: "15%", textAlign: "center" }}>분류</th>
+                        <th style={{ ...thStyle, width: "15%", textAlign: "center" }}>작성일</th>
+                        <th style={{ ...thStyle, width: "15%", textAlign: "center" }}>추천수</th>
                     </tr>
                     </thead>
+
                     <tbody>
                     {currentData.length === 0 ? (
                         <tr>
-                            <td colSpan={6} style={{ textAlign: "center", padding: "3rem" }}>
+                            <td colSpan={5} style={{ textAlign: "center", padding: "3rem" }}>
                                 작성한 게시글이 없습니다.
                             </td>
                         </tr>
                     ) : (
                         currentData.map((board, idx) => (
-                            <tr key={board.id} style={{ backgroundColor: "white" }}>
-                                <td style={tdStyle}>
+                            <tr
+                                key={board.boardId}
+                                style={{
+                                    backgroundColor: "white",
+                                    borderBottom: "1px solid #eee",
+                                    cursor: "pointer",
+                                    transition: "background-color 0.2s ease",
+                                }}
+                                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255, 179, 71, 0.15)")}
+                                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "white")}
+                            >
+                                <td style={{ ...tdStyle, textAlign: "center" }}>
                                     {(currentPage - 1) * itemsPerPage + idx + 1}
                                 </td>
-                                <td style={tdStyle}>{board.title}</td>
                                 <td
                                     style={{
                                         ...tdStyle,
+                                        textAlign: "left",
+                                        whiteSpace: "nowrap",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        color: "#333",
+                                    }}
+                                    onClick={() =>
+                                        navigate(
+                                            `/community/${board.boardType.toLowerCase()}/${board.boardId}`
+                                        )
+                                    }
+                                    title={board.title}
+                                >
+                                    {board.title}
+                                </td>
+                                <td
+                                    style={{
+                                        ...tdStyle,
+                                        textAlign: "center",
                                         fontWeight: 600,
-                                        color: categoryColors[categoryKorean[board.boardType]] || "#555",
+                                        color:
+                                            categoryColors[categoryKorean[board.boardType]] || "#555",
                                     }}
                                 >
                                     {categoryKorean[board.boardType] || board.boardType}
                                 </td>
-                                <td style={tdStyle}>-</td>
-                                <td style={tdStyle}>-</td>
-                                <td style={tdStyle}>-</td>
+                                <td style={{ ...tdStyle, textAlign: "center" }}>
+                                    {board.createdAt.split("T")[0]}
+                                </td>
+                                <td style={{ ...tdStyle, textAlign: "center" }}>
+                                    {board.likeCount}
+                                </td>
                             </tr>
                         ))
                     )}
                     </tbody>
+
                 </table>
             </div>
 
@@ -119,7 +162,8 @@ const BoardsTable = () => {
                         style={{
                             margin: "0 0.25rem",
                             padding: "0.4rem 0.75rem",
-                            backgroundColor: currentPage === idx + 1 ? "#fcb24b" : "#e0e0e0",
+                            backgroundColor:
+                                currentPage === idx + 1 ? "#fcb24b" : "#e0e0e0",
                             color: currentPage === idx + 1 ? "white" : "#333",
                             border: "none",
                             borderRadius: "4px",
@@ -143,12 +187,17 @@ const thStyle = {
     borderBottom: "2px solid #ddd",
     color: "#888",
     fontSize: "0.9rem",
+    textAlign: "left" as const,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    cursor: "pointer",
 };
 
 const tdStyle = {
     padding: "0.75rem 1rem",
     fontSize: "0.95rem",
-    textAlign: "left" as const,
+    textAlign: "center" as const,
 };
 
 export default BoardsTable;

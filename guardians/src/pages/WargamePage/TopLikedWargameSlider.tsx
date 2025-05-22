@@ -39,7 +39,7 @@ const TopLikedWargameSlider: React.FC<Props> = ({ challenges }) => {
                 margin: "2rem 0"
             }}
         >
-            <div style={{ width: "100%", maxWidth: "55rem" }}>
+            <div style={{ width: "100%", maxWidth: "50rem" }}>
                 <h4
                     style={{
                         marginBottom: "1rem",
@@ -48,7 +48,7 @@ const TopLikedWargameSlider: React.FC<Props> = ({ challenges }) => {
                         paddingLeft: "0.5rem"
                     }}
                 >
-                    ❤️ 좋아요 많은 워게임 Top 10
+                    ❤️ 인기 워게임 Top 10
                 </h4>
 
                 <div

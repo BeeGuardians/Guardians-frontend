@@ -89,7 +89,20 @@ function WargameDetailPage() {
         }
     }, [id]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            axios.get(`/api/wargames/${id}/status`)
+                .then((res) => {
+                    setPodStatus(res.data.result.data.status);
+                    setPodUrl(res.data.result.data.url);
+                })
+                .catch((err) => {
+                    console.error("파드 상태 불러오기 실패", err);
+                });
+        }, 3000); // 5초마다
 
+        return () => clearInterval(interval);
+    }, [id]);
 
     const checkLoginStatus = async () => {
         try {
@@ -361,14 +374,24 @@ function WargameDetailPage() {
                     <h2 className={styles["pod-title"]}>워게임 인스턴스</h2>
                     <div className={styles["pod-card"]}>
                         <div className={styles["submit-box"]}>
-                            {isPodRunning ? (
-                                <button onClick={stopWargamePod} className={styles["submit-btn"]} disabled={isStoppingPod}>
-                                    {isStoppingPod ? "인스턴스 종료 중..." : "워게임 종료"}
+                            {isPodRunning || podStatus === "Terminating" ? (
+                                <button
+                                    onClick={stopWargamePod}
+                                    className={styles["submit-btn"]}
+                                    disabled={isStoppingPod || isStartingPod || podStatus === "Terminating"}
+                                >
+                                    {podStatus === "Terminating" || isStoppingPod
+                                        ? "인스턴스 종료 중..."
+                                        : "워게임 종료"}
                                 </button>
-                            ) : isStartingPod ? (
-                                <button className={styles["submit-btn"]} disabled>인스턴스 시작 중...</button>
                             ) : (
-                                <button onClick={startWargamePod} className={styles["submit-btn"]}>워게임 시작</button>
+                                <button
+                                    onClick={startWargamePod}
+                                    className={styles["submit-btn"]}
+                                    disabled={isStartingPod || isStoppingPod || podStatus === "Terminating"}
+                                >
+                                    {isStartingPod ? "인스턴스 시작 중..." : "워게임 시작"}
+                                </button>
                             )}
                         </div>
                         {(isStartingPod || isStoppingPod) && (
@@ -376,7 +399,7 @@ function WargameDetailPage() {
                                 최대 60초 정도 소요될 수 있어요.
                             </p>
                         )}
-                        {podUrl && !isStartingPod && (
+                        {podUrl && !isStartingPod && podStatus !== "Terminating" && (
                             <p className={styles["pod-url"]}>
                                 접속 URL: <a href={podUrl} target="_blank" rel="noreferrer">{podUrl}</a>
                             </p>

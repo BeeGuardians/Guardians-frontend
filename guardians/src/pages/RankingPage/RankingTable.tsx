@@ -13,7 +13,7 @@ interface RankingTableProps {
 
 const ITEMS_PER_PAGE = 20;
 
-const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
+const RankingTable: React.FC<RankingTableProps> = ({data}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
     const currentData = data.slice(
@@ -47,10 +47,10 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                         color: "#555",
                     }}
                 >
-                    <th style={{ ...thStyle, width: "20%" }}>순위</th>
-                    <th style={{ ...thStyle, width: "30%" }}>닉네임</th>
-                    <th style={{ ...thStyle, width: "25%" }}>푼 문제</th>
-                    <th style={{ ...thStyle, width: "25%" }}>점수</th>
+                    <th style={{...thStyle, width: "20%"}}>순위</th>
+                    <th style={{...thStyle, width: "30%"}}>닉네임</th>
+                    <th style={{...thStyle, width: "25%"}}>푼 문제</th>
+                    <th style={{...thStyle, width: "25%"}}>점수</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -80,8 +80,8 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
             </table>
 
             {/* 페이징 */}
-            <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
-                {Array.from({ length: totalPages }, (_, i) => (
+            <div style={{marginTop: "1.5rem", textAlign: "center"}}>
+                {Array.from({length: totalPages}, (_, i) => (
                     <button
                         key={i}
                         onClick={() => setCurrentPage(i + 1)}
