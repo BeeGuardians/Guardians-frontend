@@ -5,6 +5,7 @@ import FilterBar from "./FilterBar";
 import WargameTable from "./WargameTable";
 import ProfileCard from "./ProfileCard";
 import PopularWargameList from "./PopularWargameList";
+import TopLikedWargameSlider from "./TopLikedWargameSlider"; // 👈 추가
 
 interface Challenge {
     id: number;
@@ -12,7 +13,8 @@ interface Challenge {
     categoryName: string;
     difficulty: string;
     solved: boolean;
-    bookmarked : boolean;
+    bookmarked: boolean;
+    likeCount: number;
 }
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -38,7 +40,7 @@ function WargamePage() {
     }, []);
 
     const handleSearch = (keyword: string) => {
-        setSearchKeyword(keyword); // 필터링에 사용될 키워드 상태 업데이트
+        setSearchKeyword(keyword);
     };
 
     const filteredWargames = useMemo(() => {
@@ -60,18 +62,15 @@ function WargamePage() {
         });
     }, [wargames, filters, searchKeyword]);
 
+    const topLikedWargames = useMemo(() => {
+        return [...wargames]
+            .sort((a, b) => b.likeCount - a.likeCount)
+            .slice(0, 10);
+    }, [wargames]);
+
     return (
-        <div style={{
-            padding: "2rem 1rem",
-            display: "flex",
-            justifyContent: "center",
-        }}>
-            <div style={{
-                display: "flex",
-                gap: "2rem",
-                maxWidth: "1200px",
-                width: "100%",
-            }}>
+        <div style={{ padding: "2rem 1rem", display: "flex", justifyContent: "center" }}>
+            <div style={{ display: "flex", gap: "2rem", maxWidth: "1200px", width: "100%" }}>
                 {/* 왼쪽 메인 */}
                 <div style={{ flex: 2.8, paddingRight: "1rem" }}>
                     <h3
@@ -104,6 +103,9 @@ function WargamePage() {
 
                     <SearchBar onSearch={handleSearch} />
                     <FilterBar onFilterChange={setFilters} />
+
+                    <TopLikedWargameSlider challenges={topLikedWargames} />
+
                     <WargameTable data={filteredWargames} />
                 </div>
 
