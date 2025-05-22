@@ -72,7 +72,15 @@ spec:
                         sh "git config --global --add safe.directory ${env.WORKSPACE}"
                         IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
                         FULL_IMAGE = "${HARBOR_IMAGE}:${IMAGE_TAG}"
+                        DEPLOY_PATH = env.BRANCH_NAME == "main" ?
+                            "cloud-cluster/frontend/deployment.yaml" :
+                            "cloud-cluster/frontend/deployment-dev.yaml"
+                        VITE_API_BASE_URL = env.BRANCH_NAME == "main" ?
+                            "https://bee-guardians.com" :
+                            "https://dev.bee-guardians.com"
                         echo "Docker Image Tag: ${IMAGE_TAG}"
+                        echo "Deployment YAML Path: ${DEPLOY_PATH}"
+                        echo "VITE_API_BASE_URL: ${VITE_API_BASE_URL}"
                     }
                 }
             }
@@ -81,12 +89,12 @@ spec:
         stage('Inject .env') {
             steps {
                 container('kaniko') {
-                    sh """
-                    echo "[INFO] Injecting .env"
-                    cat <<EOF > \$WORKSPACE/guardians/.env
-VITE_API_BASE_URL=https://dev.bee-guardians.com
-EOF
-                    """
+                    script {
+                        sh """
+                        echo "[INFO] Injecting .env"
+                        echo "VITE_API_BASE_URL=${VITE_API_BASE_URL}" > \$WORKSPACE/guardians/.env
+                        """
+                    }
                 }
             }
         }
@@ -118,17 +126,17 @@ EOF
                     )]) {
                         sh """
                         echo "[CLONE] Guardians-Infra"
-                        git clone --single-branch --branch dev https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git infra
+                        git clone --single-branch --branch ${BRANCH_NAME} https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git infra
 
                         echo "[PATCH] Updating frontend deployment.yaml image tag"
-                        sed -i "s|image: .*|image: ${FULL_IMAGE}|" infra/cloud-cluster/frontend/deployment-dev.yaml
+                        sed -i "s|image: .*|image: ${FULL_IMAGE}|" infra/${DEPLOY_PATH}
 
                         cd infra
                         git config user.email "ci-bot@example.com"
                         git config user.name "CI Bot"
-                        git add cloud-cluster/frontend/deployment-dev.yaml
+                        git add ${DEPLOY_PATH}
                         git commit -m "release : update frontend image to guardians/frontend:${IMAGE_TAG}" || echo "No changes to commit"
-                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git dev
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git ${BRANCH_NAME}
                         """
                     }
                 }
