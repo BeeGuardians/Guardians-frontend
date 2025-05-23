@@ -29,8 +29,8 @@ const levelOptions: OptionType[] = [
 ];
 
 const statusOptions: OptionType[] = [
-    { value: "풀었음", label: "풀었음" },
-    { value: "못 풀었음", label: "못 풀었음" },
+    { value: "해결 완료", label: "해결 완료" },
+    { value: "미해결", label: "미해결" },
 ];
 
 const badgeColors: Record<string, string> = {

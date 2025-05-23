@@ -60,7 +60,15 @@ function WargameTable({ data }: { data: WargameRow[] }) {
                         </td>
                         <td style={tdStyle}>{row.title}</td>
                         <td style={tdStyle}>{row.categoryName}</td>
-                        <td style={tdStyle}>{row.difficulty}</td>
+                        <td style={tdStyle}>
+                            {row.difficulty === "EASY"
+                                ? "쉬움"
+                                : row.difficulty === "MEDIUM"
+                                    ? "중간"
+                                    : row.difficulty === "HARD"
+                                        ? "어려움"
+                                        : row.difficulty}
+                        </td>
                     </tr>
                 ))}
                 </tbody>
