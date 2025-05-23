@@ -93,7 +93,7 @@ const JobPage = () => {
 
                 <SearchBar onSearch={handleSearch} />
                 {/* 필터바 + 새로고침 버튼 */}
-                <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
+                <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
                     <JobFilterBar
                         onFilterChange={handleFilterChange}
                         resetTrigger={resetTrigger}
