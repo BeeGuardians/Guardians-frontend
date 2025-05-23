@@ -5,6 +5,7 @@ import SearchBar from "./SearchBar";
 import JobFilterBar from "./JobFilterBar";
 import JobCard from "./JobCard";
 import styles from "./JobPage.module.css";
+import resetIcon from "../../assets/reset.png";
 
 interface Job {
     jobId: number;
@@ -23,12 +24,15 @@ const JobPage = () => {
     const [jobList, setJobList] = useState<Job[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
+    const [resetTrigger, setResetTrigger] = useState(false);
+
 
     useEffect(() => {
         axios
             .get(`${import.meta.env.VITE_API_BASE_URL}/api/jobs`)
             .then((res) => {
-                setJobList(res.data.result?.data ?? []);
+                setFullJobList(res.data.result?.data ?? []); // 전체 데이터 보관
+                setJobList(res.data.result?.data ?? []);     // 필터링된 데이터 표시용
             })
             .catch((err) => {
                 console.error("❌ 채용공고 불러오기 실패:", err);
@@ -50,7 +54,32 @@ const JobPage = () => {
                 setCurrentPage(1);
             });
     };
+    const [fullJobList, setFullJobList] = useState<Job[]>([]);
+    const handleFilterChange = (filters: { type: string; employ: string; region: string }) => {
+        const filtered = fullJobList.filter((job) => {
+            const matchType = filters.type ? job.careerLevel === filters.type : true;
+            const matchEmploy = filters.employ ? job.employmentType === filters.employ : true;
+            const matchRegion = filters.region ? job.location === filters.region : true;
+            return matchType && matchEmploy && matchRegion;
+        });
 
+        setJobList(filtered);
+        setCurrentPage(1); // 첫 페이지로 리셋
+
+    };
+
+    const handleRefresh = () => {
+        axios
+            .get(`${import.meta.env.VITE_API_BASE_URL}/api/jobs`)
+            .then((res) => {
+                const all = res.data.result?.data ?? [];
+                setFullJobList(all);
+                setJobList(all);
+                setCurrentPage(1);
+                setResetTrigger(true); // 트리거 발생
+                setTimeout(() => setResetTrigger(false), 100); // 트리거 리셋
+            });
+    };
 
     return (
         <div className={styles.pageWrapper}>
@@ -63,7 +92,38 @@ const JobPage = () => {
                 </div>
 
                 <SearchBar onSearch={handleSearch} />
-                <JobFilterBar />
+                {/* 필터바 + 새로고침 버튼 */}
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
+                    <JobFilterBar
+                        onFilterChange={handleFilterChange}
+                        resetTrigger={resetTrigger}
+                    />
+                    <button
+                        onClick={handleRefresh}
+                        style={{
+                            height: "40px",
+                            width: "40px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: "none",
+                            backgroundColor: "transparent", // 회색 배경 제거
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                        }}
+                    >
+                        <img
+                            src={resetIcon}
+                            alt="새로고침"
+                            style={{
+                                width: 20,
+                                height: 20,
+                            }}
+                        />
+                    </button>
+
+                </div>
+
 
                 {/* 카드 영역 */}
                 <div className={styles.cardGrid}>
@@ -85,6 +145,7 @@ const JobPage = () => {
                     ))}
                 </div>
 
+
                 {/* 페이지네이션 */}
                 <div style={{ textAlign: "center", marginTop: "2rem" }}>
                     {Array.from({ length: totalPages }, (_, i) => (
@@ -94,7 +155,7 @@ const JobPage = () => {
                             style={{
                                 marginTop: "4rem",
                                 marginBottom: "2rem",
-                                marginLeft: "0.25rem",  // ✅ 여기 수정
+                                marginLeft: "0.25rem",
                                 marginRight: "0.25rem",
                                 padding: "0.5rem 0.9rem",
                                 backgroundColor: currentPage === i + 1 ? "#FFC078" : "#eee",

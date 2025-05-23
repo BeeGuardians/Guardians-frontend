@@ -83,12 +83,6 @@ const BoardPage = ({
         borderBottom: "2px solid #ddd",
     };
 
-    const td = {
-        alignItems: "center",
-        padding: "0.75rem",
-        fontSize: "0.9rem",
-        textAlign: "center",
-    };
 
     return (
         <>
@@ -164,10 +158,11 @@ const BoardPage = ({
                                     onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#fcddb6")}
                                     onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
                                 >
-                                    <td style={td}>
+                                    <td style={{ padding: "0.75rem", fontSize: "0.9rem", textAlign: "center" }}>
                                         <div
                                             style={{
                                                 display: "flex",
+                                                alignItems: "center",
                                                 whiteSpace: "nowrap",
                                                 overflow: "hidden",
                                             }}
@@ -197,10 +192,10 @@ const BoardPage = ({
                                             </div>
                                         </div>
                                     </td>
-                                    <td style={td}>{board.username}</td>
-                                    <td style={td}>{new Date(board.createdAt).toLocaleDateString()}</td>
-                                    <td style={td}>{board.likeCount}</td>
-                                    <td style={td}>{board.viewCount}</td>
+                                    <td style={{ padding: "0.75rem", fontSize: "0.9rem", textAlign: "center" }}>{board.username}</td>
+                                    <td style={{ padding: "0.75rem", fontSize: "0.9rem", textAlign: "center" }}>{new Date(board.createdAt).toLocaleDateString()}</td>
+                                    <td style={{ padding: "0.75rem", fontSize: "0.9rem", textAlign: "center" }}>{board.likeCount}</td>
+                                    <td style={{ padding: "0.75rem", fontSize: "0.9rem", textAlign: "center" }}>{board.viewCount}</td>
                                 </tr>
                             ))}
                             </tbody>

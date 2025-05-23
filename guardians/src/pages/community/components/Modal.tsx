@@ -29,7 +29,7 @@ const Modal = ({
                 </p>
                 <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem" }}>
                     {onConfirm && (
-                        <button className="submit-btn" onClick={onConfirm}>
+                        <button className="submit-btn" onClick={onConfirm} autoFocus>
                             {confirmText || "확인"}
                         </button>
                     )}

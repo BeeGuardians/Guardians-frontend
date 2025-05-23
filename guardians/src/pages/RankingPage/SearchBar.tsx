@@ -41,7 +41,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
                 onKeyDown={handleKeyDown}
                 style={{
                     width: "90%",
-                    padding: "0.5rem 0.5rem 0.5rem 1rem",
+                    padding: "0.5rem 2.5rem 0.5rem 1rem",
                     border: "1px solid #ccc",
                     borderRadius: "6px",
                     fontSize: "1rem",
@@ -52,7 +52,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
                     style={{
                         position: "absolute",
                         top: "50%",
-                        right: "-3rem",
+                        right: "-1.5rem",
                         transform: "translateY(-50%)",
                         background: "transparent",
                         border: "none",
