@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import SolvedLineChart from "./SolvedLineChart";
 
@@ -197,7 +197,12 @@ const DashboardPage = () => {
                         {/* 버튼 + 설명 말풍선 */}
                         <div
                             ref={descriptionRef}
-                            style={{ position: "relative", display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
+                            style={{
+                                position: "relative",
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                marginTop: "1rem"
+                            }}>
                             {isDescriptionOpen && (
                                 <div style={{
                                     position: "absolute",
@@ -226,16 +231,21 @@ const DashboardPage = () => {
                                         borderRight: "8px solid transparent",
                                         borderTop: "8px solid #fffaf3",
                                         filter: "drop-shadow(0 -1px 1px rgba(0,0,0,0.05))"
-                                    }} />
+                                    }}/>
 
-                                    <div style={{ marginBottom: "0.75rem", color: "#333", borderBottom: "2px solid #eee", padding: "0.2rem" }}>
-                                        <strong style={{ fontSize: "1.1rem" }}>🎖 뱃지란?</strong><br />
-                                        문제를 풀면서 얻는 <strong>도전과 성취의 증표</strong>예요.<br />
+                                    <div style={{
+                                        marginBottom: "0.75rem",
+                                        color: "#333",
+                                        borderBottom: "2px solid #eee",
+                                        padding: "0.2rem"
+                                    }}>
+                                        <strong style={{fontSize: "1.1rem"}}>🎖 뱃지란?</strong><br/>
+                                        문제를 풀면서 얻는 <strong>도전과 성취의 증표</strong>예요.<br/>
                                         각각의 뱃지는 특정 조건을 달성했을 때 <strong>자동으로 지급</strong>돼요.
                                     </div>
 
                                     {badges.map((badge) => (
-                                        <div key={badge.id} style={{ marginBottom: "0.5rem" }}>
+                                        <div key={badge.id} style={{marginBottom: "0.5rem"}}>
                                             <strong>{badge.name}:</strong> {badge.description}
                                         </div>
                                     ))}

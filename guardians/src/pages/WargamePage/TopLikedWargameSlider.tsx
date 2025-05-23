@@ -36,14 +36,15 @@ const TopLikedWargameSlider: React.FC<Props> = ({ challenges }) => {
                 width: "100%",
                 display: "flex",
                 justifyContent: "center",
-                margin: "2rem 0"
+                margin: "1rem 0"
             }}
         >
             <div style={{ width: "100%", maxWidth: "50rem" }}>
                 <h4
                     style={{
+                        marginTop: "1rem",
                         marginBottom: "1rem",
-                        fontSize: "1rem",
+                        fontSize: "1.2rem",
                         color: "#444",
                         paddingLeft: "0.5rem"
                     }}
