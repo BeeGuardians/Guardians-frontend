@@ -7,11 +7,24 @@ function ProfileCard() {
         profileImageUrl: "",
         score: 0,
         rank: 0,
+        tier: "",
         solvedCount: 0,
     });
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(false); // string → boolean 처리로 변경
+    const badgeMap: Record<string, string> = {
+        BRONZE: "/badges/BRONZE.png",
+        SILVER: "/badges/SILVER.png",
+        GOLD: "/badges/GOLD.png",
+        PLATINUM: "/badges/PLATINUM.png"
+    };
+
+
+    const getTierBadgeUrl = (tier: string | undefined): string => {
+        if (!tier) return "";
+        return badgeMap[tier.toUpperCase()] ?? "";
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,9 +35,9 @@ function ProfileCard() {
                 const profileImageUrl = profileRes.data.result.data.profileImageUrl;
 
                 const statsRes = await axios.get(`/api/users/${userId}/stats`);
-                const { score, rank, solvedCount } = statsRes.data.result.data;
+                const { score, rank, solvedCount, tier } = statsRes.data.result.data;
 
-                setInfo({ nickname, profileImageUrl, score, rank, solvedCount });
+                setInfo({ nickname, profileImageUrl, score, rank, tier, solvedCount });
             } catch (err) {
                 setError(true);
                 console.error("ProfileCard Error:", err);
@@ -60,11 +73,19 @@ function ProfileCard() {
                     fontWeight: 600,
                     display: "flex",
                     alignItems: "center",
+                    gap: "0.5rem"
                 }}
             >
-            <span style={{ color: "black", marginRight: "0.25rem" }}>
-                {error ? "로그인이 필요합니다" : info.nickname}
-            </span>
+                {!error && (
+                    <img
+                        src={getTierBadgeUrl(info.tier)}
+                        alt={`${info.tier} 뱃지`}
+                        style={{ width: "24px", height: "24px" }}
+                    />
+                )}
+                    <span style={{ color: "black" }}>
+                        {error ? "로그인이 필요합니다" : info.nickname}
+                    </span>
             </div>
 
             {/* 본문 영역 */}

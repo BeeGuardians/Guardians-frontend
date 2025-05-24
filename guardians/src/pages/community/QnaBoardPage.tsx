@@ -84,7 +84,7 @@ const QnaBoardPage = () => {
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                        <SearchBar />
+                        <SearchBar onSearch={(query) => console.log("검색:", query)} />
                         <button
                             style={{
                                 backgroundColor: "#FFA94D",

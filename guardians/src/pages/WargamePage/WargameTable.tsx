@@ -7,6 +7,7 @@ type WargameRow = {
     categoryName: string;
     difficulty: string;
     solved: boolean;
+    score: number;
 };
 
 function WargameTable({ data }: { data: WargameRow[] }) {
@@ -34,10 +35,11 @@ function WargameTable({ data }: { data: WargameRow[] }) {
             }}>
                 <thead>
                 <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
-                    <th style={{ width: "15%", padding: "0.75rem 1rem"}}>해결</th>
+                    <th style={{ width: "10%", padding: "0.75rem 1rem"}}>해결</th>
                     <th style={{ width: "45%", padding: "0.75rem 1rem" }}>제목</th>
                     <th style={{ width: "20%", padding: "0.75rem 1rem" }}>카테고리</th>
-                    <th style={{ width: "20%", padding: "0.75rem 1rem" }}>난이도</th>
+                    <th style={{ width: "15%", padding: "0.75rem 1rem" }}>난이도</th>
+                    <th style={{ width: "10%", padding: "0.75rem 1rem" }}>배점</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -69,6 +71,7 @@ function WargameTable({ data }: { data: WargameRow[] }) {
                                         ? "어려움"
                                         : row.difficulty}
                         </td>
+                        <td style={tdStyle}>{row.score}</td>
                     </tr>
                 ))}
                 </tbody>
