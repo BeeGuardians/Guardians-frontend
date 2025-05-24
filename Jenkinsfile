@@ -12,6 +12,15 @@ metadata:
   labels:
     app: jenkins-kaniko
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: workload
+            operator: In
+            values:
+              - guardians7
   containers:
   - name: git
     image: alpine/git:latest
@@ -109,7 +118,8 @@ spec:
                       --dockerfile=$WORKSPACE/guardians/Dockerfile \
                       --destination=${FULL_IMAGE} \
                       --insecure \
-                      --skip-tls-verify
+                      --skip-tls-verify \
+                      --push-retry=3
                     echo "[SUCCESS] Docker Image pushed to ${FULL_IMAGE}"
                     """
                 }
