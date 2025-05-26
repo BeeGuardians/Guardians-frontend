@@ -73,6 +73,14 @@ spec:
     }
 
     stages {
+        stage('Notify Start') {
+            steps {
+                script {
+                    slackSend color: '#439FE0', message: ":rocket: *Frontend Build Started* for `${env.JOB_NAME}` <${env.BUILD_URL}|#${env.BUILD_NUMBER}>"
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 container('git') {
@@ -151,6 +159,18 @@ spec:
                     }
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            slackSend color: 'good', message: ":white_check_mark: *Frontend Build Success* for `${env.JOB_NAME}` <${env.BUILD_URL}|#${env.BUILD_NUMBER}> :tada:"
+        }
+        failure {
+            slackSend color: 'danger', message: ":x: *Frontend Build Failed* for `${env.JOB_NAME}` <${env.BUILD_URL}|#${env.BUILD_NUMBER}>"
+        }
+        unstable {
+            slackSend color: 'warning', message: ":warning: *Frontend Build Unstable* for `${env.JOB_NAME}` <${env.BUILD_URL}|#${env.BUILD_NUMBER}>"
         }
     }
 }
