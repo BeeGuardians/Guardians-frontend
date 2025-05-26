@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
-import Select from "react-select";
+import Select, {
+    components,
+    ValueContainerProps,
+} from "react-select";
 import resetIcon from "../../assets/reset.png";
+import { CSSObjectWithLabel } from "react-select";
+import {
+    MultiValueProps,
+    GroupBase
+} from "react-select";
 
 type OptionType = {
     value: string;
@@ -29,14 +37,21 @@ const levelOptions: OptionType[] = [
 ];
 
 const statusOptions: OptionType[] = [
-    { value: "해결 완료", label: "해결 완료" },
-    { value: "미해결", label: "미해결" },
+    { value: "SOLVED", label: "해결" },
+    { value: "UNSOLVED", label: "미해결" },
 ];
 
 const badgeColors: Record<string, string> = {
     category: "#0ea5e9",
     level: "#10b981",
     status: "#f59e0b",
+};
+
+const selectCommonProps = {
+    menuPortalTarget: document.body,
+    styles: {
+        menuPortal: (base: CSSObjectWithLabel) => ({ ...base, zIndex: 9999 }),
+    },
 };
 
 function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => void }) {
@@ -69,11 +84,34 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
     };
 
     const customComponents = (placeholderText: string) => ({
-        MultiValue: () => null,
-        ValueContainer: () => (
-            <div style={{ paddingLeft: "0.5rem", color: "#aaa" }}>{placeholderText}</div>
+        MultiValue: (
+            props: MultiValueProps<OptionType, true, GroupBase<OptionType>>
+        ) => (
+            <div style={{ display: "none" }}>
+                <components.MultiValue {...props} />
+            </div>
         ),
+
+        ValueContainer: (
+            props: ValueContainerProps<OptionType, true, GroupBase<OptionType>>
+        ) => (
+            <components.ValueContainer {...props}>
+                <div
+                    style={{
+                        paddingLeft: "0.5rem",
+                        color: "#aaa",
+                        fontSize: "0.9rem",
+                        position: "absolute",
+                        pointerEvents: "none",
+                    }}
+                >
+                    {placeholderText}
+                </div>
+                {props.children}
+            </components.ValueContainer>
+        )
     });
+
 
     const getBadgeColor = (option: OptionType): string => {
         if (categoryOptions.find(o => o.value === option.value)) return badgeColors.category;
@@ -84,38 +122,44 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
 
     return (
         <div>
-            <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem"}}>
+            <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
                 <div style={{ minWidth: "180px" }}>
                     <Select<OptionType, true>
                         options={categoryOptions}
                         isMulti
-                        placeholder="분야 선택"
                         value={selectedCategories}
                         onChange={(selected) => setSelectedCategories(selected as OptionType[])}
                         components={customComponents("분야 선택")}
+                        placeholder=""
+                        isSearchable={false}
+                        {...selectCommonProps}
                     />
                 </div>
                 <div style={{ minWidth: "180px" }}>
                     <Select<OptionType, true>
                         options={levelOptions}
                         isMulti
-                        placeholder="난이도 선택"
                         value={selectedLevels}
                         onChange={(selected) => setSelectedLevels(selected as OptionType[])}
                         components={customComponents("난이도 선택")}
+                        placeholder=""
+                        isSearchable={false}
+                        {...selectCommonProps}
                     />
                 </div>
                 <div style={{ minWidth: "180px" }}>
                     <Select<OptionType, true>
                         options={statusOptions}
                         isMulti
-                        placeholder="해결 여부"
                         value={selectedStatus}
                         onChange={(selected) => setSelectedStatus(selected as OptionType[])}
                         components={customComponents("해결 여부")}
+                        placeholder=""
+                        isSearchable={false}
+                        {...selectCommonProps}
                     />
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginLeft: "5rem"  }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginLeft: "5rem" }}>
                     <label htmlFor="bookmarkedOnly" style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                         <div style={{
                             position: "relative",
@@ -154,6 +198,7 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                     </label>
                 </div>
             </div>
+
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem", alignItems: "center" }}>
                 {[...selectedCategories, ...selectedLevels, ...selectedStatus].map(option => (
                     <div

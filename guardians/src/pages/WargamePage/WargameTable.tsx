@@ -66,7 +66,7 @@ function WargameTable({ data }: { data: WargameRow[] }) {
                             {row.difficulty === "EASY"
                                 ? "쉬움"
                                 : row.difficulty === "MEDIUM"
-                                    ? "중간"
+                                    ? "보통"
                                     : row.difficulty === "HARD"
                                         ? "어려움"
                                         : row.difficulty}

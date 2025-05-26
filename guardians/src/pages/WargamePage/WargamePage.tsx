@@ -5,7 +5,7 @@ import FilterBar from "./FilterBar";
 import WargameTable from "./WargameTable";
 import ProfileCard from "./ProfileCard";
 import PopularWargameList from "./PopularWargameList";
-import TopLikedWargameSlider from "./TopLikedWargameSlider"; // 👈 추가
+import TopLikedWargameSlider from "./TopLikedWargameSlider";
 
 interface Challenge {
     id: number;
@@ -52,7 +52,7 @@ function WargamePage() {
                 filters.level.length === 0 || filters.level.includes(w.difficulty);
             const statusMatch =
                 filters.status.length === 0 ||
-                filters.status.includes(w.solved ? "풀었음" : "못 풀었음");
+                filters.status.includes(w.solved ? "SOLVED" : "UNSOLVED");
             const bookmarkedMatch =
                 !filters.bookmarked || w.bookmarked === true;
             const keywordMatch =
