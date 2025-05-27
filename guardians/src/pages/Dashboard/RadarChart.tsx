@@ -17,10 +17,9 @@ interface CategoryScore {
 
 interface RadarChartProps {
     userId: number;
-    labelFontSize?: number; // ✅ 글자 크기 조절 가능
 }
 
-const RadarChartComponent = ({ userId, labelFontSize = 15 }: RadarChartProps) => {
+const RadarChartComponent = ({ userId }: RadarChartProps) => {
     const [data, setData] = useState<CategoryScore[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -45,19 +44,19 @@ const RadarChartComponent = ({ userId, labelFontSize = 15 }: RadarChartProps) =>
         <ResponsiveContainer width="100%" height="100%">
             <RadarChart
                 cx="50%"
-                cy="58%" // ✅ 아래로 조금 내림
-                outerRadius="90%" // ✅ 기본값보다 살짝 줄여 위치 여유 확보
+                cy="58%" // 아래로 조금 내림
+                outerRadius="90%" // 기본보다 약간 축소
                 data={data}
             >
                 <PolarGrid stroke="#ddd" strokeDasharray="3 2" />
                 <PolarAngleAxis
                     dataKey="category"
                     tick={{
-                        fontSize: labelFontSize, // ✅ 글자 크기 조절 가능
-                        fill: "#333",
+                        fontSize: 13,
+                        fill: "#666",
+                        dy: 4, // 글자를 약간 아래로
                     }}
-                    tickLine={false} // ✅ 라인 제거
-                    tickMargin={12} // ✅ 꼭짓점과 글자 사이 간격 확보
+                    tickLine={false}
                 />
                 <PolarRadiusAxis
                     domain={[0, 100]}

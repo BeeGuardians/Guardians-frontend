@@ -226,7 +226,7 @@ const SolvedLineChart = () => {
                                 setShowCalendar(false);
                             }}
                             value={selectedDate}
-                            formatDay={(locale, date) => String(date.getDate())}
+                            formatDay={(_, date) => String(date.getDate())}
                         />
                     </div>
                 )}

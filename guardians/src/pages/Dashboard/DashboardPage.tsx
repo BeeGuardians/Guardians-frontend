@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import SolvedLineChart from "./SolvedLineChart";
 import "react-circular-progressbar/dist/styles.css";
-import { motion } from "framer-motion";
 import RadarChart from "./RadarChart";
 
 interface Badge {
