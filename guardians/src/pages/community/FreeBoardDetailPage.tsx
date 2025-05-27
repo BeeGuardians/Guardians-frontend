@@ -101,6 +101,13 @@ const FreeBoardDetailPage = () => {
         });
     };
 
+    const handleInfoModalClose = () => {
+        setShowInfoModal(false);
+        if (infoMessage === '게시글이 삭제되었습니다.') {
+            navigate('/community/free');
+        }
+    };
+
     const handleEdit = () => {
         if (!board) return;
         navigate(`/community/free/edit/${board.boardId}`);
@@ -155,12 +162,7 @@ const FreeBoardDetailPage = () => {
         }
     };
 
-    const handleInfoModalClose = () => {
-        setShowInfoModal(false);
-        if (infoMessage === '게시글이 삭제되었습니다.') {
-            navigate('/community/free');
-        }
-    };
+
 
 
     if (!board) {
@@ -171,7 +173,16 @@ const FreeBoardDetailPage = () => {
         <div className={styles.pageWrapper}>
             <div className={styles.mainContent}>
                 <div className={styles.topBar}>
-                    <button className={styles.backBtn} onClick={() => navigate(-1)}>← 뒤로가기</button>
+                    <button
+                        className={styles.backBtn}
+                        onClick={() => navigate(-1)}
+                        style={{
+                            fontSize: '2rem',
+                            textDecoration: 'none'
+                    }}
+                    >
+                        ←
+                    </button>
                     {isLoggedIn && String(sessionUserId) === String(board.userId) && (
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
@@ -187,11 +198,16 @@ const FreeBoardDetailPage = () => {
                                 onClick={toggleLike}
                                 disabled={!isLoggedIn}
                                 className={`${styles["action-btn"]} ${isLiked ? styles.active : ""}`}
-                                style={{cursor: isLoggedIn ? 'pointer' : 'not-allowed'}}
+                                style={{
+                                    marginLeft: '1rem',
+                                    cursor: isLoggedIn ? 'pointer' : 'not-allowed',
+                                    width: '60px',
+                                    height: '35px',
+                                    whiteSpace: 'nowrap',
+                                }}
                             >
                                 {isLiked ? "❤️" : "🤍"} {board.likeCount}
-                            </button>
-                        </div>
+                            </button>                        </div>
                         <div className={styles.meta}>
                             <span>✍ 작성자: {board.username}</span>
                             <span>🕒 작성일: {new Date(board.createdAt).toLocaleDateString()}</span>

@@ -5,6 +5,8 @@ import SearchBar from "./components/SearchBar";
 import viewIcon from "../../assets/view.png";
 import commentIcon from "../../assets/comment.png";
 import axios from "axios";
+import Modal from "./components/Modal.tsx";
+
 
 type QnaPost = {
     id: number;
@@ -14,26 +16,44 @@ type QnaPost = {
     username: string;
     createdAt: string;
     answerCount?: number;
+    viewCount?: number;
 };
+
 
 const QnaBoardPage = () => {
     const [posts, setPosts] = useState<QnaPost[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const navigate = useNavigate(); // ✅ 추가
+    const navigate = useNavigate();
     const postsPerPage = 10;
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+
+
 
     useEffect(() => {
-        const fetchQuestionsWithCounts = async () => {
-            try {
-                const res = await axios.get("/api/qna/questions");
-                const questions: QnaPost[] = res.data.result.data;
+        fetchBoards();
+    }, []);
 
-                const questionsWithCount = await Promise.all(
-                    questions.map(async (q) => {
-                        try {
-                            const answerRes = await axios.get(`/api/qna/answers/${q.id}`);
-                            const count = answerRes.data.result.count || 0;
-                            return { ...q, answerCount: count };
+    const fetchBoards = async (keyword?: string) => {
+        let url = "/api/qna/questions";
+        if (keyword && keyword.trim().length >= 2) {
+            url += `?keyword=${encodeURIComponent(keyword)}`;
+        } else if (keyword && keyword.trim().length < 2) {
+            setModalMessage("검색어는 2자 이상 입력해주세요.");
+            setModalOpen(true);
+            return;
+        }
+
+        try {
+            const res = await axios.get(url);
+            const questions: QnaPost[] = res.data.result.data;
+
+            const questionsWithCount = await Promise.all(
+                questions.map(async (q) => {
+                    try {
+                        const answerRes = await axios.get(`/api/qna/answers/${q.id}`);
+                        const count = answerRes.data.result.count || 0;
+                        return { ...q, answerCount: count };
                         } catch (err) {
                             console.error(`답변 수 불러오기 실패 (id: ${q.id})`, err);
                             return { ...q, answerCount: 0 };
@@ -41,17 +61,16 @@ const QnaBoardPage = () => {
                     })
                 );
 
-                setPosts(questionsWithCount);
-            } catch (err) {
+            setPosts(questionsWithCount);
+            setCurrentPage(1);
+        } catch (err) {
                 console.error("QnA 질문 목록 불러오기 실패:", err);
-            }
-        };
-
-        fetchQuestionsWithCounts();
-    }, []);
+        }
+    };
 
     const totalPages = Math.ceil(posts.length / postsPerPage);
     const currentPosts = posts.slice((currentPage - 1) * postsPerPage, currentPage * postsPerPage);
+
 
     return (
         <div style={{
@@ -84,7 +103,7 @@ const QnaBoardPage = () => {
                     </div>
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
-                        <SearchBar onSearch={(query) => console.log("검색:", query)} />
+                        <SearchBar onSearch={fetchBoards}/>
                         <button
                             style={{
                                 backgroundColor: "#FFA94D",
@@ -151,7 +170,7 @@ const QnaBoardPage = () => {
                                         </div>
                                         <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                                             <img src={viewIcon} alt="view" style={{ width: "18px", height: "18px" }} />
-                                            <span>- 조회</span>
+                                            <span>{post.viewCount ?? 0} 조회</span>
                                         </div>
                                     </div>
                                     <span
@@ -190,6 +209,14 @@ const QnaBoardPage = () => {
                             </button>
                         ))}
                     </div>
+                    <Modal
+                        isOpen={modalOpen}
+                        onClose={() => setModalOpen(false)}
+                        onConfirm={() => setModalOpen(false)}
+                        confirmText="확인"
+                        message={modalMessage}
+                        showCancelButton={false}
+                    />
                 </div>
             </div>
         </div>

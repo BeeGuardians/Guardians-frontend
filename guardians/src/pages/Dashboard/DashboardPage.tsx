@@ -106,6 +106,8 @@ const DashboardPage = () => {
         fetchData();
     }, []);
 
+
+
     if (isLoading) {
         return <div style={{textAlign: "center", padding: "2rem"}}>로딩 중...</div>;
     }

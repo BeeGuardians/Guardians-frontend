@@ -183,7 +183,6 @@
 
 .commentHeader {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
