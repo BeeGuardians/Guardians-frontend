@@ -4,6 +4,8 @@ import axios from "axios";
 import styles from "./WargameDetailPage.module.css";
 import QACard from "./QACard";
 import WargameUserStatusCard from "./WargameUserStatusCard";
+import {AiOutlineInfoCircle} from "react-icons/ai";
+
 
 axios.defaults.withCredentials = true;
 
@@ -72,8 +74,59 @@ function WargameDetailPage() {
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
     const [confirmEditDone, setConfirmEditDone] = useState(false);
-    const [modalResult, setModalResult] = useState<null | { correct: boolean; message: string; accessUrl?: string }>(null);
+    const [modalResult, setModalResult] = useState<null | {
+        correct: boolean;
+        message: string;
+        accessUrl?: string
+    }>(null);
     const [podStatus, setPodStatus] = useState<string>("");
+    const [kaliUrl, setKaliUrl] = useState<string | null>(null);
+    const [kaliStatus, setKaliStatus] = useState<string>("Not Found");
+    const [isStartingKali, setIsStartingKali] = useState(false);
+    const [isStoppingKali, setIsStoppingKali] = useState(false);
+    const [showWargameTooltip, setShowWargameTooltip] = useState(false);
+    const [showKaliTooltip, setShowKaliTooltip] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            axios.get(`${API_BASE}/api/wargames/kali/status`)
+                .then((res) => {
+                    setKaliStatus(res.data.result.data.status);
+                    setKaliUrl(res.data.result.data.url);
+                })
+                .catch((err) => {
+                    console.error("칼리 상태 조회 실패", err);
+                });
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const startKaliPod = async () => {
+        setIsStartingKali(true);
+        try {
+            const res = await axios.post(`${API_BASE}/api/wargames/kali/start`);
+            setKaliUrl(res.data.result.data.url);
+            setKaliStatus("Pending");
+        } catch (e) {
+            alert("칼리 인스턴스 시작 실패");
+        } finally {
+            setIsStartingKali(false);
+        }
+    };
+
+    const stopKaliPod = async () => {
+        setIsStoppingKali(true);
+        try {
+            await axios.delete(`${API_BASE}/api/wargames/kali/stop`);
+            setKaliUrl(null);
+            setKaliStatus("Not Found");
+        } catch (e) {
+            alert("칼리 인스턴스 종료 실패");
+        } finally {
+            setIsStoppingKali(false);
+        }
+    };
+
 
     useEffect(() => {
         checkLoginStatus();
@@ -259,7 +312,7 @@ function WargameDetailPage() {
         try {
             const res = await axios.post(`${API_BASE}/api/wargames/${id}/start`);
             setTimeout(() => {
-                const { url } = res.data.result.data;
+                const {url} = res.data.result.data;
                 setPodUrl(url);
                 setIsPodRunning(true);
                 setIsStartingPod(false);
@@ -370,8 +423,94 @@ function WargameDetailPage() {
                     <h2 className={styles["desc-title"]}>문제 설명</h2>
                     <div className={styles.desc}>{wargame.description}</div>
 
-                    {/* 워게임 인스턴스 제어 카드 */}
-                    <h2 className={styles["pod-title"]}>워게임 인스턴스</h2>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", position: "relative" }}>
+                        <h2 className={styles["pod-title"]} style={{ flexShrink: 0, flexGrow: 1, borderBottom: "2px solid #FFA94D", paddingBottom: "0.25rem" }}>해킹 실습 환경</h2>
+                        <AiOutlineInfoCircle
+                            size={18}
+                            color="#888"
+                            onMouseEnter={() => setShowKaliTooltip(true)}
+                            onMouseLeave={() => setShowKaliTooltip(false)}
+                            style={{ cursor: "pointer" }}
+                        />
+                        {showKaliTooltip && (
+                            <div style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: "70%",
+                                background: "#4d4d4d",
+                                color: "#fff",
+                                padding: "0.5rem 0.75rem",
+                                borderRadius: "8px",
+                                zIndex: 999,
+                                fontSize: "0.85rem",
+                                whiteSpace: "nowrap",
+                                marginTop: "0.25rem"
+                            }}>
+                                실습용 리눅스 환경이에요. 환경이 준비되지 않았다면 이 버튼으로 바로 시작해보세요!
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={styles["pod-card"]}>
+                        <div className={styles["submit-box"]}>
+                            {kaliStatus === "Running" || kaliStatus === "Pending" || kaliStatus === "Terminating" ? (
+                                <button
+                                    onClick={stopKaliPod}
+                                    className={styles["submit-btn"]}
+                                    disabled={isStoppingKali || isStartingKali || kaliStatus === "Terminating"}
+                                >
+                                    {isStoppingKali || kaliStatus === "Terminating" ? "환경 종료 중..." : "환경 종료"}
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={startKaliPod}
+                                    className={styles["submit-btn"]}
+                                    disabled={isStartingKali || isStoppingKali}
+                                >
+                                    {isStartingKali ? "환경 시작 중..." : "해킹 환경 시작"}
+                                </button>
+                            )}
+                        </div>
+                        {(isStartingKali || isStoppingKali) && (
+                            <p className={styles["pod-url"]} style={{ color: '#888' }}>
+                                최대 60초 정도 소요될 수 있어요.
+                            </p>
+                        )}
+                        {kaliUrl && !isStartingKali && kaliStatus !== "Terminating" && (
+                            <p className={styles["pod-url"]}>
+                                접속 URL: <a href={kaliUrl} target="_blank" rel="noreferrer">{kaliUrl}</a>
+                            </p>
+                        )}
+                        <p style={{ color: "#aaa", marginTop: "0.5rem" }}>상태: {kaliStatus}</p>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", position: "relative" }}>
+                        <h2 className={styles["pod-title"]} style={{ flexShrink: 0, flexGrow: 1, borderBottom: "2px solid #FFA94D", paddingBottom: "0.25rem" }}>워게임 인스턴스</h2>
+                        <AiOutlineInfoCircle
+                            size={18}
+                            color="#888"
+                            onMouseEnter={() => setShowWargameTooltip(true)}
+                            onMouseLeave={() => setShowWargameTooltip(false)}
+                            style={{ cursor: "pointer" }}
+                        />
+                        {showWargameTooltip && (
+                            <div style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: "70%",
+                                background: "#4d4d4d",
+                                color: "#fff",
+                                padding: "0.5rem 0.75rem",
+                                borderRadius: "8px",
+                                zIndex: 999,
+                                fontSize: "0.85rem",
+                                whiteSpace: "nowrap",
+                                marginTop: "0.25rem"
+                            }}>
+                                이 워게임에 대한 실습 환경을 시작하거나 종료할 수 있어요.
+                            </div>
+                        )}
+                    </div>
                     <div className={styles["pod-card"]}>
                         <div className={styles["submit-box"]}>
                             {isPodRunning || podStatus === "Terminating" ? (
@@ -404,7 +543,9 @@ function WargameDetailPage() {
                                 접속 URL: <a href={podUrl} target="_blank" rel="noreferrer">{podUrl}</a>
                             </p>
                         )}
-                        <p style={{ color: "#aaa", marginTop: "0.5rem" }}>상태: {podStatus === "Not Found" ? "Stopped" : podStatus}</p>
+                        <p style={{ color: "#aaa", marginTop: "0.5rem" }}>
+                            상태: {podStatus === "Not Found" ? "Stopped" : podStatus}
+                        </p>
                     </div>
 
                     {/* 플래그 제출 */}
@@ -437,7 +578,8 @@ function WargameDetailPage() {
 
                                 {modalResult.accessUrl && modalResult.correct && (
                                     <div style={{marginTop: "1rem", fontSize: "0.9rem", wordBreak: "break-all"}}>
-                                        접속 URL: <a href={modalResult.accessUrl} target="_blank" rel="noreferrer">{modalResult.accessUrl}</a>
+                                        접속 URL: <a href={modalResult.accessUrl} target="_blank"
+                                                   rel="noreferrer">{modalResult.accessUrl}</a>
                                     </div>
                                 )}
 
@@ -452,7 +594,7 @@ function WargameDetailPage() {
                         {isLoggedIn && (
                             <button
                                 className={styles["submit-btn"]}
-                                style={{ marginBottom: '1rem', marginLeft: 'auto', display: 'block' }}
+                                style={{marginBottom: '1rem', marginLeft: 'auto', display: 'block'}}
                                 onClick={() => navigate("/community/qna/write")} // 클릭 시 이동 추가
                             >
                                 질문하기
