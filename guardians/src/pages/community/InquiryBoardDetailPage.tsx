@@ -168,7 +168,16 @@ const InquiryBoardDetailPage = () => {
         <div className={styles.pageWrapper}>
             <div className={styles.mainContent}>
                 <div className={styles.topBar}>
-                    <button className={styles.backBtn} onClick={() => navigate(-1)}>← 뒤로가기</button>
+                    <button
+                        className={styles.backBtn}
+                        onClick={() => navigate(-1)}
+                        style={{
+                            fontSize: '2rem',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        ←
+                    </button>
                     {isLoggedIn && String(sessionUserId) === String(board.userId) && (
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
@@ -184,7 +193,13 @@ const InquiryBoardDetailPage = () => {
                                 onClick={toggleLike}
                                 disabled={!isLoggedIn}
                                 className={`${styles["action-btn"]} ${isLiked ? styles.active : ""}`}
-                                style={{cursor: isLoggedIn ? 'pointer' : 'not-allowed'}}
+                                style={{
+                                    marginLeft: '1rem',
+                                    cursor: isLoggedIn ? 'pointer' : 'not-allowed',
+                                    width: '60px',
+                                    height: '35px',
+                                    whiteSpace: 'nowrap',
+                                }}
                             >
                                 {isLiked ? "❤️" : "🤍"} {board.likeCount}
                             </button>
