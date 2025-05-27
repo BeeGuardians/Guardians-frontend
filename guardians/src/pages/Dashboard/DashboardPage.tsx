@@ -1,10 +1,10 @@
-import {useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import SolvedLineChart from "./SolvedLineChart";
 import "react-circular-progressbar/dist/styles.css";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
+import RadarChart from "./RadarChart";
 
-// 뱃지 타입
 interface Badge {
     id: number;
     name: string;
@@ -17,6 +17,7 @@ interface Badge {
 const DashboardPage = () => {
     const [badges, setBadges] = useState<Badge[]>([]);
     const [userInfo, setUserInfo] = useState<{
+        id: number;
         nickname: string;
         profileImageUrl: string;
         score: number;
@@ -27,9 +28,9 @@ const DashboardPage = () => {
     const [error, setError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
-    const [isTierInfoOpen, setIsTierInfoOpen] = useState(false);
+    const [isTierDescriptionOpen, setIsTierDescriptionOpen] = useState(false);
     const descriptionRef = useRef<HTMLDivElement | null>(null);
-    const tierRef = useRef<HTMLDivElement | null>(null);
+    const tierDescriptionRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -37,41 +38,39 @@ const DashboardPage = () => {
                 setIsDescriptionOpen(false);
             }
         };
-
         if (isDescriptionOpen) {
             document.addEventListener("mousedown", handleClickOutside);
         }
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [isDescriptionOpen]);
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (tierRef.current && !tierRef.current.contains(event.target as Node)) {
-                setIsTierInfoOpen(false);
-            }
-        };
-
-        if (isTierInfoOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isTierInfoOpen]);
+    }, [isDescriptionOpen]);
+
+    useEffect(() => {
+        const handleTierClickOutside = (event: MouseEvent) => {
+            if (tierDescriptionRef.current && !tierDescriptionRef.current.contains(event.target as Node)) {
+                setIsTierDescriptionOpen(false);
+            }
+        };
+        if (isTierDescriptionOpen) {
+            document.addEventListener("mousedown", handleTierClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleTierClickOutside);
+        };
+    }, [isTierDescriptionOpen]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 1. me 호출
-                const profileRes = await axios.get("/api/users/me", {withCredentials: true});
+                const profileRes = await axios.get("/api/users/me", { withCredentials: true });
                 const userData = profileRes.data.result.data;
 
-                // 2. stats 호출
                 const statsRes = await axios.get(`/api/users/${userData.id}/stats`);
                 const statsData = statsRes.data.result.data;
 
                 setUserInfo({
+                    id: userData.id,
                     nickname: userData.username,
                     profileImageUrl: userData.profileImageUrl,
                     score: statsData.score,
@@ -80,7 +79,6 @@ const DashboardPage = () => {
                     tier: statsData.tier,
                 });
 
-                // 3. 뱃지 호출
                 const badgeRes = await axios.get(`/api/users/${userData.id}/badges`);
                 const sorted = badgeRes.data.result.data.sort((a: Badge, b: Badge) => a.id - b.id);
                 setBadges([
@@ -90,8 +88,7 @@ const DashboardPage = () => {
                         name: "전설의 레전드",
                         description: "랭킹 1위에게 주어져요.",
                         trueIconUrl: null,
-                        falseIconUrl:
-                            "https://s3-guardians-dev.s3.ap-northeast-2.amazonaws.com/badges/false_Legend+of+Legend.png",
+                        falseIconUrl: "https://s3-guardians-dev.s3.ap-northeast-2.amazonaws.com/badges/false_Legend+of+Legend.png",
                         earned: false,
                     },
                 ]);
@@ -107,11 +104,11 @@ const DashboardPage = () => {
     }, []);
 
     if (isLoading) {
-        return <div style={{textAlign: "center", padding: "2rem"}}>로딩 중...</div>;
+        return <div style={{ textAlign: "center", padding: "2rem" }}>로딩 중...</div>;
     }
 
     if (error || !userInfo) {
-        return <div style={{color: "red", textAlign: "center", padding: "2rem"}}>데이터를 불러오지 못했어요 😢</div>;
+        return <div style={{ color: "red", textAlign: "center", padding: "2rem" }}>데이터를 불러오지 못했어요 😢</div>;
     }
 
     const getBarColor = (key: string): string => {
@@ -119,30 +116,15 @@ const DashboardPage = () => {
     };
 
     const stats = [
-        {
-            label: "랭킹",
-            value: userInfo?.rank || 0,
-            percent: userInfo?.rank === 1 ? 100 : 100 - (userInfo?.rank || 0) * 3,
-            suffix: "위",
-        },
-        {
-            label: "점수",
-            value: userInfo?.score || 0,
-            percent: Math.min((userInfo?.score || 0) / 50, 100),
-            suffix: "점",
-        },
-        {
-            label: "문제",
-            value: userInfo?.solvedCount || 0,
-            percent: Math.min((userInfo?.solvedCount || 0) * 10, 100),
-            suffix: "개",
-        },
+        { label: "랭킹", value: userInfo.rank, percent: userInfo.rank === 1 ? 100 : 100 - userInfo.rank * 3, suffix: "위" },
+        { label: "점수", value: userInfo.score, percent: Math.min(userInfo.score / 50, 100), suffix: "점" },
+        { label: "문제", value: userInfo.solvedCount, percent: Math.min(userInfo.solvedCount * 10, 100), suffix: "개" },
     ];
 
     return (
-        <div style={{display: "flex", justifyContent: "center", padding: "2rem 1rem"}}>
-            <div style={{maxWidth: "1200px", width: "100%"}}>
-                <h3 style={{marginTop: 0, marginBottom: "1rem", fontWeight: 400, fontSize: "1rem", color: "#666"}}>
+        <div style={{ display: "flex", justifyContent: "center", padding: "2rem 1rem" }}>
+            <div style={{ maxWidth: "1200px", width: "100%" }}>
+                <h3 style={{ marginTop: 0, marginBottom: "1rem", fontWeight: 400, fontSize: "1rem", color: "#666" }}>
                     📊 내 성장과 성과를 한 눈에 확인해보세요!
                 </h3>
 
@@ -159,154 +141,129 @@ const DashboardPage = () => {
                         lineHeight: "1.5rem",
                     }}
                 >
-                    대시보드는 사용자 활동을 기반으로 배지와 역할을 시각화하는 공간입니다. <br/>
-                    획득한 보상과 활동 데이터를 바탕으로, 학습 현황을 종합적으로 파악해보세요! 💎
+                    대시보드는 사용자 활동을 기반으로 배지와 역할을 시각화하는 공간입니다. <br />
+                    획득한 보상과 활동 데이터를 바탕으로 학습 현황을 종합적으로 파악해보세요! 💎
                 </div>
 
-                {/* 요약 카드 */}
-                <motion.div
-                    initial={{opacity: 0, y: 20}}
-                    animate={{opacity: 1, y: 0}}
-                    transition={{duration: 0.6}}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "2rem",
-                        padding: "2rem",
-                        backgroundColor: "#fff",
-                        border: "1px solid #eee",
-                        borderRadius: "1.5rem",
-                        marginBottom: "4vh",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                    }}
-                >
-                    {/* 프로필 + 티어 */}
-                    <div style={{display: "flex", alignItems: "center", gap: "1rem"}}>
-                        <img
-                            src={userInfo?.profileImageUrl || "/default-profile.png"}
-                            alt="프로필"
+                {/* 카드 그룹 */}
+                <div style={{ display: "flex", gap: "2rem", alignItems: "stretch", marginBottom: "4vh" }}>
+                    {/* 내 정보 카드 */}
+                    <div style={{ flex: 5, display: "flex", flexDirection: "column", position: "relative" }}>
+                        <h4 style={{ fontSize: "1.1rem", marginBottom: "1rem", fontWeight: 500 }}>내 정보</h4>
+                        <div
                             style={{
-                                width: "72px",
-                                height: "72px",
-                                borderRadius: "50%",
-                                objectFit: "cover",
-                                border: "2px solid #FFA94D",
+                                backgroundColor: "#fff",
+                                padding: "2rem",
+                                borderRadius: "1.5rem",
+                                border: "1px solid #eee",
+                                flex: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
                             }}
-                        />
-                        <div>
-                            <div style={{display: "flex", alignItems: "center", gap: "0.5rem"}}>
-                                <img
-                                    src={`/badges/${String(userInfo?.tier)}.png`}
-                                    alt="티어 뱃지"
-                                    style={{width: "28px", height: "28px"}}
-                                />
-                                <span style={{fontSize: "1.2rem", fontWeight: 600}}>{userInfo?.nickname}</span>
+                        >
+                            <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: "100px"}}>
+                                    <img
+                                        src={userInfo.profileImageUrl || "/default-profile.png"}
+                                        alt="프로필"
+                                        style={{
+                                            width: 72,
+                                            height: 72,
+                                            borderRadius: "50%",
+                                            objectFit: "cover",
+                                            border: "2px solid #FFA94D",
+                                            marginBottom: "0.5rem",
+                                        }}
+                                    />
+                                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem" }}>
+                                        <img src={`/badges/${userInfo.tier}.png`} alt="티어" style={{ width: 24, height: 24 }} />
+                                        <span style={{ fontSize: "1rem", fontWeight: 600 }}>{userInfo.nickname}</span>
+                                    </div>
+                                </div>
+
+                                <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", flex: 1 }}>
+                                    {stats.map((item) => (
+                                        <div
+                                            key={item.label}
+                                            style={{
+                                                backgroundColor: "#fffdf6",
+                                                padding: "0.75rem",
+                                                borderRadius: "1rem",
+                                                boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                                            }}
+                                        >
+                                            <div style={{ fontSize: "0.85rem", color: "#888", marginBottom: 6 }}>{item.label}</div>
+
+                                            <div style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "0.5rem" }}>
+                                                {item.value}
+                                                <span style={{ fontSize: "0.9rem", marginLeft: 4 }}>{item.suffix}</span>
+                                            </div>
+                                            <div
+                                                style={{
+                                                    backgroundColor: "#fff",
+                                                    borderRadius: 20,
+                                                    height: 16,
+                                                    border: "2px solid #eee",
+                                                    overflow: "hidden",
+                                                }}
+                                            >
+                                                <div
+                                                    style={{
+                                                        backgroundColor: getBarColor(item.label),
+                                                        width: `${item.percent}%`,
+                                                        height: "100%",
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
+                        </div>
+
+                        <div ref={tierDescriptionRef} style={{ position: "absolute", bottom: "1rem", left: "1.5rem" }}>
+                            {isTierDescriptionOpen && (
+                                <div style={{ position: "absolute", bottom: "150%", left: 0, backgroundColor: "#fffaf3", border: "1px solid #eee", borderRadius: "0.75rem", padding: "1rem", fontSize: "0.85rem", lineHeight: "1.4rem", color: "#444", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", width: "350px", zIndex: 10 }}>
+                                    <div style={{ position: "absolute", top: "100%", left: "1rem", width: 0, height: 0, borderLeft: "8px solid transparent", borderRight: "8px solid transparent", borderTop: "8px solid #fffaf3", filter: "drop-shadow(0 -1px 1px rgba(0,0,0,0.05))" }} />
+                                    <div style={{ marginBottom: "0.5rem", color: "#333", fontWeight: 600 }}>🏅 티어란?</div>
+                                    <div>
+                                        티어는 현재 나의 실력을 나타내는 등급이에요.
+                                        <br />문제 풀이 수와 점수를 기반으로 자동 계산되며,
+                                        <br />티어 아이콘은 프로필 옆에 표시돼요!
+                                    </div>
+                                </div>
+                            )}
+                            <button onClick={() => setIsTierDescriptionOpen(!isTierDescriptionOpen)} style={{ padding: "0.5rem 1rem", border: "1px solid #ccc", borderRadius: "999px", backgroundColor: "#fdf3e7", cursor: "pointer", fontSize: "0.9rem" }}>
+                                {isTierDescriptionOpen ? "티어 설명 닫기" : "티어란?"}
+                            </button>
                         </div>
                     </div>
 
-                    {/* 통계 + 프로그래스 */}
-                    <div
-                        style={{
-                            display: "flex",
-                            flex: 1,
-                            justifyContent: "space-around",
-                            textAlign: "center",
-                            flexWrap: "wrap",
-                            gap: "1rem",
-                        }}
-                    >
-                        {userInfo &&
-                            stats.map((item) => (
-                                <div
-                                    key={item.label}
-                                    style={{
-                                        width: "220px",
-                                        textAlign: "center",
-                                        padding: "1rem",
-                                        borderRadius: "1rem",
-                                        backgroundColor: "#fffdf6",
-                                        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-                                    }}
-                                >
-                                    {/* 숫자 + 단위 강조 */}
-                                    <div style={{
-                                        fontSize: "1.4rem",
-                                        fontWeight: 700,
-                                        color: "#333",
-                                        marginBottom: "0.2rem"
-                                    }}>
-                                        {item.value}
-                                        <span style={{
-                                            fontSize: "1rem",
-                                            marginLeft: "0.25rem",
-                                            color: "#666"
-                                        }}>{item.suffix}</span>
-                                    </div>
-
-                                    {/* 라벨 설명 */}
-                                    <div style={{fontSize: "0.9rem", color: "#888", marginBottom: "0.5rem"}}>
-                                        {item.label}
-                                    </div>
-
-                                    {/* 프로그레스바 */}
-                                    <div
-                                        style={{
-                                            backgroundColor: "#fff",
-                                            borderRadius: "20px",
-                                            height: "20px",
-                                            border: "2px solid #eee",
-                                            overflow: "hidden",
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                backgroundColor: getBarColor(item.label),
-                                                width: `${item.percent}%`,
-                                                height: "100%",
-                                                transition: "width 0.5s ease-in-out",
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                    </div>
-
-                </motion.div>
-
-                <motion.div
-                    initial={{opacity: 0, y: 20}}
-                    animate={{opacity: 1, y: 0}}
-                    transition={{duration: 0.6}}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "2rem",
-                        padding: "2rem",
-                        backgroundColor: "#fff",
-                        border: "1px solid #eee",
-                        borderRadius: "1.5rem",
-                        marginBottom: "4vh",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                    }}
-                >
-                    {/* 뱃지 영역 */}
-                    <div style={{marginBottom: "5vh"}}>
-                        <h4 style={{fontSize: "1.1rem", marginBottom: "1.5rem"}}>내 뱃지</h4>
+                    {/* 내 뱃지 카드 */}
+                    <div style={{ flex: 5, display: "flex", flexDirection: "column" }}>
+                        <h4 style={{ fontSize: "1.1rem", marginBottom: "1rem", fontWeight: 500 }}>내 뱃지</h4>
                         <div
                             style={{
-                                backgroundColor: "#fffdf6",
-                                border: "1px solid #ddd",
-                                borderRadius: "1rem",
-                                padding: "2rem"
+                                backgroundColor: "#fff",
+                                padding: "1.5rem",
+                                borderRadius: "1.5rem",
+                                border: "1px solid #eee",
+                                flex: 1,
+                                position: "relative",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
                             }}
                         >
                             <div
                                 style={{
                                     display: "grid",
                                     gridTemplateColumns: "repeat(6, 1fr)",
-                                    gap: "1.3rem",
+                                    columnGap: "1rem",
+                                    rowGap: "1.4rem",
                                     placeItems: "center",
+                                    marginTop: "0.8rem"
                                 }}
                             >
                                 {badges.map((badge) => (
@@ -314,8 +271,8 @@ const DashboardPage = () => {
                                         key={badge.id}
                                         title={badge.name}
                                         style={{
-                                            width: "70%",
-                                            aspectRatio: "1",
+                                            width: "100px",
+                                            height: "100px",
                                             borderRadius: "50%",
                                             backgroundColor: "#f5f5f5",
                                             display: "flex",
@@ -325,7 +282,7 @@ const DashboardPage = () => {
                                         }}
                                     >
                                         <img
-                                            src={badge.earned ? badge.trueIconUrl || "/badge/default-colored.png" : badge.falseIconUrl || "/badge/default-gray.png"}
+                                            src={badge.earned ? (badge.trueIconUrl ?? "/badge/default-colored.png") : (badge.falseIconUrl ?? "/badge/default-gray.png")}
                                             alt={badge.name}
                                             style={{
                                                 width: "100%",
@@ -338,14 +295,13 @@ const DashboardPage = () => {
                                 ))}
                             </div>
 
-                            {/* 말풍선 */}
                             <div
                                 ref={descriptionRef}
                                 style={{
                                     position: "relative",
                                     display: "flex",
                                     justifyContent: "flex-end",
-                                    marginTop: "1rem"
+                                    marginTop: "0rem",
                                 }}
                             >
                                 {isDescriptionOpen && (
@@ -380,20 +336,15 @@ const DashboardPage = () => {
                                                 filter: "drop-shadow(0 -1px 1px rgba(0,0,0,0.05))",
                                             }}
                                         />
-
-                                        <div style={{
-                                            marginBottom: "0.75rem",
-                                            color: "#333",
-                                            borderBottom: "2px solid #eee",
-                                            padding: "0.2rem"
-                                        }}>
-                                            <strong style={{fontSize: "1.1rem"}}>🎖 뱃지란?</strong>
-                                            <br/>문제를 풀면서 얻는 <strong>도전과 성취의 증표</strong>예요.
-                                            <br/>각각의 뱃지는 특정 조건을 달성했을 때 <strong>자동으로 지급</strong>돼요.
+                                        <div style={{ marginBottom: "0.75rem", color: "#333", borderBottom: "2px solid #eee", padding: "0.2rem" }}>
+                                            <strong style={{ fontSize: "1.1rem" }}>🎖 뱃지란?</strong>
+                                            <br />
+                                            문제를 풀면서 얻는 <strong>도전과 성취의 증표</strong>예요.
+                                            <br />
+                                            각각의 뱃지는 특정 조건을 달성했을 때 <strong>자동으로 지급</strong>돼요.
                                         </div>
-
                                         {badges.map((badge) => (
-                                            <div key={badge.id} style={{marginBottom: "0.5rem"}}>
+                                            <div key={badge.id} style={{ marginBottom: "0.5rem" }}>
                                                 <strong>{badge.name}:</strong> {badge.description}
                                             </div>
                                         ))}
@@ -416,9 +367,9 @@ const DashboardPage = () => {
                             </div>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
-                {/* 차트 */}
+                {/* 차트 영역 */}
                 <div
                     style={{
                         display: "flex",
@@ -428,28 +379,43 @@ const DashboardPage = () => {
                         marginBottom: "5vh",
                     }}
                 >
-                    <div style={{flex: 1, minWidth: "300px"}}>
-                        <h4 style={{textAlign: "center", fontSize: "1.1rem", marginBottom: "1.5rem"}}>&lt; 종합 역량
-                            진단표 &gt;</h4>
+                    {/* 종합 역량 진단표 */}
+                    <div style={{ flex: 1, minWidth: "300px" }}>
+                        <h4 style={{ textAlign: "left", fontSize: "1.1rem", marginBottom: "1rem", fontWeight: 500 }}>
+                            종합 역량 진단표
+                        </h4>
                         <div
                             style={{
+                                backgroundColor: "#fff",
+                                padding: "1.5rem",
+                                borderRadius: "1.5rem",
+                                border: "1px solid #eee",
                                 height: "40vh",
-                                backgroundColor: "#fafafa",
-                                border: "1px dashed #ccc",
-                                borderRadius: "0.75rem",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                color: "#999",
-                                fontSize: "1rem",
                             }}
                         >
-                            [레이더 차트 영역]
+                            {userInfo && <RadarChart userId={userInfo.id} />}
                         </div>
                     </div>
 
-                    <div style={{flex: 1, minWidth: "300px", height: "40vh"}}>
-                        <SolvedLineChart/>
+                    {/* 내가 푼 문제 수 */}
+                    <div style={{ flex: 1, minWidth: "300px" }}>
+                        <h4 style={{ textAlign: "left", fontSize: "1.1rem", marginBottom: "1rem", fontWeight: 500 }}>
+                            내가 푼 문제 수
+                        </h4>
+                        <div
+                            style={{
+                                backgroundColor: "#fff",
+                                padding: "1.5rem",
+                                borderRadius: "1.5rem",
+                                border: "1px solid #eee",
+                                height: "40vh",
+                            }}
+                        >
+                            <SolvedLineChart />
+                        </div>
                     </div>
                 </div>
             </div>
