@@ -34,11 +34,20 @@ import QnaDetailPage from "./pages/Community/QnaDetailPage.tsx";
 import QnaWrite from "./pages/Community/QnaWrite.tsx";
 import BoardEdit from "./pages/Community/BoardEdit.tsx";
 
+import AdminLoginPage from "./pages/AdminPage/AdminLoginPage.tsx";
+import AdminWargameListPage from "./pages/AdminPage/WargamePage/WargameListPage.tsx";
+import JobListPage from "./pages/AdminPage/JobPage/JobListPage";
+import UserManagementPage from "./pages/AdminPage/UserPage/UserManagementPage";
+
 function App() {
     const location = useLocation();
 
     const authPaths = ["/login", "/signup", "/signup/success", "/findPassword"];
-    const isAuthPage = authPaths.includes(location.pathname);
+    // 🔽 여기에 추가
+    const isAdminPage = location.pathname.startsWith("/admin");
+    const isAuthPage = authPaths.includes(location.pathname) || isAdminPage;
+
+
 
     return (
         <AuthProvider>
@@ -132,6 +141,11 @@ function App() {
                     <Route path="/community/inquiry/:id" element={<InquiryBoardDetailPage />} />
                     <Route path="/community/inquiry/edit/:id" element={<BoardEdit />} />
                     <Route path="/job/:id" element={<JobDetailPage />} />
+
+                    <Route path="/admin/login" element={<AdminLoginPage />} />
+                    <Route path="/admin/wargames" element={<AdminWargameListPage />} />
+                    <Route path="/admin/jobs" element={<JobListPage />} />
+                    <Route path="/admin/users" element={<UserManagementPage />} />
 
                 </Routes>
                 {!isAuthPage && <Footer />}
