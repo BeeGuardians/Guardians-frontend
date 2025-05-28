@@ -1,8 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from './components/FreeBoardDetailPage.module.css';
+import styles from './components/FreeBoardDetailPage.module.css'; // FreeBoardDetailPage.module.css 스타일 사용
 import Modal from "./components/Modal.tsx";
+import UserInfoModal from './UserInfoModal.tsx'; // 유저 정보 모달 임포트
 
 interface Board {
     boardId: number;
@@ -12,8 +13,9 @@ interface Board {
     createdAt: string;
     likeCount: number;
     viewCount: number;
-    liked : boolean;
+    liked: boolean;
     userId: string;
+    profileImageUrl?: string; // 게시글 작성자 프로필 이미지 추가
 }
 
 interface Comment {
@@ -22,6 +24,8 @@ interface Comment {
     username: string;
     createdAt: string;
     userId: string;
+    profileImageUrl?: string; // 댓글 작성자 프로필 이미지 추가
+    tier?: string; // 티어 정보 추가 (필요하다면)
 }
 
 const StudyBoardDetailPage = () => {
@@ -42,6 +46,10 @@ const StudyBoardDetailPage = () => {
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoMessage, setInfoMessage] = useState('');
 
+    // 유저 정보 모달 관련 상태
+    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
+    const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
+
     useEffect(() => {
         if (!id) return;
         fetchBoard();
@@ -49,11 +57,13 @@ const StudyBoardDetailPage = () => {
         checkLoginStatus();
     }, [id]);
 
-
-
     const fetchBoard = () => {
         axios.get(`/api/boards/${id}`, { withCredentials: true })
-            .then(res => setBoard(res.data.result.data));
+            .then(res => {
+                const data = res.data.result.data;
+                setBoard(data);
+                setIsLiked(data.liked); // liked 상태도 여기서 설정
+            });
     };
 
     const fetchComments = () => {
@@ -76,7 +86,7 @@ const StudyBoardDetailPage = () => {
 
     const toggleLike = () => {
         if (!id) return;
-        axios.post(`/api/boards/${id}/like`, {}, {withCredentials: true})
+        axios.post(`/api/boards/${id}/like`, {}, { withCredentials: true })
             .then(res => {
                 const liked = res.data.result.data.liked;
                 setIsLiked(liked);
@@ -90,8 +100,6 @@ const StudyBoardDetailPage = () => {
     const handleDelete = () => {
         setConfirmDeletePost(true);
     };
-
-
 
     const confirmDeletePostAction = () => {
         if (!board) return;
@@ -162,7 +170,18 @@ const StudyBoardDetailPage = () => {
         }
     };
 
-
+    // 유저 프로필 클릭 시 유저 정보 모달 띄우기
+    const handleUserClick = async (userId: string) => {
+        try {
+            const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
+            setUserInfo(res.data.result.data);
+            setUserModalOpen(true); // 유저 정보 모달 열기
+        } catch (error) {
+            console.error("Failed to fetch user info:", error);
+            setInfoMessage('유저 정보를 불러오는데 실패했습니다.');
+            setShowInfoModal(true);
+        }
+    };
 
     if (!board) {
         return <div style={{ textAlign: 'center', marginTop: '2rem' }}>로딩 중...</div>;
@@ -176,7 +195,7 @@ const StudyBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '2rem',
+                            fontSize: '1rem',
                             textDecoration: 'none'
                         }}
                     >
@@ -186,7 +205,8 @@ const StudyBoardDetailPage = () => {
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
                             <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
-                        </div>           )}
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.leftColumn}>
@@ -203,16 +223,22 @@ const StudyBoardDetailPage = () => {
                                     width: '60px',
                                     height: '35px',
                                     whiteSpace: 'nowrap',
-                                     }}
+                                }}
                             >
                                 {isLiked ? "❤️" : "🤍"} {board.likeCount}
                             </button>
                         </div>
                         <div className={styles.meta}>
-                            <span>✍ 작성자: {board.username}</span>
-                            <span>🕒 작성일: {new Date(board.createdAt).toLocaleDateString()}</span>
+                            <span>
+                                <span
+                                    className={styles.usernameLink}
+                                    onClick={() => handleUserClick(board.userId)} // 글쓴이 이름 클릭 시 유저 정보 모달 열기
+                                >
+                                    {board.username}
+                                </span>
+                            </span>
+                            <span>{new Date(board.createdAt).toLocaleDateString()}</span>
                             <span>👀 조회 {board.viewCount}</span>
-                            <span>👍 추천 {board.likeCount}</span>
                         </div>
                     </div>
 
@@ -249,10 +275,22 @@ const StudyBoardDetailPage = () => {
                                 {comments.map(comment => (
                                     <li key={comment.commentId} className={styles.commentItem}>
                                         <div className={styles.commentHeader}>
-                                            <div className={styles.username}>{comment.username}</div>
-                                            <small className={styles.createdAt}>
-                                                {new Date(comment.createdAt).toLocaleDateString()}
-                                            </small>
+                                            <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(comment.userId)}>
+                                                <img src={comment.profileImageUrl || '/default-profile.png'} alt="프로필" className={styles.commentProfileImage} />
+                                            </div>
+                                            <div>
+                                                <div className={styles.usernameRow}>
+                                                    <span
+                                                        className={styles.usernameLink}
+                                                        onClick={() => handleUserClick(comment.userId)} // 댓글 작성자 이름 클릭 시 유저 정보 모달 열기
+                                                    >
+                                                        {comment.username}
+                                                    </span>
+                                                </div>
+                                                <small className={styles.createdAt}>
+                                                    {new Date(comment.createdAt).toLocaleDateString()}
+                                                </small>
+                                            </div>
                                         </div>
 
                                         {editingCommentId === comment.commentId ? (
@@ -263,7 +301,9 @@ const StudyBoardDetailPage = () => {
                                                     onChange={(e) => setEditingCommentContent(e.target.value)}
                                                 />
                                                 <div className={styles.reviewActionBtns}>
-                                                    <button onClick={() => handleConfirmEditComment(comment.commentId)}>저장</button>
+                                                    <button
+                                                        onClick={() => handleConfirmEditComment(comment.commentId)}>저장
+                                                    </button>
                                                     <button onClick={cancelEditComment}>취소</button>
                                                 </div>
                                             </>
@@ -309,6 +349,13 @@ const StudyBoardDetailPage = () => {
                 onConfirm={handleInfoModalClose}
                 message={infoMessage}
                 showCancelButton={false}
+            />
+
+            {/* 유저 정보 모달 */}
+            <UserInfoModal
+                isOpen={userModalOpen}
+                onClose={() => setUserModalOpen(false)}
+                userInfo={userInfo}
             />
         </div>
     );
