@@ -16,9 +16,11 @@ interface Job {
     careerLevel: string;
     salary: string;
     deadline: string;
+    sourceUrl: string;
+
 }
 
-const ITEMS_PER_PAGE = 6; // ✅ 2×3 구조에 맞게 6개씩 표시
+const ITEMS_PER_PAGE = 16;
 
 const JobPage = () => {
     const [jobList, setJobList] = useState<Job[]>([]);
@@ -116,8 +118,8 @@ const JobPage = () => {
                             src={resetIcon}
                             alt="새로고침"
                             style={{
-                                width: 20,
-                                height: 20,
+                                width: 30,
+                                height: 30,
                             }}
                         />
                     </button>
@@ -140,6 +142,7 @@ const JobPage = () => {
                                 careerLevel={job.careerLevel}
                                 employmentType={job.employmentType}
                                 deadline={job.deadline}
+                                sourceUrl={job.sourceUrl}
                             />
                         </div>
                     ))}

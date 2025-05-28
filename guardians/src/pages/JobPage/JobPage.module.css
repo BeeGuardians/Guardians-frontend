@@ -74,8 +74,8 @@
 /* ✅ 카드 목록 (2열 고정) */
 .cardGrid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
-    column-gap: 3.5rem; /* 가로 간격 */
+    grid-template-columns: repeat(4, 1fr); /* 2 columns */
+    column-gap: 1.5rem; /* 가로 간격 */
     row-gap: 3.5rem;      /* 세로 간격 */
 }
 
@@ -87,7 +87,7 @@
     text-align: left;
     box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.04);
     transition: box-shadow 0.2s;
-    height: 17.5rem; /* 280px */
+    height: 30.5rem; /* 280px */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -98,8 +98,8 @@
 }
 
 .logoBox {
-    width: 5rem;
-    height: 5rem;
+    width: 10rem;
+    height: 10rem;
     background-color: white;
     display: flex;
     justify-content: center;
