@@ -44,7 +44,7 @@ const RadarChartComponent = ({ userId }: RadarChartProps) => {
         <ResponsiveContainer width="100%" height="100%">
             <RadarChart
                 cx="50%"
-                cy="58%" // 아래로 조금 내림
+                cy="54%" // 아래로 조금 내림
                 outerRadius="90%" // 기본보다 약간 축소
                 data={data}
             >
@@ -52,9 +52,9 @@ const RadarChartComponent = ({ userId }: RadarChartProps) => {
                 <PolarAngleAxis
                     dataKey="category"
                     tick={{
-                        fontSize: 13,
+                        fontSize: 14,
                         fill: "#666",
-                        dy: 4, // 글자를 약간 아래로
+                        margin: 20, // ✅ 이렇게!
                     }}
                     tickLine={false}
                 />
@@ -64,24 +64,25 @@ const RadarChartComponent = ({ userId }: RadarChartProps) => {
                     axisLine={false}
                     stroke="#ccc"
                 />
-                <Tooltip
-                    contentStyle={{
-                        backgroundColor: "#fff8e1",
-                        border: "1px solid #ffc078",
-                        borderRadius: "8px",
-                        fontSize: "0.85rem",
-                        color: "#333",
-                    }}
-                    formatter={(value: number) => [`${value.toFixed(1)}점`, "정규화 점수"]}
-                />
                 <Radar
                     name="정규화 점수"
                     dataKey="normalizedScore"
-                    stroke="#ffa94d"
-                    fill="#ffa94d"
-                    fillOpacity={0.5}
-                    dot={{ r: 4 }}
+                    stroke="#4c6ef5"         // 푸른 계열 선
+                    fill="#4c6ef5"
+                    fillOpacity={0.4}
                 />
+
+                <Tooltip
+                    contentStyle={{
+                        backgroundColor: "#e8f0fe",     // 연한 파랑 배경
+                        border: "1px solid #a5d8ff",    // 밝은 파랑 테두리
+                        borderRadius: "8px",
+                        fontSize: "0.85rem",
+                        color: "#1c1c1c",               // 텍스트 컬러 (어두운 회색)
+                    }}
+                    formatter={(value: number) => [`${value.toFixed(1)}점`, "정규화 점수"]}
+                />
+
             </RadarChart>
         </ResponsiveContainer>
     );
