@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import UserInfoModal from './UserInfoModal.tsx'; // 유저 정보 모달
-import styles from './components/FreeBoardDetailPage.module.css';
-import Modal from './components/Modal.tsx';
+import UserInfoModal from './UserInfoModal.tsx'; // UserInfoModal import
+import styles from './components/FreeBoardDetailPage.module.css'; // CSS 파일 경로 확인
+import Modal from './components/Modal.tsx'; // Modal import
 
+// 게시글 정보 인터페이스
 interface Board {
     boardId: number;
     title: string;
@@ -14,18 +15,28 @@ interface Board {
     likeCount: number;
     viewCount: number;
     liked: boolean;
-    userId: string;
+    userId: string; // userId 필드 (백엔드 응답과 일치)
     profileImageUrl?: string;
 }
 
+// 댓글 정보 인터페이스
 interface Comment {
     commentId: number;
     content: string;
     username: string;
     createdAt: string;
-    userId: string;
+    userId: string; // userId 필드 (백엔드 응답과 일치)
     profileImageUrl?: string;
     tier?: string;
+}
+
+// UserInfoModal에 전달할 사용자 정보 인터페이스
+// UserInfoModal은 'id' 필드를 기대하므로 여기서 매핑해 줍니다.
+interface UserForModal {
+    id: string; // UserInfoModal에서 사용될 필드명
+    username: string;
+    profileImageUrl: string;
+    email: string;
 }
 
 const FreeBoardDetailPage = () => {
@@ -47,8 +58,8 @@ const FreeBoardDetailPage = () => {
     const [infoMessage, setInfoMessage] = useState('');
 
     // 유저 정보 모달 관련 상태
-    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
-    const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
+    const [userInfo, setUserInfo] = useState<UserForModal | null>(null);
+    const [userModalOpen, setUserModalOpen] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -58,21 +69,23 @@ const FreeBoardDetailPage = () => {
     }, [id]);
 
     const fetchBoard = () => {
-        axios.get(`/api/boards/${id}`, {withCredentials: true})
+        axios.get(`/api/boards/${id}`, { withCredentials: true })
             .then(res => {
                 const data = res.data.result.data;
                 setBoard(data);
                 setIsLiked(data.liked);
-            });
+            })
+            .catch(err => console.error("Failed to fetch board:", err));
     };
 
     const fetchComments = () => {
-        axios.get(`/api/boards/${id}/comments`, {withCredentials: true})
-            .then(res => setComments(res.data.result.data));
+        axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
+            .then(res => setComments(res.data.result.data))
+            .catch(err => console.error("Failed to fetch comments:", err));
     };
 
     const checkLoginStatus = () => {
-        axios.get('/api/users/me', {withCredentials: true})
+        axios.get('/api/users/me', { withCredentials: true })
             .then(res => {
                 const id = res.data.result.data.id;
                 setIsLoggedIn(true);
@@ -86,7 +99,7 @@ const FreeBoardDetailPage = () => {
 
     const toggleLike = () => {
         if (!id) return;
-        axios.post(`/api/boards/${id}/like`, {}, {withCredentials: true})
+        axios.post(`/api/boards/${id}/like`, {}, { withCredentials: true })
             .then(res => {
                 const liked = res.data.result.data.liked;
                 setIsLiked(liked);
@@ -94,7 +107,8 @@ const FreeBoardDetailPage = () => {
                     ...prev,
                     likeCount: prev.likeCount + (liked ? 1 : -1)
                 } : prev);
-            });
+            })
+            .catch(err => console.error("Failed to toggle like:", err));
     };
 
     const handleDelete = () => {
@@ -103,10 +117,16 @@ const FreeBoardDetailPage = () => {
 
     const confirmDeletePostAction = () => {
         if (!board) return;
-        axios.delete(`/api/boards/${board.boardId}`, { withCredentials: true }).then(() => {
-            setInfoMessage('게시글이 삭제되었습니다.');
-            setShowInfoModal(true);
-        });
+        axios.delete(`/api/boards/${board.boardId}`, { withCredentials: true })
+            .then(() => {
+                setInfoMessage('게시글이 삭제되었습니다.');
+                setShowInfoModal(true);
+            })
+            .catch(err => {
+                console.error("Failed to delete post:", err);
+                setInfoMessage('게시글 삭제 실패');
+                setShowInfoModal(true);
+            });
     };
 
     const handleInfoModalClose = () => {
@@ -127,15 +147,20 @@ const FreeBoardDetailPage = () => {
             return;
         }
 
-        axios.post(`/api/boards/${id}/comments`, {content: newComment}, {withCredentials: true})
+        axios.post(`/api/boards/${id}/comments`, { content: newComment }, { withCredentials: true })
             .then(() => {
                 setNewComment('');
                 fetchComments();
+            })
+            .catch(err => {
+                console.error("Failed to submit comment:", err);
+                setInfoMessage('댓글 등록 실패');
+                setShowInfoModal(true);
             });
     };
 
-    const startEditComment = (id: number, content: string) => {
-        setEditingCommentId(id);
+    const startEditComment = (commentId: number, content: string) => {
+        setEditingCommentId(commentId);
         setEditingCommentContent(content);
     };
 
@@ -149,11 +174,12 @@ const FreeBoardDetailPage = () => {
         try {
             await axios.patch(`/api/boards/${id}/comments/${commentId}`, {
                 content: editingCommentContent
-            }, {withCredentials: true});
+            }, { withCredentials: true });
             setEditingCommentId(null);
             setEditingCommentContent('');
             fetchComments();
-        } catch {
+        } catch (err) {
+            console.error("Failed to edit comment:", err);
             setInfoMessage('댓글 수정 실패');
             setShowInfoModal(true);
         }
@@ -161,24 +187,51 @@ const FreeBoardDetailPage = () => {
 
     const handleDeleteComment = async (commentId: number) => {
         try {
-            await axios.delete(`/api/boards/${id}/comments/${commentId}`, {withCredentials: true});
+            await axios.delete(`/api/boards/${id}/comments/${commentId}`, { withCredentials: true });
             setConfirmDeleteCommentId(null);
             fetchComments();
-        } catch {
+        } catch (err) {
+            console.error("Failed to delete comment:", err);
             setInfoMessage('댓글 삭제 실패');
             setShowInfoModal(true);
         }
     };
 
     // 유저 프로필 클릭 시 유저 정보 모달 띄우기
-    const handleUserClick = async (userId: string) => {
-        const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
-        setUserInfo(res.data.result.data);
-        setUserModalOpen(true); // 유저 정보 모달 열기
+    const handleUserClick = async (targetUserId: string) => {
+        try {
+            // ✨✨✨ 디버깅 로그 시작 ✨✨✨
+            console.log("FreeBoardDetailPage: handleUserClick called for targetUserId:", targetUserId);
+
+            // /api/users/{targetUserId} API 호출하여 사용자 기본 정보 가져오기
+            // 이 API 응답 스펙에 'userId' 필드가 있음을 전제로 합니다.
+            const res = await axios.get(`/api/users/${targetUserId}`, { withCredentials: true });
+            const userData = res.data.result.data;
+
+            console.log("FreeBoardDetailPage: Fetched user base info (from /api/users/{userId}):", userData);
+            // ✨✨✨ 디버깅 로그 끝 ✨✨✨
+
+            // UserInfoModal에 전달할 userInfo 객체 생성
+            // 백엔드 응답의 'userId' 필드를 UserInfoModal이 기대하는 'id' 필드로 매핑합니다.
+            const userInfoForModal: UserForModal = {
+                id: String(userData.userId), // 이곳을 수정하여 'userId'를 'id'로 사용
+                username: userData.username,
+                profileImageUrl: userData.profileImageUrl,
+                email: userData.email,
+            };
+
+            setUserInfo(userInfoForModal); // UserInfoModal에 전달할 userInfo 설정
+            setUserModalOpen(true); // 유저 정보 모달 열기
+
+        } catch (error) {
+            console.error("FreeBoardDetailPage: Error fetching user base info for modal:", error);
+            setInfoMessage('유저 정보를 불러오는데 실패했습니다.');
+            setShowInfoModal(true);
+        }
     };
 
     if (!board) {
-        return <div style={{textAlign: 'center', marginTop: '2rem'}}>로딩 중...</div>;
+        return <div style={{ textAlign: 'center', marginTop: '2rem' }}>로딩 중...</div>;
     }
 
     return (
@@ -189,7 +242,7 @@ const FreeBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '1rem',
+                            fontSize: '2rem',
                             textDecoration: 'none'
                         }}
                     >
@@ -199,7 +252,8 @@ const FreeBoardDetailPage = () => {
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                             <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
                             <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
-                        </div>         )}
+                        </div>
+                    )}
                 </div>
 
                 <div className={styles.leftColumn}>
@@ -225,7 +279,7 @@ const FreeBoardDetailPage = () => {
                             <span>
                                 <span
                                     className={styles.usernameLink}
-                                    onClick={() => handleUserClick(board.userId)} // 글쓴이 이름 클릭 시 유저 정보 모달 열기
+                                    onClick={() => handleUserClick(board.userId)}
                                 >
                                     {board.username}
                                 </span>
@@ -250,7 +304,7 @@ const FreeBoardDetailPage = () => {
                                     onChange={(e) => setNewComment(e.target.value)}
                                     placeholder="댓글을 입력하세요"
                                 />
-                                <div style={{display: "flex", justifyContent: "flex-end"}}>
+                                <div style={{ display: "flex", justifyContent: "flex-end" }}>
                                     <button
                                         className={styles.submitBtn}
                                         onClick={handleCommentSubmit}
@@ -275,7 +329,7 @@ const FreeBoardDetailPage = () => {
                                                 <div className={styles.usernameRow}>
                                                     <span
                                                         className={styles.usernameLink}
-                                                        onClick={() => handleUserClick(comment.userId)} // 댓글 작성자 이름 클릭 시 유저 정보 모달 열기
+                                                        onClick={() => handleUserClick(comment.userId)}
                                                     >
                                                         {comment.username}
                                                     </span>
@@ -319,7 +373,6 @@ const FreeBoardDetailPage = () => {
                 </div>
             </div>
 
-            {/* ✅ 댓글 삭제 모달 */}
             <Modal
                 isOpen={confirmDeleteCommentId !== null}
                 onClose={() => setConfirmDeleteCommentId(null)}
@@ -327,7 +380,6 @@ const FreeBoardDetailPage = () => {
                 message="댓글을 삭제할까요?"
             />
 
-            {/* ✅ 게시글 삭제 모달 */}
             <Modal
                 isOpen={confirmDeletePost}
                 onClose={() => setConfirmDeletePost(false)}
@@ -335,7 +387,6 @@ const FreeBoardDetailPage = () => {
                 message="정말 삭제하시겠습니까?"
             />
 
-            {/* ✅ 알림 모달 */}
             <Modal
                 isOpen={showInfoModal}
                 onClose={handleInfoModalClose}

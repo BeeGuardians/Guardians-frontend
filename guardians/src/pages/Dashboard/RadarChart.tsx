@@ -54,7 +54,6 @@ const RadarChartComponent = ({ userId }: RadarChartProps) => {
                     tick={{
                         fontSize: 14,
                         fill: "#666",
-                        margin: 20, // ✅ 이렇게!
                     }}
                     tickLine={false}
                 />

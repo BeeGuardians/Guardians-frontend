@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from './components/FreeBoardDetailPage.module.css';
-import Modal from "./components/Modal.tsx";
-import UserInfoModal from './UserInfoModal.tsx'; // 유저 정보 모달 임포트
+import styles from './components/FreeBoardDetailPage.module.css'; // CSS 파일 경로 확인
+import Modal from "./components/Modal.tsx"; // Modal import
+import UserInfoModal from './UserInfoModal.tsx'; // UserInfoModal import
 
 interface Board {
     boardId: number;
@@ -25,7 +25,7 @@ interface Comment {
     createdAt: string;
     userId: string;
     profileImageUrl?: string; // 댓글 작성자 프로필 이미지 추가
-    tier?: string; // 티어 정보 추가 (필요하다면)
+    tier?: string; // 티어 정보 (필요하다면)
 }
 
 const InquiryBoardDetailPage = () => {
@@ -47,7 +47,7 @@ const InquiryBoardDetailPage = () => {
     const [infoMessage, setInfoMessage] = useState('');
 
     // 유저 정보 모달 관련 상태
-    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
+    const [userInfo, setUserInfo] = useState<any | null>(null); // User 타입이거나, stats도 받을 수 있게 any
     const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
 
     useEffect(() => {
@@ -58,17 +58,19 @@ const InquiryBoardDetailPage = () => {
     }, [id]);
 
     const fetchBoard = () => {
-        axios.get(`/api/boards/${id}`, {withCredentials: true})
+        axios.get(`/api/boards/${id}`, { withCredentials: true })
             .then(res => {
                 const data = res.data.result.data;
                 setBoard(data);
                 setIsLiked(data.liked);
-            });
+            })
+            .catch(err => console.error("Failed to fetch board:", err));
     };
 
     const fetchComments = () => {
         axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
-            .then(res => setComments(res.data.result.data));
+            .then(res => setComments(res.data.result.data))
+            .catch(err => console.error("Failed to fetch comments:", err));
     };
 
     const checkLoginStatus = () => {
@@ -86,7 +88,7 @@ const InquiryBoardDetailPage = () => {
 
     const toggleLike = () => {
         if (!id) return;
-        axios.post(`/api/boards/${id}/like`, {}, {withCredentials: true})
+        axios.post(`/api/boards/${id}/like`, {}, { withCredentials: true })
             .then(res => {
                 const liked = res.data.result.data.liked;
                 setIsLiked(liked);
@@ -94,7 +96,8 @@ const InquiryBoardDetailPage = () => {
                     ...prev,
                     likeCount: prev.likeCount + (liked ? 1 : -1)
                 } : prev);
-            });
+            })
+            .catch(err => console.error("Failed to toggle like:", err));
     };
 
     const handleDelete = () => {
@@ -103,10 +106,16 @@ const InquiryBoardDetailPage = () => {
 
     const confirmDeletePostAction = () => {
         if (!board) return;
-        axios.delete(`/api/boards/${board.boardId}`, { withCredentials: true }).then(() => {
-            setInfoMessage('게시글이 삭제되었습니다.');
-            setShowInfoModal(true);
-        });
+        axios.delete(`/api/boards/${board.boardId}`, { withCredentials: true })
+            .then(() => {
+                setInfoMessage('게시글이 삭제되었습니다.');
+                setShowInfoModal(true);
+            })
+            .catch(err => {
+                console.error("Failed to delete post:", err);
+                setInfoMessage('게시글 삭제 실패');
+                setShowInfoModal(true);
+            });
     };
 
     const handleEdit = () => {
@@ -124,11 +133,16 @@ const InquiryBoardDetailPage = () => {
             .then(() => {
                 setNewComment('');
                 fetchComments();
+            })
+            .catch(err => {
+                console.error("Failed to submit comment:", err);
+                setInfoMessage('댓글 등록 실패');
+                setShowInfoModal(true);
             });
     };
 
-    const startEditComment = (id: number, content: string) => {
-        setEditingCommentId(id);
+    const startEditComment = (commentId: number, content: string) => {
+        setEditingCommentId(commentId);
         setEditingCommentContent(content);
     };
 
@@ -146,7 +160,8 @@ const InquiryBoardDetailPage = () => {
             setEditingCommentId(null);
             setEditingCommentContent('');
             fetchComments();
-        } catch {
+        } catch (err) {
+            console.error("Failed to edit comment:", err);
             setInfoMessage('댓글 수정 실패');
             setShowInfoModal(true);
         }
@@ -157,7 +172,8 @@ const InquiryBoardDetailPage = () => {
             await axios.delete(`/api/boards/${id}/comments/${commentId}`, { withCredentials: true });
             setConfirmDeleteCommentId(null);
             fetchComments();
-        } catch {
+        } catch (err) {
+            console.error("Failed to delete comment:", err);
             setInfoMessage('댓글 삭제 실패');
             setShowInfoModal(true);
         }
@@ -173,12 +189,22 @@ const InquiryBoardDetailPage = () => {
     // 유저 프로필 클릭 시 유저 정보 모달 띄우기
     const handleUserClick = async (userId: string) => {
         try {
+            // ✨✨✨ 디버깅 로그 시작 ✨✨✨
+            console.log("InquiryBoardDetailPage: handleUserClick called for userId:", userId);
             const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
-            setUserInfo(res.data.result.data);
+            console.log("InquiryBoardDetailPage: Fetched user base info:", res.data.result.data);
+            // ✨✨✨ 디버깅 로그 끝 ✨✨✨
+
+            const userDataForModal = {
+                id: String(res.data.result.data.id),
+                username: res.data.result.data.username,
+                profileImageUrl: res.data.result.data.profileImageUrl,
+                email: res.data.result.data.email,
+            };
+            setUserInfo(userDataForModal);
             setUserModalOpen(true); // 유저 정보 모달 열기
         } catch (error) {
-            console.error("Failed to fetch user info:", error);
-            // 오류 발생 시 사용자에게 알림
+            console.error("InquiryBoardDetailPage: Error fetching user base info for modal:", error);
             setInfoMessage('유저 정보를 불러오는데 실패했습니다.');
             setShowInfoModal(true);
         }
@@ -196,7 +222,7 @@ const InquiryBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '1rem',
+                            fontSize: '2rem',
                             textDecoration: 'none'
                         }}
                     >
@@ -232,8 +258,8 @@ const InquiryBoardDetailPage = () => {
                         <div className={styles.meta}>
                             <span>
                                 <span
-                                    className={styles.usernameLink} // 자유게시판과 동일하게 usernameLink 사용
-                                    onClick={() => handleUserClick(board.userId)} // 글쓴이 이름 클릭 시 유저 정보 모달 열기
+                                    className={styles.usernameLink}
+                                    onClick={() => handleUserClick(board.userId)}
                                 >
                                     {board.username}
                                 </span>
@@ -282,8 +308,8 @@ const InquiryBoardDetailPage = () => {
                                             <div>
                                                 <div className={styles.usernameRow}>
                                                     <span
-                                                        className={styles.usernameLink} // usernameLink 사용
-                                                        onClick={() => handleUserClick(comment.userId)} // 댓글 작성자 이름 클릭 시 유저 정보 모달 열기
+                                                        className={styles.usernameLink}
+                                                        onClick={() => handleUserClick(comment.userId)}
                                                     >
                                                         {comment.username}
                                                     </span>
@@ -327,7 +353,6 @@ const InquiryBoardDetailPage = () => {
                 </div>
             </div>
 
-            {/* ✅ 댓글 삭제 모달 */}
             <Modal
                 isOpen={confirmDeleteCommentId !== null}
                 onClose={() => setConfirmDeleteCommentId(null)}
@@ -335,7 +360,6 @@ const InquiryBoardDetailPage = () => {
                 message="댓글을 삭제할까요?"
             />
 
-            {/* ✅ 게시글 삭제 모달 */}
             <Modal
                 isOpen={confirmDeletePost}
                 onClose={() => setConfirmDeletePost(false)}
@@ -343,7 +367,6 @@ const InquiryBoardDetailPage = () => {
                 message="정말 삭제하시겠습니까?"
             />
 
-            {/* ✅ 알림 모달 */}
             <Modal
                 isOpen={showInfoModal}
                 onClose={handleInfoModalClose}
