@@ -3,6 +3,8 @@ import axios from "axios";
 import SolvedLineChart from "./SolvedLineChart";
 import "react-circular-progressbar/dist/styles.css";
 import RadarChart from "./RadarChart";
+import SolvedTimelineChart from "./SolvedTimelineChart";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 interface Badge {
     id: number;
@@ -30,6 +32,7 @@ const DashboardPage = () => {
     const [isTierDescriptionOpen, setIsTierDescriptionOpen] = useState(false);
     const descriptionRef = useRef<HTMLDivElement | null>(null);
     const tierDescriptionRef = useRef<HTMLDivElement | null>(null);
+    const [showTooltip, setShowTooltip] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -194,7 +197,43 @@ const DashboardPage = () => {
                                                 boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
                                             }}
                                         >
-                                            <div style={{ fontSize: "0.85rem", color: "#888", marginBottom: 6 }}>{item.label}</div>
+                                            {/* 점수 항목에만 아이콘 추가 */}
+                                            <div style={{ fontSize: "0.85rem", color: "#888", marginBottom: 6, display: "flex", alignItems: "center", gap: "0.3rem", position: "relative" }}>
+                                                {item.label}
+                                                {item.label === "점수" && (
+                                                    <>
+                                                        <AiOutlineInfoCircle
+                                                            size={15}
+                                                            color="#888"
+                                                            style={{ cursor: "pointer" }}
+                                                            onMouseEnter={() => setShowTooltip(true)}
+                                                            onMouseLeave={() => setShowTooltip(false)}
+                                                        />
+                                                        {showTooltip && (
+                                                            <div
+                                                                style={{
+                                                                    position: "absolute",
+                                                                    top: "100%",
+                                                                    left: "0",
+                                                                    marginTop: "0.4rem",
+                                                                    background: "#4d4d4d",
+                                                                    color: "#fff",
+                                                                    padding: "0.5rem 0.75rem",
+                                                                    borderRadius: "8px",
+                                                                    fontSize: "0.8rem",
+                                                                    whiteSpace: "nowrap",
+                                                                    zIndex: 999,
+                                                                }}
+                                                            >
+                                                                • BRONZE : 2000점 미만<br /><br />
+                                                                • SILVER : 2000점 이상<br /><br />
+                                                                • GOLD : 3000점 이상<br /><br />
+                                                                • PLATINUM : 5000점 이상
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </div>
 
                                             <div style={{ fontSize: "1.2rem", fontWeight: 600, marginBottom: "0.5rem" }}>
                                                 {item.value}
@@ -221,23 +260,6 @@ const DashboardPage = () => {
                                     ))}
                                 </div>
                             </div>
-                        </div>
-
-                        <div ref={tierDescriptionRef} style={{ position: "absolute", bottom: "1rem", left: "1.5rem" }}>
-                            {isTierDescriptionOpen && (
-                                <div style={{ position: "absolute", bottom: "150%", left: 0, backgroundColor: "#fffaf3", border: "1px solid #eee", borderRadius: "0.75rem", padding: "1rem", fontSize: "0.85rem", lineHeight: "1.4rem", color: "#444", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", width: "350px", zIndex: 10 }}>
-                                    <div style={{ position: "absolute", top: "100%", left: "1rem", width: 0, height: 0, borderLeft: "8px solid transparent", borderRight: "8px solid transparent", borderTop: "8px solid #fffaf3", filter: "drop-shadow(0 -1px 1px rgba(0,0,0,0.05))" }} />
-                                    <div style={{ marginBottom: "0.5rem", color: "#333", fontWeight: 600 }}>🏅 티어란?</div>
-                                    <div>
-                                        티어는 현재 나의 실력을 나타내는 등급이에요.
-                                        <br />문제 풀이 수와 점수를 기반으로 자동 계산되며,
-                                        <br />티어 아이콘은 프로필 옆에 표시돼요!
-                                    </div>
-                                </div>
-                            )}
-                            <button onClick={() => setIsTierDescriptionOpen(!isTierDescriptionOpen)} style={{ padding: "0.5rem 1rem", border: "1px solid #ccc", borderRadius: "999px", backgroundColor: "#fdf3e7", cursor: "pointer", fontSize: "0.9rem" }}>
-                                {isTierDescriptionOpen ? "티어 설명 닫기" : "티어란?"}
-                            </button>
                         </div>
                     </div>
 
@@ -280,10 +302,22 @@ const DashboardPage = () => {
                                             alignItems: "center",
                                             justifyContent: "center",
                                             overflow: "hidden",
+                                            transition: "transform 0.25s ease",
+                                            cursor: "pointer",
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            (e.currentTarget as HTMLDivElement).style.transform = "scale(1.1)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
                                         }}
                                     >
                                         <img
-                                            src={badge.earned ? (badge.trueIconUrl ?? "/badge/default-colored.png") : (badge.falseIconUrl ?? "/badge/default-gray.png")}
+                                            src={
+                                                badge.earned
+                                                    ? badge.trueIconUrl ?? "/badge/default-colored.png"
+                                                    : badge.falseIconUrl ?? "/badge/default-gray.png"
+                                            }
                                             alt={badge.name}
                                             style={{
                                                 width: "100%",
@@ -370,57 +404,116 @@ const DashboardPage = () => {
                     </div>
                 </div>
 
-                {/* 차트 영역 */}
+
+                {/* 종합 활동 리포트 제목 */}
+                <h4 style={{ fontSize: "1.1rem", marginBottom: "1rem", fontWeight: 500, marginTop: "3rem" }}>
+                    종합 활동 리포트
+                </h4>
+
+                {/* 차트 영역 전체 카드로 감싸기 */}
                 <div
                     style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "2rem",
-                        justifyContent: "space-between",
-                        marginBottom: "5vh",
+                        backgroundColor: "rgba(13,66,128,0.04)",
+                        border: "1px solid #eee",
+                        borderRadius: "1.5rem",
+                        padding: "2rem",
+                        marginTop: 0,
                     }}
                 >
-                    {/* 종합 역량 진단표 */}
-                    <div style={{ flex: 1, minWidth: "300px" }}>
-                        <h4 style={{ textAlign: "left", fontSize: "1.1rem", marginBottom: "1rem", fontWeight: 500 }}>
-                            종합 역량 진단표
-                        </h4>
-                        <div
-                            style={{
+
+                    {/* 상단 2개 차트 */}
+                    <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+                        {/* 종합 역량 진단표 */}
+                        <div style={{ flex: 1, minWidth: "300px" }}>
+                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
+                                • 역량 진단표
+                            </div>
+                            <div style={{
                                 backgroundColor: "#fff",
-                                padding: "1.5rem",
-                                borderRadius: "1.5rem",
                                 border: "1px solid #eee",
+                                borderRadius: "0.5rem",
+                                padding: "1.5rem",
                                 height: "40vh",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            {userInfo && <RadarChart userId={userInfo.id} />}
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                            }}>
+                                {userInfo && <RadarChart userId={userInfo.id} />}
+                            </div>
+                        </div>
+
+                        {/* 내가 푼 문제 수 */}
+                        <div style={{ flex: 1, minWidth: "300px" }}>
+                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
+                                • 내가 푼 문제 수
+                            </div>
+                            <div style={{
+                                backgroundColor: "#fff",
+                                border: "1px solid #eee",
+                                borderRadius: "0.5rem",
+                                padding: "1.5rem",
+                                height: "40vh",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                            }}>
+                                <SolvedLineChart />
+                            </div>
                         </div>
                     </div>
 
-                    {/* 내가 푼 문제 수 */}
-                    <div style={{ flex: 1, minWidth: "300px" }}>
-                        <h4 style={{ textAlign: "left", fontSize: "1.1rem", marginBottom: "1rem", fontWeight: 500 }}>
-                            내가 푼 문제 수
-                        </h4>
-                        <div
-                            style={{
-                                backgroundColor: "#fff",
-                                padding: "1.5rem",
-                                borderRadius: "1.5rem",
-                                border: "1px solid #eee",
-                                height: "40vh",
-                            }}
-                        >
-                            <SolvedLineChart />
+                    {/* 하단 2개 차트 */}
+                    <div
+                        style={{
+                            display: "flex",
+                            gap: "2rem",
+                            flexWrap: "wrap",
+                            marginTop: "2rem",
+                        }}
+                    >
+                        {/* 타임라인 */}
+                        <div style={{ flex: 1, minWidth: "300px" }}>
+                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
+                                • 타임라인
+                            </div>
+                            <div
+                                style={{
+                                    backgroundColor: "#fff",
+                                    border: "1px solid #eee",
+                                    borderRadius: "0.5rem",
+                                    padding: "1.5rem",
+                                    height: "40vh",
+                                    overflowX: "auto",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                                }}
+                            >
+                                {userInfo && <SolvedTimelineChart userId={userInfo.id} />}
+                            </div>
                         </div>
+
+                        {/* 랭킹 변화 추이 */}
+                        <div style={{ flex: 1, minWidth: "300px" }}>
+                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
+                                • 랭킹 변화 추이 (예정)
+                            </div>
+                            <div
+                                style={{
+                                    backgroundColor: "#fff",
+                                    border: "1px solid #eee",
+                                    borderRadius: "0.5rem",
+                                    padding: "1.5rem",
+                                    height: "40vh",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    color: "#ccc",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                                }}
+                            >
+                                {/* 내용은 예정 */}
+                                준비 중입니다
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
-        </div>
     );
 };
 
