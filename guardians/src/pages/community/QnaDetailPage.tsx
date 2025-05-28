@@ -1,8 +1,9 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import UserInfoModal from './UserInfoModal';
 import styles from './components/QnaDetailPage.module.css';
-import Modal from "./components/Modal.tsx";
+import Modal from './components/Modal.tsx';
 
 interface Qna {
     id: number;
@@ -14,6 +15,7 @@ interface Qna {
     userId: string;
     wargameId: number;
     wargameTitle: string;
+    profileImageUrl: string;  // 프로필 이미지 URL 추가
 }
 
 interface Answer {
@@ -26,7 +28,6 @@ interface Answer {
     tier?: string;
 }
 
-
 const QnaDetailPage = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
@@ -36,18 +37,19 @@ const QnaDetailPage = () => {
     const [sessionUserId, setSessionUserId] = useState<string | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [confirmDeletePost, setConfirmDeletePost] = useState(false);
-
-    // 답변 수정 상태
     const [editingAnswerId, setEditingAnswerId] = useState<number | null>(null);
     const [editingAnswerContent, setEditingAnswerContent] = useState('');
-
-    // 질문 수정 상태
+    const [showActions, setShowActions] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(false);
     const [editedTitle, setEditedTitle] = useState('');
     const [editedContent, setEditedContent] = useState('');
-
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoMessage, setInfoMessage] = useState('');
+    const [userInfo, setUserInfo] = useState<null | any>(null); // 유저 정보
+    const [userModalOpen, setUserModalOpen] = useState(false); // 모달 열기 상태
+
+    const actionsRef = useRef<HTMLDivElement | null>(null);
+    const actionMenuBtnRef = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -55,6 +57,25 @@ const QnaDetailPage = () => {
         fetchAnswers();
         checkLoginStatus();
     }, [id]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                actionsRef.current &&
+                !actionsRef.current.contains(event.target as Node) &&
+                actionMenuBtnRef.current &&
+                !actionMenuBtnRef.current.contains(event.target as Node)
+            ) {
+                setShowActions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const fetchQna = async () => {
         const res = await axios.get(`/api/qna/questions/${id}`, { withCredentials: true });
@@ -82,36 +103,28 @@ const QnaDetailPage = () => {
             });
     };
 
-    const handleDelete = () => {
-        setConfirmDeletePost(true);
-    };
+    const handleDelete = () => setConfirmDeletePost(true);
 
     const confirmDeletePostAction = async () => {
-        axios.delete(`/api/qna/questions/${id}?userId=${sessionUserId}`, { withCredentials: true });
+        await axios.delete(`/api/qna/questions/${id}?userId=${sessionUserId}`, { withCredentials: true });
         setInfoMessage('질문이 삭제되었습니다.');
         setShowInfoModal(true);
     };
 
-    const handleEdit = () => {
-        // 질문 수정 모드 활성화
-        setEditingQuestion(true);
-        // navigate(`/community/qna/edit`);  // navigate 유지하고 싶다면 이 부분은 살리기
-    };
+    const handleEdit = () => setEditingQuestion(true);
 
     const handleSaveQuestionEdit = async () => {
         await axios.patch(`/api/qna/questions/${id}?userId=${sessionUserId}`, {
             title: editedTitle,
             content: editedContent
         }, { withCredentials: true });
-        setEditingQuestion(false);  // 수정 모드 종료
-        fetchQna();  // 질문 다시 불러오기
+        setEditingQuestion(false);
+        fetchQna();
     };
 
     const handleInfoModalClose = () => {
         setShowInfoModal(false);
-        if (infoMessage === '질문이 삭제되었습니다.') {
-            navigate('/community/qna');
-        }
+        if (infoMessage === '질문이 삭제되었습니다.') navigate('/community/qna');
     };
 
     const handleAnswerSubmit = async () => {
@@ -131,7 +144,7 @@ const QnaDetailPage = () => {
 
     const confirmEditAnswer = async (answerId: number) => {
         if (!editingAnswerContent.trim()) return;
-        await axios.patch(`/api/qna/answers/${answerId}?userId=${Number(sessionUserId)}`, {
+        await axios.patch(`/api/qna/answers/${answerId}?userId=${sessionUserId}`, {
             content: editingAnswerContent
         }, { withCredentials: true });
         setEditingAnswerId(null);
@@ -144,11 +157,12 @@ const QnaDetailPage = () => {
         await axios.delete(`/api/qna/answers/${answerId}?userId=${sessionUserId}`, { withCredentials: true });
         fetchAnswers();
     };
-    useEffect(() => {
-        console.log('로그인한 사용자 ID:', sessionUserId);
-        console.log('게시글 작성자 ID:', qna?.userId);
-    }, [sessionUserId, qna]);
 
+    const handleUserClick = async (userId: string) => {
+        const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
+        setUserInfo(res.data.result.data);
+        setUserModalOpen(true); // 유저 정보 모달 열기
+    };
 
     if (!qna) return <div style={{ textAlign: 'center', marginTop: '2rem' }}>로딩 중...</div>;
 
@@ -156,25 +170,30 @@ const QnaDetailPage = () => {
         <div className={styles.pageWrapper}>
             <div className={styles.mainContent}>
                 <div className={styles.topBar}>
-                    <button
-                        className={styles.backBtn}
-                        onClick={() => navigate(-1)}
-                        style={{
-                            fontSize: '2rem',
-                            textDecoration: 'none'
-                        }}
-                    >
-                        ←
-                    </button>
-                    {isLoggedIn && qna && sessionUserId && String(sessionUserId) === String(qna.userId) && (
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            {!editingQuestion ? (
-                                <>
-                                    <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
-                                    <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
-                                </>
-                            ) : (
-                                <button className={styles.deleteBtn} onClick={handleSaveQuestionEdit}>저장하기</button>
+                    <button className={styles.backBtn} onClick={() => navigate(-1)} style={{ fontSize: '1.4rem' }}>←</button>
+                    {isLoggedIn && sessionUserId === qna.userId.toString() && (
+                        <div className={styles.actionsWrapper} ref={actionsRef}>
+                            {/* 세로 점 3개 버튼 */}
+                            <button
+                                className={styles.actionMenuBtn}
+                                ref={actionMenuBtnRef}
+                                onClick={() => setShowActions(prev => !prev)}  // 버튼 클릭 시 토글
+                            >
+                                &#x22EE; {/* 세로 점 3개 */}
+                            </button>
+
+                            {/* 수정/삭제 버튼 토글 */}
+                            {showActions && (
+                                <div className={styles.actionButtons}>
+                                    {!editingQuestion ? (
+                                        <>
+                                            <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
+                                            <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                                        </>
+                                    ) : (
+                                        <button className={styles.deleteBtn} onClick={handleSaveQuestionEdit}>저장하기</button>
+                                    )}
+                                </div>
                             )}
                         </div>
                     )}
@@ -182,63 +201,54 @@ const QnaDetailPage = () => {
 
                 <div className={styles.leftColumn}>
                     <div className={styles["title-row"]}>
-                        <Link
-                            to={`/wargame/${qna.wargameId}`}
-                            style={{
-                                display: "inline-block",
-                                marginBottom: "0.75rem",
-                                fontWeight: 600,
-                                fontSize: "1.05rem",
-                                color: "#FFA94D",
-                                textDecoration: "none"
-                            }}
-                        >
+                        <Link to={`/wargame/${qna.wargameId}`} style={{ fontWeight: 600, color: "#FFA94D" }}>
                             [{qna.wargameTitle}]
                         </Link>
                         <div className={styles["header-card"]}>
                             <div className={styles["title-row"]}>
                                 {editingQuestion ? (
-                                    <input
-                                        value={editedTitle}
-                                        onChange={(e) => setEditedTitle(e.target.value)}
-                                        className={styles.titleInput}
-                                    />
+                                    <input value={editedTitle} onChange={(e) => setEditedTitle(e.target.value)} className={styles.titleInput} />
                                 ) : (
                                     <h1 className={styles.title}>{qna.title}</h1>
                                 )}
                             </div>
+
                             <div className={styles.meta}>
-                                <span>✍ 작성자: {qna.username}</span>
-                                <span>🕒 작성일: {new Date(qna.createdAt).toLocaleDateString()}</span>
-                                <span>👀 조회 {qna.viewCount}</span>
+                                <div className={styles.usernameWrapper}>
+                                    <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(qna.userId)}>
+                                        <img
+                                            src={qna.profileImageUrl || '/default-profile.png'}
+                                            alt={`${qna.username}'s profile`}
+                                            className={styles.commentProfileImage}
+                                        />
+                                    </div>
+                                    <span
+                                        className={styles.usernameLink}
+                                        onClick={() => handleUserClick(qna.userId)} // 글쓴이 이름 클릭 시 유저 정보 모달 열기
+                                    >
+                {qna.username}
+            </span>
+                                </div>
+                                <span>{new Date(qna.createdAt).toLocaleDateString()}</span>
+                                <span>조회 {qna.viewCount}</span>
                             </div>
                         </div>
+
                     </div>
                     <div className={styles.plainContent}>
                         {editingQuestion ? (
-                            <textarea
-                                value={editedContent}
-                                onChange={(e) => setEditedContent(e.target.value)}
-                                className={styles.editContentArea}
-                                rows={10}
-                            />
+                            <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} className={styles.editContentArea} rows={10} />
                         ) : (
                             qna.content
                         )}
                     </div>
 
-                    {/* 답변 영역 */}
                     <div className={styles.commentSection}>
                         <h2 className={styles.commentTitle}>답변 {answers.length}</h2>
 
                         {isLoggedIn && (
                             <div className={styles.commentForm}>
-                                <textarea
-                                    className={styles.commentTextarea}
-                                    value={newAnswer}
-                                    onChange={(e) => setNewAnswer(e.target.value)}
-                                    placeholder="답변을 입력하세요"
-                                />
+                                <textarea className={styles.commentTextarea} value={newAnswer} onChange={(e) => setNewAnswer(e.target.value)} placeholder="답변을 입력하세요" />
                                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                                     <button className={styles.submitBtn} onClick={handleAnswerSubmit}>등록</button>
                                 </div>
@@ -248,41 +258,32 @@ const QnaDetailPage = () => {
                         <ul className={styles.commentList}>
                             {answers.map(answer => (
                                 <li key={answer.id} className={styles.commentItem}>
-                                    <div className={styles.commentHeader} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        {/* 프로필 이미지 */}
-                                        <img
-                                            src={answer.profileImageUrl || '/default-profile.png'}
-                                            alt="프로필"
-                                            style={{
-                                                width: "40px",
-                                                height: "40px",
-                                                borderRadius: "50%",
-                                                objectFit: "cover"
-                                            }}
-                                        />
+                                    <div className={styles.commentHeader}>
+                                        <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(answer.userId)}>
+                                            <img
+                                                src={answer.profileImageUrl || '/default-profile.png'}
+                                                alt={`${answer.username}'s profile`}
+                                                className={styles.commentProfileImage}
+                                            />
+                                        </div>
                                         <div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <span className={styles.username}>{answer.username}</span>
-                                                {/* 티어 뱃지 */}
+                                            <div className={styles.usernameRow}>
+                                                <span
+                                                    className={styles.usernameLink}
+                                                    onClick={() => handleUserClick(answer.userId)} // 댓글 작성자 이름 클릭 시 유저 정보 모달 열기
+                                                >
+                                                    {answer.username}
+                                                </span>
                                                 {answer.tier && (
-                                                    <img
-                                                        src={`/badges/${answer.tier}.png`}  // 티어 이미지 경로
-                                                        alt={`${answer.tier} 티어`}
-                                                        style={{ width: '20px', height: '20px' }}
-                                                    />
+                                                    <img src={`/badges/${answer.tier}.png`} alt={`${answer.tier} 티어`} className={styles.tierIcon} />
                                                 )}
                                             </div>
-                                        <small className={styles.createdAt}>{new Date(answer.createdAt).toLocaleDateString()}</small>
+                                            <small className={styles.createdAt}>{new Date(answer.createdAt).toLocaleDateString()}</small>
                                         </div>
                                     </div>
-
                                     {editingAnswerId === answer.id ? (
                                         <>
-                                            <textarea
-                                                className={styles.commentTextarea}
-                                                value={editingAnswerContent}
-                                                onChange={(e) => setEditingAnswerContent(e.target.value)}
-                                            />
+                                            <textarea className={styles.commentTextarea} value={editingAnswerContent} onChange={(e) => setEditingAnswerContent(e.target.value)} />
                                             <div className={styles.reviewActionBtns}>
                                                 <button onClick={() => confirmEditAnswer(answer.id)}>저장</button>
                                                 <button onClick={() => setEditingAnswerId(null)}>취소</button>
@@ -291,7 +292,7 @@ const QnaDetailPage = () => {
                                     ) : (
                                         <>
                                             <p className={styles.commentContent}>{answer.content}</p>
-                                            {isLoggedIn && String(answer.userId) === sessionUserId && (
+                                            {isLoggedIn && answer.userId.toString() === sessionUserId && (
                                                 <div className={styles.reviewActionBtns}>
                                                     <button onClick={() => startEditAnswer(answer.id, answer.content)}>수정</button>
                                                     <button onClick={() => deleteAnswer(answer.id)}>삭제</button>
@@ -305,6 +306,13 @@ const QnaDetailPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* 유저 정보 모달 */}
+            <UserInfoModal
+                isOpen={userModalOpen}
+                onClose={() => setUserModalOpen(false)}
+                userInfo={userInfo}
+            />
 
             <Modal
                 isOpen={confirmDeletePost}

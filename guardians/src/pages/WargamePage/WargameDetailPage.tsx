@@ -107,7 +107,7 @@ function WargameDetailPage() {
             const res = await axios.post(`${API_BASE}/api/wargames/kali/start`);
             setKaliUrl(res.data.result.data.url);
             setKaliStatus("Pending");
-        } catch (e) {
+        } catch {
             alert("칼리 인스턴스 시작 실패");
         } finally {
             setIsStartingKali(false);
@@ -120,7 +120,7 @@ function WargameDetailPage() {
             await axios.delete(`${API_BASE}/api/wargames/kali/stop`);
             setKaliUrl(null);
             setKaliStatus("Not Found");
-        } catch (e) {
+        } catch {
             alert("칼리 인스턴스 종료 실패");
         } finally {
             setIsStoppingKali(false);
@@ -317,9 +317,13 @@ function WargameDetailPage() {
                 setIsPodRunning(true);
                 setIsStartingPod(false);
             }, 3000);
-        } catch (err: any) {
-            const errorMsg = err?.response?.data?.result?.message || "파드 생성 실패!";
-            alert(errorMsg);
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+                const errorMsg = err.response?.data?.result?.message || "파드 생성 실패!";
+                alert(errorMsg);
+            } else {
+                alert("예기치 못한 오류 발생");
+            }
             setIsStartingPod(false);
         }
     };

@@ -1,8 +1,9 @@
-import {useNavigate, useParams} from 'react-router-dom';
-import {useEffect, useState} from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import UserInfoModal from './UserInfoModal'; // 유저 정보 모달
 import styles from './components/FreeBoardDetailPage.module.css';
-import Modal from "./components/Modal.tsx";
+import Modal from './components/Modal.tsx';
 
 interface Board {
     boardId: number;
@@ -14,6 +15,7 @@ interface Board {
     viewCount: number;
     liked: boolean;
     userId: string;
+    profileImageUrl?: string;
 }
 
 interface Comment {
@@ -22,10 +24,12 @@ interface Comment {
     username: string;
     createdAt: string;
     userId: string;
+    profileImageUrl?: string;
+    tier?: string;
 }
 
 const FreeBoardDetailPage = () => {
-    const {id} = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [board, setBoard] = useState<Board | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
@@ -41,6 +45,10 @@ const FreeBoardDetailPage = () => {
     const [confirmDeletePost, setConfirmDeletePost] = useState(false);
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoMessage, setInfoMessage] = useState('');
+
+    // 유저 정보 모달 관련 상태
+    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
+    const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
 
     useEffect(() => {
         if (!id) return;
@@ -162,8 +170,12 @@ const FreeBoardDetailPage = () => {
         }
     };
 
-
-
+    // 유저 프로필 클릭 시 유저 정보 모달 띄우기
+    const handleUserClick = async (userId: string) => {
+        const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
+        setUserInfo(res.data.result.data);
+        setUserModalOpen(true); // 유저 정보 모달 열기
+    };
 
     if (!board) {
         return <div style={{textAlign: 'center', marginTop: '2rem'}}>로딩 중...</div>;
@@ -177,9 +189,9 @@ const FreeBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '2rem',
+                            fontSize: '1rem',
                             textDecoration: 'none'
-                    }}
+                        }}
                     >
                         ←
                     </button>
@@ -207,12 +219,19 @@ const FreeBoardDetailPage = () => {
                                 }}
                             >
                                 {isLiked ? "❤️" : "🤍"} {board.likeCount}
-                            </button>                        </div>
+                            </button>
+                        </div>
                         <div className={styles.meta}>
-                            <span>✍ 작성자: {board.username}</span>
-                            <span>🕒 작성일: {new Date(board.createdAt).toLocaleDateString()}</span>
+                            <span>
+                                <span
+                                    className={styles.usernameLink}
+                                    onClick={() => handleUserClick(board.userId)} // 글쓴이 이름 클릭 시 유저 정보 모달 열기
+                                >
+                                    {board.username}
+                                </span>
+                            </span>
+                            <span>{new Date(board.createdAt).toLocaleDateString()}</span>
                             <span>👀 조회 {board.viewCount}</span>
-                            <span>👍 추천 {board.likeCount}</span>
                         </div>
                     </div>
 
@@ -249,10 +268,22 @@ const FreeBoardDetailPage = () => {
                                 {comments.map(comment => (
                                     <li key={comment.commentId} className={styles.commentItem}>
                                         <div className={styles.commentHeader}>
-                                            <div className={styles.username}>{comment.username}</div>
-                                            <small className={styles.createdAt}>
-                                                {new Date(comment.createdAt).toLocaleDateString()}
-                                            </small>
+                                            <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(comment.userId)}>
+                                                <img src={comment.profileImageUrl || '/default-profile.png'} alt="프로필" className={styles.commentProfileImage} />
+                                            </div>
+                                            <div>
+                                                <div className={styles.usernameRow}>
+                                                    <span
+                                                        className={styles.usernameLink}
+                                                        onClick={() => handleUserClick(comment.userId)} // 댓글 작성자 이름 클릭 시 유저 정보 모달 열기
+                                                    >
+                                                        {comment.username}
+                                                    </span>
+                                                </div>
+                                                <small className={styles.createdAt}>
+                                                    {new Date(comment.createdAt).toLocaleDateString()}
+                                                </small>
+                                            </div>
                                         </div>
 
                                         {editingCommentId === comment.commentId ? (
@@ -311,6 +342,13 @@ const FreeBoardDetailPage = () => {
                 onConfirm={handleInfoModalClose}
                 message={infoMessage}
                 showCancelButton={false}
+            />
+
+            {/* 유저 정보 모달 */}
+            <UserInfoModal
+                isOpen={userModalOpen}
+                onClose={() => setUserModalOpen(false)}
+                userInfo={userInfo}
             />
         </div>
     );
