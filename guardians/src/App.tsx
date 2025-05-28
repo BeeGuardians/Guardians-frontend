@@ -11,28 +11,28 @@ import WargameDetailPage from "./pages/WargamePage/WargameDetailPage.tsx";
 import JobPage from "./pages/JobPage/JobPage";
 import JobDetailPage from "./pages/JobPage/JobDetailPage";
 
-import CommunityPage from "./pages/community/CommunityPage";
-import FreeBoardPage from "./pages/community/FreeBoardPage";
-import QnaBoardPage from "./pages/community/QnaBoardPage";
-import StudyBoardPage from "./pages/community/StudyBoardPage";
-import InquiryBoardPage from "./pages/community/InquiryBoardPage";
+import CommunityPage from "./pages/Community/CommunityPage";
+import FreeBoardPage from "./pages/Community/FreeBoardPage";
+import QnaBoardPage from "./pages/Community/QnaBoardPage";
+import StudyBoardPage from "./pages/Community/StudyBoardPage";
+import InquiryBoardPage from "./pages/Community/InquiryBoardPage";
 import SignupSuccess from "./pages/LoginPage/SignupSuccess.tsx";
 import Signup from "./pages/LoginPage/Signup.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import PublicOnlyRoute from "./components/PublicOnlyRoute";
 import PrivateRoute from "./components/PrivateRoute";
-import BoardWrite from "./pages/community/BoardWrite.tsx";
-import FreeBoardDetailPage from "./pages/community/FreeBoardDetailPage.tsx";
-import StudyBoardDetailPage from "./pages/community/StudyBoardDetailPage.tsx";
-import InquiryBoardDetailPage from "./pages/community/InquiryBoardDetailPage.tsx";
+import BoardWrite from "./pages/Community/BoardWrite.tsx";
+import FreeBoardDetailPage from "./pages/Community/FreeBoardDetailPage.tsx";
+import StudyBoardDetailPage from "./pages/Community/StudyBoardDetailPage.tsx";
+import InquiryBoardDetailPage from "./pages/Community/InquiryBoardDetailPage.tsx";
 
 import MypagePage from "./pages/MyPage/MypagePage";
 import MypageInfoCard from "./pages/MyPage/MypageInfoCard";
 import PostsPage from "./pages/MyPage/posts/PostsPage.tsx";
 import Footer from "./components/Footer.tsx";
-import QnaDetailPage from "./pages/community/QnaDetailPage.tsx";
-import QnaWrite from "./pages/community/QnaWrite.tsx";
-import BoardEdit from "./pages/community/BoardEdit.tsx";
+import QnaDetailPage from "./pages/Community/QnaDetailPage.tsx";
+import QnaWrite from "./pages/Community/QnaWrite.tsx";
+import BoardEdit from "./pages/Community/BoardEdit.tsx";
 
 function App() {
     const location = useLocation();

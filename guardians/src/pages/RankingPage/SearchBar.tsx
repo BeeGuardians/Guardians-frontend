@@ -1,6 +1,6 @@
 import searchIcon from "../../assets/search.png";
 import {useState} from "react";
-import Modal from "../community/components/Modal.tsx";
+import Modal from "../Community/components/Modal.tsx";
 
 interface SearchBarProps {
     onSearch: (keyword: string) => void;

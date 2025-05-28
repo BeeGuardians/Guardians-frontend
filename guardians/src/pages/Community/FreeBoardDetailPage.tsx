@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import UserInfoModal from './UserInfoModal'; // 유저 정보 모달
+import UserInfoModal from './UserInfoModal.tsx'; // 유저 정보 모달
 import styles from './components/FreeBoardDetailPage.module.css';
 import Modal from './components/Modal.tsx';
 

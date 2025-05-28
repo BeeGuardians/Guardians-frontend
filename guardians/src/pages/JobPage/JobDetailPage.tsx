@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import styles from "../community/components/QnaDetailPage.module.css";
+import styles from "../Community/components/QnaDetailPage.module.css";
 
 // 이미지 아이콘 import
 import locationIcon from "../../assets/location2.png";

@@ -1,6 +1,6 @@
 import searchIcon from "../../assets/search.png";
 import {useState} from "react";
-import Modal from "../community/components/Modal.tsx"; // 🔍 돋보기 아이콘
+import Modal from "../Community/components/Modal.tsx"; // 🔍 돋보기 아이콘
 
 interface SearchBarProps {
     onSearch: (keyword: string) => void;
