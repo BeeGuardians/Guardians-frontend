@@ -1,11 +1,18 @@
+// src/pages/AdminPage/JobPage/JobCreatePage.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "../../Community/components/QnaDetailPage.module.css";
+// InfoModal 임포트 추가
+import InfoModal from "../Components/InfoModal";
 
 
 const JobCreatePage = () => {
     const navigate = useNavigate();
+    // 모달 상태 추가
+    const [showInfoModal, setShowInfoModal] = useState(false);
+    const [infoMessage, setInfoMessage] = useState("");
+
     const [jobData, setJobData] = useState({
         title: "",
         companyName: "",
@@ -26,18 +33,19 @@ const JobCreatePage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            // ✨ 채용공고 등록 API 호출 ✨
             await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/jobs`, jobData, {
                 withCredentials: true,
             });
-            alert("채용공고가 등록되었습니다!");
-            navigate("/admin/jobs");  // 관리자 페이지 목록으로 이동 (경로는 필요에 따라 수정)
+            setInfoMessage("채용공고가 등록되었습니다!"); // alert 대신 InfoModal 사용
+            setShowInfoModal(true);
+            navigate("/admin/jobs");  // 등록 후 관리자 채용공고 목록으로 이동
         } catch (err) {
             console.error("채용공고 등록 실패:", err);
-            alert("채용공고 등록에 실패했습니다. 다시 시도해주세요.");
+            setInfoMessage("채용공고 등록에 실패했습니다. 다시 시도해주세요."); // alert 대신 InfoModal 사용
+            setShowInfoModal(true);
         }
     };
-
-
 
     return (
         <div className={styles.pageWrapper}>
@@ -143,6 +151,12 @@ const JobCreatePage = () => {
                     </div>
                 </form>
             </div>
+            {/* ✨ InfoModal 렌더링 ✨ */}
+            <InfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                message={infoMessage}
+            />
         </div>
     );
 };

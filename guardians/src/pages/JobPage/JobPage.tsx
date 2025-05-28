@@ -118,8 +118,8 @@ const JobPage = () => {
                             src={resetIcon}
                             alt="새로고침"
                             style={{
-                                width: 30,
-                                height: 30,
+                                width: 20,
+                                height: 20,
                             }}
                         />
                     </button>

@@ -1,6 +1,11 @@
+// src/pages/AdminPage/JobPage/JobListPage.tsx
+
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // useNavigate 임포트
 import AdminSidebar from "../AdminSidebar"; // 경로 맞음
+import ConfirmModal from "../Components/ConfirmModal"; // ConfirmModal 임포트
+import InfoModal from "../Components/InfoModal";     // InfoModal 임포트
 
 export interface ResJobDto {
     jobId: number;
@@ -16,9 +21,17 @@ export interface ResJobDto {
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 const JobListPage = () => {
+    const navigate = useNavigate(); // useNavigate 훅 사용
     const [jobs, setJobs] = useState<ResJobDto[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+
+    // 모달 관련 상태
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmActionId, setConfirmActionId] = useState<number | null>(null);
+    const [showInfoModal, setShowInfoModal] = useState(false);
+    const [infoMessage, setInfoMessage] = useState("");
+
 
     const fetchJobs = async () => {
         try {
@@ -28,21 +41,35 @@ const JobListPage = () => {
             setJobs(res.data.result.data);
         } catch (err) {
             console.error("채용공고 목록 불러오기 실패:", err);
+            setInfoMessage("채용공고 목록을 불러오는데 실패했습니다.");
+            setShowInfoModal(true);
         }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    // 삭제 확인 모달 열기
+    const confirmDelete = (id: number) => {
+        setConfirmActionId(id);
+        setShowConfirmModal(true);
+    };
+
+    // 실제 삭제 로직
+    const handleDelete = async () => {
+        if (confirmActionId === null) return; // ID가 없으면 실행하지 않음
 
         try {
-            await axios.delete(`${API_BASE}/api/jobs/${id}`, {
+            await axios.delete(`${API_BASE}/api/jobs/${confirmActionId}`, {
                 withCredentials: true,
             });
-            setJobs(prev => prev.filter(job => job.jobId !== id));
-            alert("삭제 완료되었습니다.");
+            setJobs(prev => prev.filter(job => job.jobId !== confirmActionId));
+            setInfoMessage("삭제 완료되었습니다.");
+            setShowInfoModal(true);
         } catch (err) {
             console.error("채용공고 삭제 실패:", err);
-            alert("삭제에 실패했습니다.");
+            setInfoMessage("삭제에 실패했습니다.");
+            setShowInfoModal(true);
+        } finally {
+            setShowConfirmModal(false); // 확인 모달 닫기
+            setConfirmActionId(null); // ID 초기화
         }
     };
 
@@ -72,7 +99,8 @@ const JobListPage = () => {
                                 color: "#fff",
                                 fontWeight: 600,
                             }}
-                            onClick={() => alert("등록 페이지로 이동 (추후 구현)")}
+                            // ✨ 채용공고 생성 페이지로 이동 ✨
+                            onClick={() => navigate("/admin/jobs/create")}
                         >
                             + 채용공고 생성
                         </button>
@@ -101,7 +129,8 @@ const JobListPage = () => {
                                 <td style={tdStyle}>{job.title}</td>
                                 <td style={tdStyle}>
                                     <button
-                                        onClick={() => handleDelete(job.jobId)}
+                                        // ✨ 삭제 확인 모달 띄우기 ✨
+                                        onClick={() => confirmDelete(job.jobId)}
                                         style={{
                                             backgroundColor: "#ff6b6b",
                                             color: "#fff",
@@ -140,6 +169,21 @@ const JobListPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* ✨ ConfirmModal 렌더링 ✨ */}
+            <ConfirmModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={handleDelete} // 확인 시 실제 삭제 로직 호출
+                message="정말 이 채용공고를 삭제하시겠습니까?"
+            />
+
+            {/* ✨ InfoModal 렌더링 ✨ */}
+            <InfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                message={infoMessage}
+            />
         </div>
     );
 };

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import axios from "axios";
-import styles from "../LoginPage/Login.module.css"; // ✅ 로그인과 동일한 스타일 사용
+import { useNavigate } from "react-router-dom"; // ✨ useNavigate 임포트 ✨
+import { useAuth } from "../../context/AuthContext"; // ✨ useAuth 임포트 ✨
+import styles from "../LoginPage/Login.module.css";
 import emailIcon from "../../assets/mail.png";
 import lockIcon from "../../assets/lock.png";
 import ErrorModal from "../ErrorModal/ErrorModal";
@@ -14,6 +16,8 @@ const AdminLoginPage = () => {
     const [showModal, setShowModal] = useState(false);
 
     const API_BASE = import.meta.env.VITE_API_BASE_URL;
+    const navigate = useNavigate(); // ✨ useNavigate 훅 사용 ✨
+    const { login } = useAuth(); // ✨ AuthContext의 login 함수 가져오기 ✨
 
     const handleLogin = async () => {
         if (!email.trim() || !password.trim()) {
@@ -23,13 +27,22 @@ const AdminLoginPage = () => {
         }
 
         try {
-            await axios.post(
-                `${API_BASE}/api/users/admin/login`, // ✅ 관리자 로그인 API
+            const res = await axios.post(
+                `${API_BASE}/api/users/admin/login`, // 관리자 로그인 API
                 { email, password },
                 { withCredentials: true }
             );
-            // 로그인 성공 후 이동
-            window.location.href = "/admin/wargames";
+
+            // ✨ 로그인 성공 시 AuthContext의 login 함수 호출 ✨
+            // 백엔드 응답에서 user 정보를 직접 가져와 login 함수에 전달해야 합니다.
+            // 현재 AuthContext의 User 타입에는 id, email, username만 있습니다.
+            // 백엔드 응답 구조에 맞게 user 객체를 구성해야 합니다.
+            // 예를 들어, res.data.result.data.user 에 사용자 정보가 있다고 가정합니다.
+            const adminUserData = res.data.result.data; // 백엔드 응답에서 유저 정보를 가져옴
+            login(adminUserData); // AuthContext에 로그인 상태 전달
+
+            // 로그인 성공 후 /admin/wargames로 새로고침 없이 이동
+            navigate("/admin/wargames");
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 setErrorMsg(err.response?.data?.message || "관리자 로그인 실패");

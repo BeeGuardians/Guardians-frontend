@@ -41,6 +41,13 @@ const UserInfoModal = ({ isOpen, onClose, userInfo }: UserInfoModalProps) => {
         return badgeMap[tier.toUpperCase()] ?? "";
     };
 
+    // ✨✨✨ 새로 추가된 티어 이름 포맷팅 함수 ✨✨✨
+    const formatTierName = (tier: string | undefined): string => {
+        if (!tier) return "N/A";
+        // 첫 글자만 대문자로, 나머지는 소문자로 변환
+        return tier.charAt(0).toUpperCase() + tier.slice(1).toLowerCase();
+    };
+
 
     useEffect(() => {
         console.log("UserInfoModal useEffect triggered.");
@@ -90,7 +97,7 @@ const UserInfoModal = ({ isOpen, onClose, userInfo }: UserInfoModalProps) => {
                         )}
                         {userInfo?.username || '알 수 없는 사용자'}
                     </h2>
-                    </div>
+                </div>
                 <div className={styles.body}>
                     <div className={styles.profileSection}>
                         <div className={styles.profileImageContainer}>
@@ -114,7 +121,8 @@ const UserInfoModal = ({ isOpen, onClose, userInfo }: UserInfoModalProps) => {
                                 <>
                                     <div className={styles.detailItem}>
                                         <span className={styles.detailLabel}>티어</span>
-                                        <span className={styles.detailValue}>{userStats.tier}</span>
+                                        {/* ✨✨✨ formatTierName 함수 적용 ✨✨✨ */}
+                                        <span className={styles.detailValue}>{formatTierName(userStats.tier)}</span>
                                     </div>
                                     <div className={styles.detailItem}>
                                         <span className={styles.detailLabel}>점수</span>

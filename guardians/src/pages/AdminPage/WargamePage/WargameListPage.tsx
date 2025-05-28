@@ -1,6 +1,11 @@
+// src/pages/AdminPage/WargamePage/WargameListPage.tsx
+
 import { useEffect, useState } from "react";
 import axios from "axios";
-import AdminSidebar from "../AdminSidebar"; // 경로 주의
+import { useNavigate } from "react-router-dom";
+import AdminSidebar from "../AdminSidebar";
+import ConfirmModal from "../Components/ConfirmModal";
+import InfoModal from "../Components/InfoModal";
 
 interface Wargame {
     id: number;
@@ -10,10 +15,17 @@ interface Wargame {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-const AdminWargameListPage = () => {
+const WargameListPage = () => { // 컴포넌트 이름 WargameListPage로 변경
+    const navigate = useNavigate();
     const [wargames, setWargames] = useState<Wargame[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
+
+    // 모달 관련 상태
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmActionId, setConfirmActionId] = useState<number | null>(null);
+    const [showInfoModal, setShowInfoModal] = useState(false);
+    const [infoMessage, setInfoMessage] = useState("");
 
     const fetchWargames = async () => {
         try {
@@ -23,21 +35,35 @@ const AdminWargameListPage = () => {
             setWargames(res.data.result.data);
         } catch (err) {
             console.error("워게임 목록 불러오기 실패:", err);
+            setInfoMessage("워게임 목록을 불러오는데 실패했습니다.");
+            setShowInfoModal(true);
         }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!window.confirm("정말 삭제하시겠습니까?")) return;
+    // 삭제 확인 모달 열기
+    const confirmDelete = (id: number) => {
+        setConfirmActionId(id);
+        setShowConfirmModal(true);
+    };
+
+    // 실제 삭제 로직
+    const handleDelete = async () => {
+        if (confirmActionId === null) return;
 
         try {
-            await axios.delete(`${API_BASE}/api/wargames/admin/${id}`, {
+            await axios.delete(`${API_BASE}/api/wargames/admin/${confirmActionId}`, {
                 withCredentials: true,
             });
-            setWargames(prev => prev.filter(w => w.id !== id));
-            alert("삭제 완료되었습니다.");
+            setWargames(prev => prev.filter(w => w.id !== confirmActionId));
+            setInfoMessage("삭제 완료되었습니다.");
+            setShowInfoModal(true);
         } catch (err) {
             console.error("워게임 삭제 실패:", err);
-            alert("삭제에 실패했습니다.");
+            setInfoMessage("삭제에 실패했습니다.");
+            setShowInfoModal(true);
+        } finally {
+            setShowConfirmModal(false);
+            setConfirmActionId(null);
         }
     };
 
@@ -78,7 +104,7 @@ const AdminWargameListPage = () => {
                                 color: "#fff",
                                 fontWeight: 600,
                             }}
-                            onClick={() => alert("등록 페이지로 이동 (추후 구현)")}
+                            onClick={() => navigate("/admin/wargames/create")}
                         >
                             + 워게임 생성
                         </button>
@@ -107,7 +133,7 @@ const AdminWargameListPage = () => {
                                 <td style={tdStyle}>{w.title}</td>
                                 <td style={tdStyle}>
                                     <button
-                                        onClick={() => handleDelete(w.id)}
+                                        onClick={() => confirmDelete(w.id)}
                                         style={{
                                             backgroundColor: "#ff6b6b",
                                             color: "#fff",
@@ -146,6 +172,19 @@ const AdminWargameListPage = () => {
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal
+                isOpen={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                onConfirm={handleDelete}
+                message="정말 이 워게임을 삭제하시겠습니까?"
+            />
+
+            <InfoModal
+                isOpen={showInfoModal}
+                onClose={() => setShowInfoModal(false)}
+                message={infoMessage}
+            />
         </div>
     );
 };
@@ -167,4 +206,4 @@ const tdStyle = {
     textOverflow: "ellipsis",
 };
 
-export default AdminWargameListPage;
+export default WargameListPage; // 컴포넌트 이름 WargameListPage로 export

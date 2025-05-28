@@ -1,3 +1,5 @@
+// src/pages/AdminPage/WargamePage/WargameCreatePage.tsx
+// 기존 코드는 그대로 유지하고, URL 변경만 적용하면 됩니다.
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -49,11 +51,12 @@ const WargameCreatePage = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
+            // ✨ API 호출 부분은 이미 정확하게 구현되어 있습니다. ✨
             await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/wargames/admin`, wargameData, {
                 withCredentials: true,
             });
             alert("워게임 등록 완료!");
-            navigate("/admin/wargames");
+            navigate("/admin/wargames"); // 등록 후 이동할 관리자 페이지
         } catch (err) {
             console.error("등록 실패:", err);
             alert("등록 실패. 다시 시도하세요.");

@@ -6,6 +6,8 @@ type User = {
     id: number;
     email: string;
     username: string;
+    role?: 'USER' | 'ADMIN'; // ✨ role 필드 추가 (백엔드에서 'ADMIN' 또는 'USER' 값을 준다고 가정) ✨
+    profileImageUrl?: string; // profileImageUrl도 추가
 };
 
 type AuthContextType = {

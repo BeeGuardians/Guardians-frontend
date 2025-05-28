@@ -6,15 +6,17 @@ interface UserRanking {
     score: number;
     totalSolved: number;
     userProfileUrl: string;
+    userId: string;
 }
 
 interface RankingTableProps {
     data: UserRanking[];
+    handleUserClick: (targetUserId: string) => Promise<void>;
 }
 
 const ITEMS_PER_PAGE = 20;
 
-const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
+const RankingTable: React.FC<RankingTableProps> = ({ data, handleUserClick }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
     const currentData = data.slice(
@@ -72,6 +74,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                             borderRadius: "6px",
                             transition: "background 0.2s",
+                            cursor: "pointer", // 클릭 가능함을 나타냄
                         }}
                         onMouseOver={(e) =>
                             (e.currentTarget.style.backgroundColor = "#fcddb6")
@@ -79,6 +82,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                         onMouseOut={(e) =>
                             (e.currentTarget.style.backgroundColor = "white")
                         }
+                        onClick={() => handleUserClick(user.userId)}
                     >
                         <td style={tdStyle}>{user.rank}</td>
                         <td style={{ ...tdStyle, display: "flex", alignItems: "center", gap: "1rem", justifyContent: "center" }}>

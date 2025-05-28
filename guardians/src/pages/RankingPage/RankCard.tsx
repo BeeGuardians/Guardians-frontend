@@ -6,6 +6,8 @@ interface RankCardProps {
     score: number;
     totalSolved: number;
     userProfileUrl: string;
+    userId: string; // <-- userId도 prop으로 받아야 합니다.
+    onClick: (userId: string) => void; // <-- 클릭 이벤트를 처리할 함수를 prop으로 받습니다.
 }
 
 const getTier = (score: number): string => {
@@ -22,6 +24,8 @@ const RankCard: React.FC<RankCardProps> = ({
                                                score,
                                                totalSolved,
                                                userProfileUrl,
+                                               userId, // 추가된 prop
+                                               onClick, // 추가된 prop
                                            }) => {
     return (
         <div
@@ -32,6 +36,17 @@ const RankCard: React.FC<RankCardProps> = ({
                 backgroundColor: "#fff",
                 textAlign: "center",
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                cursor: "pointer", // 클릭 가능함을 시각적으로 나타냅니다.
+                transition: "transform 0.2s ease, box-shadow 0.2s ease", // 호버 효과 추가
+            }}
+            onClick={() => onClick(userId)} // 카드 전체 클릭 시 onClick 함수 호출
+            onMouseOver={(e) => {
+                e.currentTarget.style.transform = "translateY(-5px)";
+                e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.15)";
+            }}
+            onMouseOut={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.1)";
             }}
         >
             {/* 순위 텍스트 */}
