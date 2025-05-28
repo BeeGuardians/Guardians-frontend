@@ -1,10 +1,11 @@
+// src/components/SolvedTimeline.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface SolvedItem {
     category: string;
     name: string;
-    date: string; // yyyy-MM-dd
+    date: string; // YYYY-MM-dd
 }
 
 interface Props {
@@ -58,7 +59,7 @@ const SolvedTimeline = ({ userId }: Props) => {
                 }} />
 
                 {/* 날짜 동그라미 목록 */}
-                {uniqueDates.map((date, index) => (
+                {uniqueDates.map((date, _) => ( // ⭐ 여기서 index를 _로 변경
                     <div
                         key={date}
                         onClick={() => {
@@ -125,7 +126,7 @@ const SolvedTimeline = ({ userId }: Props) => {
                         {/* 페이지네이션 */}
                         {totalPages > 1 && (
                             <div style={{ marginTop: "1rem", textAlign: "center" }}>
-                                {Array.from({ length: totalPages }, (_, i) => (
+                                {Array.from({ length: totalPages }, (_, i) => ( // ⭐ 여기서 index를 _로 변경
                                     <button
                                         key={i + 1}
                                         onClick={() => setCurrentPage(i + 1)}
