@@ -88,7 +88,7 @@ const JobListPage = () => {
 
                 <div style={{ flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-                        <h2 style={{ fontSize: "1.5rem", fontWeight: 700 }}>📄 커리어 관리</h2>
+                        <h2 style={{ fontSize: "1.5rem", fontWeight: 600 }}>📄 커리어 관리</h2>
                         <button
                             style={{
                                 padding: "0.5rem 1rem",

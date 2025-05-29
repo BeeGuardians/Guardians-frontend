@@ -14,7 +14,7 @@ const AdminPrivateRoute: React.FC = () => {
     const isAdmin = user && user.role === 'ADMIN';
 
     if (isAdmin && location.pathname === '/admin/login') {
-        return <Navigate to="/admin/wargames" replace />;
+        return <Navigate to="/admin/dashboard" replace />;
     }
 
     if (!isAdmin && location.pathname !== '/admin/login') {

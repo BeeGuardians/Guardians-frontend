@@ -93,7 +93,7 @@ const WargameListPage = () => { // 컴포넌트 이름 WargameListPage로 변경
                         alignItems: "center",
                         marginBottom: "1rem"
                     }}>
-                        <h2 style={{ fontSize: "1.5rem", fontWeight: 700 }}>🔐 워게임 관리</h2>
+                        <h2 style={{ fontSize: "1.5rem", fontWeight: 600 }}>🔐 워게임 관리</h2>
                         <button
                             style={{
                                 padding: "0.5rem 1rem",
