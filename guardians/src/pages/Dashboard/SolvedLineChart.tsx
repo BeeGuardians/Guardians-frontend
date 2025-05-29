@@ -227,6 +227,7 @@ const SolvedLineChart = () => {
                             }}
                             value={selectedDate}
                             formatDay={(_, date) => String(date.getDate())}
+                            maxDate={new Date()}  // ✅ 오늘 날짜까지만 선택 가능
                         />
                     </div>
                 )}
@@ -253,9 +254,9 @@ const SolvedLineChart = () => {
                         <Line
                             type="monotone"
                             dataKey="count"
-                            stroke="#007bff"
+                            stroke="rgb(255, 192, 120)"
                             strokeWidth={2}
-                            dot={{ r: 4, fill: "#fff", stroke: "#007bff", strokeWidth: 2 }}
+                            dot={{ r: 4, fill: "#fff", stroke: "rgb(255, 192, 120)", strokeWidth: 2 }}
                             activeDot={{ r: 6 }}
                         />
                     </LineChart>

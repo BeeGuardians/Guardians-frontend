@@ -5,6 +5,7 @@ import "react-circular-progressbar/dist/styles.css";
 import RadarChart from "./RadarChart";
 import SolvedTimelineChart from "./SolvedTimelineChart";
 import { AiOutlineInfoCircle } from "react-icons/ai";
+import ScoreTrendChart from "./ScoreTrendChart";
 
 interface Badge {
     id: number;
@@ -33,6 +34,8 @@ const DashboardPage = () => {
     const descriptionRef = useRef<HTMLDivElement | null>(null);
     const tierDescriptionRef = useRef<HTMLDivElement | null>(null);
     const [showTooltip, setShowTooltip] = useState(false);
+    const [showRadarTooltip, setShowRadarTooltip] = useState(false);
+    const [showTimelineTooltip, setShowTimelineTooltip] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -395,6 +398,8 @@ const DashboardPage = () => {
                                         backgroundColor: "#fdf3e7",
                                         cursor: "pointer",
                                         fontSize: "0.9rem",
+                                        border: "none",
+                                        outline: "none",
                                     }}
                                 >
                                     {isDescriptionOpen ? "뱃지 설명 닫기" : "뱃지란?"}
@@ -425,8 +430,39 @@ const DashboardPage = () => {
                     <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
                         {/* 종합 역량 진단표 */}
                         <div style={{ flex: 1, minWidth: "300px" }}>
-                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
+                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.4rem", position: "relative" }}>
                                 • 역량 진단표
+                                <AiOutlineInfoCircle
+                                    size={16.5}
+                                    color="rgba(200, 80, 80, 0.6)"
+                                    style={{ cursor: "pointer" }}
+                                    onMouseEnter={() => setShowRadarTooltip(true)}
+                                    onMouseLeave={() => setShowRadarTooltip(false)}
+                                />
+                                {showRadarTooltip && (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            top: "120%",
+                                            left: 0,
+                                            background: "#4d4d4d",
+                                            color: "#fff",
+                                            padding: "0.5rem 0.75rem",
+                                            borderRadius: "8px",
+                                            fontSize: "0.85rem",
+                                            whiteSpace: "nowrap",
+                                            zIndex: 999,
+                                        }}
+                                    >
+                                        워게임 카테고리별로 정규화된 점수를 시각화한 그래프예요. <br /><br />
+                                        각 카테고리에서 얻을 수 있는 총점을 기준으로 <br />
+                                        내가 받은 점수를 비율로 계산해요. <br /><br />
+                                        ex) 총점이 600점인데 내가 300점이면 <br />
+                                        정규화 점수는 (300 ÷ 600) × 100 = 50점! <br /><br />
+                                        그래서 내가 어떤 분야에 강한지를 한눈에 볼 수 있게 도와줘요.
+
+                                    </div>
+                                )}
                             </div>
                             <div style={{
                                 backgroundColor: "#fff",
@@ -467,10 +503,54 @@ const DashboardPage = () => {
                             marginTop: "2rem",
                         }}
                     >
-                        {/* 타임라인 */}
+                        {/* 점수 변화 추이 */}
                         <div style={{ flex: 1, minWidth: "300px" }}>
                             <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
+                                • 점수 변화 추이
+                            </div>
+                            <div
+                                style={{
+                                    backgroundColor: "#fff",
+                                    border: "1px solid #eee",
+                                    borderRadius: "0.5rem",
+                                    padding: "1.5rem",
+                                    height: "40vh",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                                }}
+                            >
+                                <ScoreTrendChart />
+                            </div>
+                        </div>
+
+                        {/* 타임라인 */}
+                        <div style={{ flex: 1, minWidth: "300px" }}>
+                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666666", marginBottom: "0.75rem", display: "flex", alignItems: "center", gap: "0.4rem", position: "relative" }}>
                                 • 타임라인
+                                <AiOutlineInfoCircle
+                                    size={16.5}
+                                    color="rgba(200, 80, 80, 0.6)"
+                                    style={{ cursor: "pointer" }}
+                                    onMouseEnter={() => setShowTimelineTooltip(true)}
+                                    onMouseLeave={() => setShowTimelineTooltip(false)}
+                                />
+                                {showTimelineTooltip && (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            top: "120%",
+                                            left: 0,
+                                            background: "#4d4d4d",
+                                            color: "#fff",
+                                            padding: "0.75rem 0.75rem",
+                                            borderRadius: "8px",
+                                            fontSize: "0.85rem",
+                                            whiteSpace: "nowrap",
+                                            zIndex: 999,
+                                        }}
+                                    >
+                                        내가 푼 문제들의 타임라인을 한눈에 확인할 수 있어요. <br /><br /> 날짜별로 카테고리와 워게임 이름도 함께 보여줘요.
+                                    </div>
+                                )}
                             </div>
                             <div
                                 style={{
@@ -484,30 +564,6 @@ const DashboardPage = () => {
                                 }}
                             >
                                 {userInfo && <SolvedTimelineChart userId={userInfo.id} />}
-                            </div>
-                        </div>
-
-                        {/* 랭킹 변화 추이 */}
-                        <div style={{ flex: 1, minWidth: "300px" }}>
-                            <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
-                                • 랭킹 변화 추이 (예정)
-                            </div>
-                            <div
-                                style={{
-                                    backgroundColor: "#fff",
-                                    border: "1px solid #eee",
-                                    borderRadius: "0.5rem",
-                                    padding: "1.5rem",
-                                    height: "40vh",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    color: "#ccc",
-                                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                                }}
-                            >
-                                {/* 내용은 예정 */}
-                                준비 중입니다
                             </div>
                         </div>
                     </div>

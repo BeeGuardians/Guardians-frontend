@@ -66,18 +66,22 @@ const RadarChartComponent = ({ userId }: RadarChartProps) => {
                 <Radar
                     name="정규화 점수"
                     dataKey="normalizedScore"
-                    stroke="#4c6ef5"         // 푸른 계열 선
-                    fill="#4c6ef5"
-                    fillOpacity={0.4}
+                    stroke="rgb(255, 192, 120)"
+                    fill="rgb(255, 192, 120)"
+                    fillOpacity={0.5}
                 />
 
                 <Tooltip
                     contentStyle={{
-                        backgroundColor: "#e8f0fe",     // 연한 파랑 배경
-                        border: "1px solid #a5d8ff",    // 밝은 파랑 테두리
+                        backgroundColor: "rgba(255, 235, 210, 0.9)", // 밝은 살구빛 배경
+                        border: "1px solid rgb(255, 192, 120)",
                         borderRadius: "8px",
                         fontSize: "0.85rem",
-                        color: "#1c1c1c",               // 텍스트 컬러 (어두운 회색)
+                        color: "#4a4a4a",               // 텍스트 컬러 (어두운 회색)
+                    }}
+                    itemStyle={{
+                        color: "rgb(250,142,38)",
+                        fontWeight: 500
                     }}
                     formatter={(value: number) => [`${value.toFixed(1)}점`, "정규화 점수"]}
                 />
