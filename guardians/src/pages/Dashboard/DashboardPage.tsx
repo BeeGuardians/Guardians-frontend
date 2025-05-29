@@ -398,8 +398,7 @@ const DashboardPage = () => {
                                         backgroundColor: "#fdf3e7",
                                         cursor: "pointer",
                                         fontSize: "0.9rem",
-                                        border: "none",
-                                        outline: "none",
+                                        outline: "none"
                                     }}
                                 >
                                     {isDescriptionOpen ? "뱃지 설명 닫기" : "뱃지란?"}
