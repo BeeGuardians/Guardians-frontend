@@ -200,31 +200,31 @@ const FreeBoardDetailPage = () => {
     // 유저 프로필 클릭 시 유저 정보 모달 띄우기
     const handleUserClick = async (targetUserId: string) => {
         try {
-            // ✨✨✨ 디버깅 로그 시작 ✨✨✨
             console.log("FreeBoardDetailPage: handleUserClick called for targetUserId:", targetUserId);
 
             // /api/users/{targetUserId} API 호출하여 사용자 기본 정보 가져오기
-            // 이 API 응답 스펙에 'userId' 필드가 있음을 전제로 합니다.
             const res = await axios.get(`/api/users/${targetUserId}`, { withCredentials: true });
-            const userData = res.data.result.data;
+            const userData = res.data.result.data; // 서버로부터 받은 원본 유저 데이터
 
             console.log("FreeBoardDetailPage: Fetched user base info (from /api/users/{userId}):", userData);
-            // ✨✨✨ 디버깅 로그 끝 ✨✨✨
 
-            // UserInfoModal에 전달할 userInfo 객체 생성
-            // 백엔드 응답의 'userId' 필드를 UserInfoModal이 기대하는 'id' 필드로 매핑합니다.
             const userInfoForModal: UserForModal = {
-                id: String(userData.userId), // 이곳을 수정하여 'userId'를 'id'로 사용
+                id: String(userData.userId), // 여기서 userData.userId 값을 사용합니다.
                 username: userData.username,
                 profileImageUrl: userData.profileImageUrl,
                 email: userData.email,
             };
 
+            console.log("FreeBoardDetailPage: Prepared userInfoForModal object:", userInfoForModal);
+            console.log("FreeBoardDetailPage: Type of userInfoForModal.id:", typeof userInfoForModal.id);
+
+
             setUserInfo(userInfoForModal); // UserInfoModal에 전달할 userInfo 설정
             setUserModalOpen(true); // 유저 정보 모달 열기
 
         } catch (error) {
-            console.error("FreeBoardDetailPage: Error fetching user base info for modal:", error);
+            // 만약 여기서 에러가 발생하면, userData.userId 접근 전에 문제가 생긴 것일 수 있습니다.
+            console.error("FreeBoardDetailPage: Error fetching user base info for modal or preparing data:", error);
             setInfoMessage('유저 정보를 불러오는데 실패했습니다.');
             setShowInfoModal(true);
         }

@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from './components/FreeBoardDetailPage.module.css'; // CSS 파일 경로 확인
-import Modal from "./components/Modal.tsx"; // Modal import
-import UserInfoModal from './UserInfoModal.tsx'; // UserInfoModal import
+import styles from './components/FreeBoardDetailPage.module.css';
+import Modal from "./components/Modal.tsx";
+import UserInfoModal from './UserInfoModal.tsx';
 
 interface Board {
     boardId: number;
@@ -15,7 +15,7 @@ interface Board {
     viewCount: number;
     liked: boolean;
     userId: string;
-    profileImageUrl?: string; // 게시글 작성자 프로필 이미지 추가
+    profileImageUrl?: string;
 }
 
 interface Comment {
@@ -24,8 +24,15 @@ interface Comment {
     username: string;
     createdAt: string;
     userId: string;
-    profileImageUrl?: string; // 댓글 작성자 프로필 이미지 추가
-    tier?: string; // 티어 정보 (필요하다면)
+    profileImageUrl?: string;
+    tier?: string;
+}
+
+interface UserForModal {
+    id: string;
+    username: string;
+    profileImageUrl: string;
+    email: string;
 }
 
 const InquiryBoardDetailPage = () => {
@@ -46,9 +53,8 @@ const InquiryBoardDetailPage = () => {
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoMessage, setInfoMessage] = useState('');
 
-    // 유저 정보 모달 관련 상태
-    const [userInfo, setUserInfo] = useState<any | null>(null); // User 타입이거나, stats도 받을 수 있게 any
-    const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
+    const [userInfo, setUserInfo] = useState<UserForModal | null>(null);
+    const [userModalOpen, setUserModalOpen] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -76,9 +82,9 @@ const InquiryBoardDetailPage = () => {
     const checkLoginStatus = () => {
         axios.get('/api/users/me', { withCredentials: true })
             .then(res => {
-                const id = res.data.result.data.id;
+                const userIdFromSession = String(res.data.result.data.id);
                 setIsLoggedIn(true);
-                setSessionUserId(String(id));
+                setSessionUserId(userIdFromSession);
             })
             .catch(() => {
                 setIsLoggedIn(false);
@@ -186,23 +192,20 @@ const InquiryBoardDetailPage = () => {
         }
     };
 
-    // 유저 프로필 클릭 시 유저 정보 모달 띄우기
-    const handleUserClick = async (userId: string) => {
+    const handleUserClick = async (targetUserId: string) => {
         try {
-            // ✨✨✨ 디버깅 로그 시작 ✨✨✨
-            console.log("InquiryBoardDetailPage: handleUserClick called for userId:", userId);
-            const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
-            console.log("InquiryBoardDetailPage: Fetched user base info:", res.data.result.data);
-            // ✨✨✨ 디버깅 로그 끝 ✨✨✨
+            const res = await axios.get(`/api/users/${targetUserId}`, { withCredentials: true });
+            const userDataFromApi = res.data.result.data;
 
-            const userDataForModal = {
-                id: String(res.data.result.data.id),
-                username: res.data.result.data.username,
-                profileImageUrl: res.data.result.data.profileImageUrl,
-                email: res.data.result.data.email,
+            const userForModalObj: UserForModal = {
+                id: String(userDataFromApi.id || userDataFromApi.userId),
+                username: userDataFromApi.username || 'N/A',
+                profileImageUrl: userDataFromApi.profileImageUrl || '/default-profile.png',
+                email: userDataFromApi.email || 'N/A',
             };
-            setUserInfo(userDataForModal);
-            setUserModalOpen(true); // 유저 정보 모달 열기
+
+            setUserInfo(userForModalObj);
+            setUserModalOpen(true);
         } catch (error) {
             console.error("InquiryBoardDetailPage: Error fetching user base info for modal:", error);
             setInfoMessage('유저 정보를 불러오는데 실패했습니다.');
@@ -259,7 +262,7 @@ const InquiryBoardDetailPage = () => {
                             <span>
                                 <span
                                     className={styles.usernameLink}
-                                    onClick={() => handleUserClick(board.userId)}
+                                    onClick={() => handleUserClick(String(board.userId))}
                                 >
                                     {board.username}
                                 </span>
@@ -302,14 +305,14 @@ const InquiryBoardDetailPage = () => {
                                 {comments.map(comment => (
                                     <li key={comment.commentId} className={styles.commentItem}>
                                         <div className={styles.commentHeader}>
-                                            <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(comment.userId)}>
+                                            <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(String(comment.userId))}>
                                                 <img src={comment.profileImageUrl || '/default-profile.png'} alt="프로필" className={styles.commentProfileImage} />
                                             </div>
                                             <div>
                                                 <div className={styles.usernameRow}>
                                                     <span
                                                         className={styles.usernameLink}
-                                                        onClick={() => handleUserClick(comment.userId)}
+                                                        onClick={() => handleUserClick(String(comment.userId))}
                                                     >
                                                         {comment.username}
                                                     </span>
@@ -375,7 +378,6 @@ const InquiryBoardDetailPage = () => {
                 showCancelButton={false}
             />
 
-            {/* 유저 정보 모달 */}
             <UserInfoModal
                 isOpen={userModalOpen}
                 onClose={() => setUserModalOpen(false)}
