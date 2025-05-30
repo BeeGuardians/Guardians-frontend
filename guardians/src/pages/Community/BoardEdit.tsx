@@ -2,13 +2,20 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import styles from "./BoardWrite.module.css";
+import Modal from "./components/Modal.tsx";
 
 const BoardEdit = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [type, setType] = useState<string>('');
+    const [type, setType] = useState<string>('')
+
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalOnConfirm, setModalOnConfirm] = useState<() => void>(() => {});
+    const [showCancelButton, setShowCancelButton] = useState(false);
+
 
     useEffect(() => {
         if (!id) return;
@@ -35,6 +42,19 @@ const BoardEdit = () => {
             });
     };
 
+    const handleSubmitClick = () => {
+        if (!title || !content) {
+            setModalMessage("제목과 내용을 모두 입력해주세요.");
+            setModalOnConfirm(() => () => setShowModal(false));  // 확인 시 모달 닫기
+            setShowCancelButton(false);  // 확인 버튼만
+        } else {
+            setModalMessage("정말 수정하시겠습니까?");
+            setModalOnConfirm(() => handleSubmit);  // 확인 시 handleSubmit 호출
+            setShowCancelButton(true);  // 확인/취소 버튼
+        }
+        setShowModal(true);  // 모달 열기
+    };
+
     const handleCancel = () => {
         navigate(`/community/${type}`);
     };
@@ -56,9 +76,19 @@ const BoardEdit = () => {
                 className={styles.textarea}
             />
             <div className={styles.btnGroup}>
-                <button onClick={handleSubmit} className={styles.submitBtn}>수정</button>
+                <button onClick={handleSubmitClick} className={styles.submitBtn}>수정</button>
                 <button onClick={handleCancel} className={styles.cancelBtn}>취소</button>
             </div>
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onConfirm={() => {
+                    modalOnConfirm();
+                    setShowModal(false);
+                }}
+                message={modalMessage}
+                showCancelButton={showCancelButton}
+            />
         </div>
     );
 };

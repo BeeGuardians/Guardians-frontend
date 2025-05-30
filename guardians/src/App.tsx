@@ -44,6 +44,7 @@ import JobListPage from "./pages/AdminPage/JobPage/JobListPage";
 import UserManagementPage from "./pages/AdminPage/UserPage/UserManagementPage";
 import WargameCreatePage from "./pages/AdminPage/WargamePage/WargameCreatePage.tsx";
 import JobCreatePage from "./pages/AdminPage/JobPage/JobCreatePage.tsx";
+import QnaEdit from "./pages/Community/QnaEdit.tsx";
 
 function App() {
     const location = useLocation();
@@ -152,6 +153,7 @@ function App() {
                     <Route path="/community/qna" element={<QnaBoardPage />} />
                     <Route path="/community/qna/write" element={<QnaWrite />} />
                     <Route path="/community/qna/:id" element={<QnaDetailPage />} />
+                    <Route path="/community/qna/edit/:id" element={<QnaEdit />} />
                     <Route path="/community/study" element={<StudyBoardPage />} />
                     <Route path="/community/study/write" element={<BoardWrite type="STUDY" />} />
                     <Route path="/community/study/:id" element={<StudyBoardDetailPage />} />

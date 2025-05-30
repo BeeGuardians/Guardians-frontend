@@ -134,9 +134,6 @@
     padding: 0.3rem 0.8rem;
 }
 
-.deleteBtn:hover {
-    text-decoration: underline;
-}
 
 .commentSection {
     margin-top: 3rem;
@@ -278,9 +275,6 @@
     outline: none;  /* 기본 포커스 테두리 제거 */
 }
 
-.actionMenuBtn:focus {
-    outline: none;
-}
 
 /* 수정/삭제 버튼 영역 */
 .actionsWrapper {
@@ -312,7 +306,6 @@
 
 .actionButtons button {
     font-size: 1rem;
-    color: #333;
     background: none;
     border: none;
     cursor: pointer;
@@ -320,6 +313,10 @@
     transition: background-color 0.3s;
 }
 
+.actionButtons button:focus {
+    outline: none;
+    box-shadow: none;
+}
 .actionButtons button:hover {
     background-color: #fff7ed;
 }
@@ -467,4 +464,57 @@
 /* 이름에 마우스 올렸을 때 */
 .usernameLink:hover {
     color: #e07c2a;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: #fff;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.modalMessage {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.modalButtons {
+    display: flex;
+    justify-content: space-around;
+}
+
+.modalButtons:focus{
+    outline:none;
+}
+
+.cancelBtn {
+    background-color: #ddd;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.submitBtn {
+    background-color: #ffa94d;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
 }
