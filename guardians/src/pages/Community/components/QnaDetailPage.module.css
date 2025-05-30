@@ -128,7 +128,6 @@
 .deleteBtn {
     background: none;
     border: none;
-    color: #d33;
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
@@ -277,6 +276,10 @@
     justify-content: center;
     align-items: center;
     outline: none;  /* 기본 포커스 테두리 제거 */
+}
+
+.actionMenuBtn:focus {
+    outline: none;
 }
 
 /* 수정/삭제 버튼 영역 */

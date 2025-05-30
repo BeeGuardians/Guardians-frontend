@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import UserInfoModal from './UserInfoModal.tsx'; // UserInfoModal import
-import styles from './components/FreeBoardDetailPage.module.css'; // CSS 파일 경로 확인
-import Modal from './components/Modal.tsx'; // Modal import
+import UserInfoModal from './UserInfoModal.tsx';
+import Modal from './components/Modal.tsx';
+import styles from './components/BoardDetailPage.module.css';
 
-// 게시글 정보 인터페이스
+
 interface Board {
     boardId: number;
     title: string;
@@ -15,25 +15,22 @@ interface Board {
     likeCount: number;
     viewCount: number;
     liked: boolean;
-    userId: string; // userId 필드 (백엔드 응답과 일치)
+    userId: string;
     profileImageUrl?: string;
 }
 
-// 댓글 정보 인터페이스
 interface Comment {
     commentId: number;
     content: string;
     username: string;
     createdAt: string;
-    userId: string; // userId 필드 (백엔드 응답과 일치)
+    userId: string;
     profileImageUrl?: string;
     tier?: string;
 }
 
-// UserInfoModal에 전달할 사용자 정보 인터페이스
-// UserInfoModal은 'id' 필드를 기대하므로 여기서 매핑해 줍니다.
 interface UserForModal {
-    id: string; // UserInfoModal에서 사용될 필드명
+    id: string;
     username: string;
     profileImageUrl: string;
     email: string;
@@ -60,6 +57,10 @@ const FreeBoardDetailPage = () => {
     // 유저 정보 모달 관련 상태
     const [userInfo, setUserInfo] = useState<UserForModal | null>(null);
     const [userModalOpen, setUserModalOpen] = useState(false);
+
+    const [showActions, setShowActions] = useState(false);
+    const actionsRef = useRef<HTMLDivElement | null>(null);
+    const actionMenuBtnRef = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -197,34 +198,27 @@ const FreeBoardDetailPage = () => {
         }
     };
 
-    // 유저 프로필 클릭 시 유저 정보 모달 띄우기
     const handleUserClick = async (targetUserId: string) => {
         try {
             console.log("FreeBoardDetailPage: handleUserClick called for targetUserId:", targetUserId);
 
-            // /api/users/{targetUserId} API 호출하여 사용자 기본 정보 가져오기
             const res = await axios.get(`/api/users/${targetUserId}`, { withCredentials: true });
-            const userData = res.data.result.data; // 서버로부터 받은 원본 유저 데이터
+            const userData = res.data.result.data;
 
             console.log("FreeBoardDetailPage: Fetched user base info (from /api/users/{userId}):", userData);
 
             const userInfoForModal: UserForModal = {
-                id: String(userData.userId), // 여기서 userData.userId 값을 사용합니다.
+                id: String(userData.userId),
                 username: userData.username,
                 profileImageUrl: userData.profileImageUrl,
                 email: userData.email,
             };
 
-            console.log("FreeBoardDetailPage: Prepared userInfoForModal object:", userInfoForModal);
-            console.log("FreeBoardDetailPage: Type of userInfoForModal.id:", typeof userInfoForModal.id);
-
-
-            setUserInfo(userInfoForModal); // UserInfoModal에 전달할 userInfo 설정
-            setUserModalOpen(true); // 유저 정보 모달 열기
+            setUserInfo(userInfoForModal);
+            setUserModalOpen(true);
 
         } catch (error) {
-            // 만약 여기서 에러가 발생하면, userData.userId 접근 전에 문제가 생긴 것일 수 있습니다.
-            console.error("FreeBoardDetailPage: Error fetching user base info for modal or preparing data:", error);
+            console.error("FreeBoardDetailPage: Error fetching user base info for modal:", error);
             setInfoMessage('유저 정보를 불러오는데 실패했습니다.');
             setShowInfoModal(true);
         }
@@ -242,16 +236,34 @@ const FreeBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '2rem',
-                            textDecoration: 'none'
+                            fontSize: '1.4rem',
+                            textDecoration: 'none',
+                            color: '#888888',
+                            outline: 'none',   // 🔥 포커스 테두리 제거
+                            border: 'none',    // 🔥 기본 border 제거
+                            background: 'transparent',  // 🔥 필요 시 배경 제거
+                            cursor: 'pointer'   // 🔥 클릭 커서 추가
                         }}
                     >
                         ←
                     </button>
-                    {isLoggedIn && String(sessionUserId) === String(board.userId) && (
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
-                            <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                    {isLoggedIn && sessionUserId === board.userId.toString() && (
+                        <div className={styles.actionsWrapper} ref={actionsRef}>
+                            <button
+                                className={styles.actionMenuBtn}
+                                ref={actionMenuBtnRef}
+                                onClick={() => setShowActions(prev => !prev)}
+                            >
+                                &#x22EE;
+                            </button>
+
+                            {showActions && (
+                                <div className={styles.actionButtons}>
+                                    <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
+                                    <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                                </div>
+                            )}
+
                         </div>
                     )}
                 </div>

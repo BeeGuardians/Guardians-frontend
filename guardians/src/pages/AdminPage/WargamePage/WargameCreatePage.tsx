@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Select from "react-select";
-import styles from "../../Community/components/QnaDetailPage.module.css";
 
 const WargameCreatePage = () => {
     const navigate = useNavigate();

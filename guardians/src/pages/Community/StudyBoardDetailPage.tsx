@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
-import styles from './components/FreeBoardDetailPage.module.css';
+import styles from './components/BoardDetailPage.module.css'; // BoardDetailPage.module.css 스타일 사용
 import Modal from "./components/Modal.tsx";
-import UserInfoModal from './UserInfoModal.tsx';
+import UserInfoModal from './UserInfoModal.tsx'; // 유저 정보 모달 임포트
 
 interface Board {
     boardId: number;
@@ -15,7 +15,7 @@ interface Board {
     viewCount: number;
     liked: boolean;
     userId: string;
-    profileImageUrl?: string;
+    profileImageUrl?: string; // 게시글 작성자 프로필 이미지 추가
 }
 
 interface Comment {
@@ -24,15 +24,8 @@ interface Comment {
     username: string;
     createdAt: string;
     userId: string;
-    profileImageUrl?: string;
-    tier?: string;
-}
-
-interface UserForModal {
-    id: string;
-    username: string;
-    profileImageUrl: string;
-    email: string;
+    profileImageUrl?: string; // 댓글 작성자 프로필 이미지 추가
+    tier?: string; // 티어 정보 추가 (필요하다면)
 }
 
 const StudyBoardDetailPage = () => {
@@ -53,8 +46,13 @@ const StudyBoardDetailPage = () => {
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoMessage, setInfoMessage] = useState('');
 
-    const [userInfo, setUserInfo] = useState<UserForModal | null>(null);
-    const [userModalOpen, setUserModalOpen] = useState(false);
+    // 유저 정보 모달 관련 상태
+    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
+    const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
+
+    const [showActions, setShowActions] = useState(false);
+    const actionsRef = useRef<HTMLDivElement | null>(null);
+    const actionMenuBtnRef = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -68,23 +66,21 @@ const StudyBoardDetailPage = () => {
             .then(res => {
                 const data = res.data.result.data;
                 setBoard(data);
-                setIsLiked(data.liked);
-            })
-            .catch(err => console.error("Failed to fetch board:", err));
+                setIsLiked(data.liked); // liked 상태도 여기서 설정
+            });
     };
 
     const fetchComments = () => {
         axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
-            .then(res => setComments(res.data.result.data))
-            .catch(err => console.error("Failed to fetch comments:", err));
+            .then(res => setComments(res.data.result.data));
     };
 
     const checkLoginStatus = () => {
         axios.get('/api/users/me', { withCredentials: true })
             .then(res => {
-                const userIdFromSession = String(res.data.result.data.id);
+                const id = res.data.result.data.id;
                 setIsLoggedIn(true);
-                setSessionUserId(userIdFromSession);
+                setSessionUserId(String(id));
             })
             .catch(() => {
                 setIsLoggedIn(false);
@@ -102,8 +98,7 @@ const StudyBoardDetailPage = () => {
                     ...prev,
                     likeCount: prev.likeCount + (liked ? 1 : -1)
                 } : prev);
-            })
-            .catch(err => console.error("Failed to toggle like:", err));
+            });
     };
 
     const handleDelete = () => {
@@ -112,16 +107,10 @@ const StudyBoardDetailPage = () => {
 
     const confirmDeletePostAction = () => {
         if (!board) return;
-        axios.delete(`/api/boards/${board.boardId}`, { withCredentials: true })
-            .then(() => {
-                setInfoMessage('게시글이 삭제되었습니다.');
-                setShowInfoModal(true);
-            })
-            .catch(err => {
-                console.error("Failed to delete post:", err)
-                setInfoMessage('게시글 삭제에 실패했습니다.');
-                setShowInfoModal(true);
-            });
+        axios.delete(`/api/boards/${board.boardId}`, { withCredentials: true }).then(() => {
+            setInfoMessage('게시글이 삭제되었습니다.');
+            setShowInfoModal(true);
+        });
     };
 
     const handleEdit = () => {
@@ -139,16 +128,11 @@ const StudyBoardDetailPage = () => {
             .then(() => {
                 setNewComment('');
                 fetchComments();
-            })
-            .catch(err => {
-                console.error("Failed to submit comment:", err)
-                setInfoMessage('댓글 등록에 실패했습니다.');
-                setShowInfoModal(true);
             });
     };
 
-    const startEditComment = (commentId: number, content: string) => {
-        setEditingCommentId(commentId);
+    const startEditComment = (id: number, content: string) => {
+        setEditingCommentId(id);
         setEditingCommentContent(content);
     };
 
@@ -166,8 +150,7 @@ const StudyBoardDetailPage = () => {
             setEditingCommentId(null);
             setEditingCommentContent('');
             fetchComments();
-        } catch (err){
-            console.error("Failed to edit comment:", err)
+        } catch {
             setInfoMessage('댓글 수정 실패');
             setShowInfoModal(true);
         }
@@ -178,8 +161,7 @@ const StudyBoardDetailPage = () => {
             await axios.delete(`/api/boards/${id}/comments/${commentId}`, { withCredentials: true });
             setConfirmDeleteCommentId(null);
             fetchComments();
-        } catch (err){
-            console.error("Failed to delete comment:", err)
+        } catch {
             setInfoMessage('댓글 삭제 실패');
             setShowInfoModal(true);
         }
@@ -192,22 +174,14 @@ const StudyBoardDetailPage = () => {
         }
     };
 
-    const handleUserClick = async (targetUserId: string) => {
+    // 유저 프로필 클릭 시 유저 정보 모달 띄우기
+    const handleUserClick = async (userId: string) => {
         try {
-            const res = await axios.get(`/api/users/${targetUserId}`, { withCredentials: true });
-            const userDataFromApi = res.data.result.data;
-
-            const userForModalObj: UserForModal = {
-                id: String(userDataFromApi.userId || userDataFromApi.id),
-                username: userDataFromApi.username,
-                profileImageUrl: userDataFromApi.profileImageUrl || '/default-profile.png',
-                email: userDataFromApi.email || 'N/A',
-            };
-
-            setUserInfo(userForModalObj);
-            setUserModalOpen(true);
+            const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
+            setUserInfo(res.data.result.data);
+            setUserModalOpen(true); // 유저 정보 모달 열기
         } catch (error) {
-            console.error("Failed to fetch user info for modal:", error);
+            console.error("Failed to fetch user info:", error);
             setInfoMessage('유저 정보를 불러오는데 실패했습니다.');
             setShowInfoModal(true);
         }
@@ -225,16 +199,34 @@ const StudyBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '1rem',
-                            textDecoration: 'none'
+                            fontSize: '1.4rem',
+                            textDecoration: 'none',
+                            color: '#888888',
+                            outline: 'none',   // 🔥 포커스 테두리 제거
+                            border: 'none',    // 🔥 기본 border 제거
+                            background: 'transparent',  // 🔥 필요 시 배경 제거
+                            cursor: 'pointer'   // 🔥 클릭 커서 추가
                         }}
                     >
                         ←
                     </button>
-                    {isLoggedIn && String(sessionUserId) === String(board.userId) && (
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
-                            <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                    {isLoggedIn && sessionUserId === board.userId.toString() && (
+                        <div className={styles.actionsWrapper} ref={actionsRef}>
+                            <button
+                                className={styles.actionMenuBtn}
+                                ref={actionMenuBtnRef}
+                                onClick={() => setShowActions(prev => !prev)}
+                            >
+                                &#x22EE;
+                            </button>
+
+                            {showActions && (
+                                <div className={styles.actionButtons}>
+                                    <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
+                                    <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                                </div>
+                            )}
+
                         </div>
                     )}
                 </div>
@@ -262,7 +254,7 @@ const StudyBoardDetailPage = () => {
                             <span>
                                 <span
                                     className={styles.usernameLink}
-                                    onClick={() => handleUserClick(String(board.userId))}
+                                    onClick={() => handleUserClick(board.userId)} // 글쓴이 이름 클릭 시 유저 정보 모달 열기
                                 >
                                     {board.username}
                                 </span>
@@ -305,14 +297,14 @@ const StudyBoardDetailPage = () => {
                                 {comments.map(comment => (
                                     <li key={comment.commentId} className={styles.commentItem}>
                                         <div className={styles.commentHeader}>
-                                            <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(String(comment.userId))}>
+                                            <div className={styles.commentProfileImageWrapper} onClick={() => handleUserClick(comment.userId)}>
                                                 <img src={comment.profileImageUrl || '/default-profile.png'} alt="프로필" className={styles.commentProfileImage} />
                                             </div>
                                             <div>
                                                 <div className={styles.usernameRow}>
                                                     <span
                                                         className={styles.usernameLink}
-                                                        onClick={() => handleUserClick(String(comment.userId))}
+                                                        onClick={() => handleUserClick(comment.userId)} // 댓글 작성자 이름 클릭 시 유저 정보 모달 열기
                                                     >
                                                         {comment.username}
                                                     </span>
@@ -356,6 +348,7 @@ const StudyBoardDetailPage = () => {
                 </div>
             </div>
 
+            {/* ✅ 댓글 삭제 모달 */}
             <Modal
                 isOpen={confirmDeleteCommentId !== null}
                 onClose={() => setConfirmDeleteCommentId(null)}
@@ -363,6 +356,7 @@ const StudyBoardDetailPage = () => {
                 message="댓글을 삭제할까요?"
             />
 
+            {/* ✅ 게시글 삭제 모달 */}
             <Modal
                 isOpen={confirmDeletePost}
                 onClose={() => setConfirmDeletePost(false)}
@@ -370,6 +364,7 @@ const StudyBoardDetailPage = () => {
                 message="정말 삭제하시겠습니까?"
             />
 
+            {/* ✅ 알림 모달 */}
             <Modal
                 isOpen={showInfoModal}
                 onClose={handleInfoModalClose}
@@ -378,6 +373,7 @@ const StudyBoardDetailPage = () => {
                 showCancelButton={false}
             />
 
+            {/* 유저 정보 모달 */}
             <UserInfoModal
                 isOpen={userModalOpen}
                 onClose={() => setUserModalOpen(false)}
