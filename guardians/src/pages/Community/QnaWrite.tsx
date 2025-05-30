@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./BoardWrite.module.css";
+import Modal from "./components/Modal.tsx";
 
 type Wargame = {
     id: number;
@@ -17,6 +18,13 @@ const QnaWrite = () => {
     const [showDropdown, setShowDropdown] = useState(false);
 
     const navigate = useNavigate();
+    //모달
+    const [modalMessage, setModalMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [modalOnConfirm, setModalOnConfirm] = useState<() => void>(() => {});
+    const [showCancelButton, setShowCancelButton] = useState(false);
+
+
 
     useEffect(() => {
         axios.get("/api/wargames")
@@ -39,25 +47,43 @@ const QnaWrite = () => {
         setShowDropdown(false);
     };
 
-    const handleSubmit = () => {
+
+    const handleSubmitClick = async () => {
         if (!title || !content || !selected) {
-            alert("제목, 내용, 워게임을 모두 입력해주세요.");
+            setModalMessage("제목, 내용, 워게임을 모두 입력해주세요.");
+            setModalOnConfirm(() => () => setShowModal(false));  // 모달 닫기만
+            setShowCancelButton(false);  // 확인 버튼만
+            setShowModal(true);
             return;
         }
-
-        axios.post(`/api/qna/questions`, {
-            title,
-            content,
-            wargameId: selected.id,
-        }, { withCredentials: true })
-            .then(() => {
-                alert("질문 등록 완료!");
+        setModalMessage("질문을 등록하시겠습니까?");
+        setModalOnConfirm(() => async () => {
+            try {
+                await handleSubmit();
                 navigate("/community/qna");
-            })
-            .catch(err => {
+            } catch (err) {
                 console.error('질문 등록 실패', err);
-                alert('질문 등록에 실패했습니다.');
-            });
+                setModalMessage("질문 등록에 실패했습니다.");
+                setModalOnConfirm(() => () => setShowModal(false));
+                setShowCancelButton(false);
+                setShowModal(true);
+            }
+        });        setShowCancelButton(true);  // 확인/취소 버튼
+        setShowModal(true);
+        };
+
+
+
+    const handleSubmit =  async () => {
+        try {
+            await axios.post(`/api/qna/questions`, {
+                title,
+                content,
+                wargameId: selected?.id
+            }, { withCredentials: true });
+        } catch(err) {
+            console.error('질문 등록 실패', err);
+        }
     };
 
     const handleCancel = () => {
@@ -139,10 +165,31 @@ const QnaWrite = () => {
             />
 
             <div className={styles.btnGroup}>
-                <button onClick={handleSubmit} className={styles.submitBtn}>등록</button>
+                <button onClick={handleSubmitClick} className={styles.submitBtn}>등록</button>
                 <button onClick={handleCancel} className={styles.cancelBtn}>취소</button>
             </div>
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onConfirm={() => {
+                    modalOnConfirm();
+                    setShowModal(false);
+                }}
+                message={modalMessage}
+            />
+            <Modal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onConfirm={() => {
+                    modalOnConfirm();
+                    setShowModal(false);
+                }}
+                message={modalMessage}
+                showCancelButton={showCancelButton}
+            />
+
         </div>
+
     );
 };
 

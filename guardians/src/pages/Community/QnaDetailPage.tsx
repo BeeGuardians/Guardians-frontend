@@ -36,17 +36,21 @@ const QnaDetailPage = () => {
     const [newAnswer, setNewAnswer] = useState('');
     const [sessionUserId, setSessionUserId] = useState<string | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [confirmDeletePost, setConfirmDeletePost] = useState(false);
     const [editingAnswerId, setEditingAnswerId] = useState<number | null>(null);
     const [editingAnswerContent, setEditingAnswerContent] = useState('');
     const [showActions, setShowActions] = useState(false);
     const [editingQuestion, setEditingQuestion] = useState(false);
     const [editedTitle, setEditedTitle] = useState('');
     const [editedContent, setEditedContent] = useState('');
-    const [showInfoModal, setShowInfoModal] = useState(false);
-    const [infoMessage, setInfoMessage] = useState('');
     const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
     const [userModalOpen, setUserModalOpen] = useState(false); // 모달 열기 상태
+
+    // 모달 상태
+    const [modalMessage, setModalMessage] = useState('');
+    const [showCancelButton, setShowCancelButton] = useState(false);
+    const [modalOnConfirm, setModalOnConfirm] = useState<() => void>(() => {});
+    const [showModal, setShowModal] = useState(false);
+
 
     const actionsRef = useRef<HTMLDivElement | null>(null);
     const actionMenuBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -71,11 +75,8 @@ const QnaDetailPage = () => {
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+        }, []);
 
     const fetchQna = async () => {
         const res = await axios.get(`/api/qna/questions/${id}`, { withCredentials: true });
@@ -103,13 +104,21 @@ const QnaDetailPage = () => {
             });
     };
 
-    const handleDelete = () => setConfirmDeletePost(true);
+    const handleDelete = () => {
+        setModalMessage('정말 질문을 삭제하시겠습니까?');
+        setShowCancelButton(true); // 취소 버튼 표시
+        setModalOnConfirm(() => async () => {
+            try {
+                await axios.delete(`/api/qna/questions/${id}?userId=${sessionUserId}`, {withCredentials: true});
+                navigate('/community/qna');  // 삭제 성공 시 이동
+            } catch (err) {
+                console.error('질문 삭제 실패', err);
+            }
+        });
+        setShowModal(true);
+    }
 
-    const confirmDeletePostAction = async () => {
-        await axios.delete(`/api/qna/questions/${id}?userId=${sessionUserId}`, { withCredentials: true });
-        setInfoMessage('질문이 삭제되었습니다.');
-        setShowInfoModal(true);
-    };
+
 
     const handleEdit = () => {
         if (!qna) return;
@@ -125,11 +134,6 @@ const QnaDetailPage = () => {
         fetchQna();
     };
 
-    const handleInfoModalClose = () => {
-        setShowInfoModal(false);
-        if (infoMessage === '질문이 삭제되었습니다.') navigate('/community/qna');
-    };
-
     const handleAnswerSubmit = async () => {
         if (!newAnswer.trim()) return;
         await axios.post(`/api/qna/answers?userId=${sessionUserId}`, {
@@ -139,27 +143,50 @@ const QnaDetailPage = () => {
         setNewAnswer('');
         fetchAnswers();
     };
-
     const startEditAnswer = (id: number, content: string) => {
         setEditingAnswerId(id);
         setEditingAnswerContent(content);
     };
 
-    const confirmEditAnswer = async (answerId: number) => {
-        if (!editingAnswerContent.trim()) return;
-        await axios.patch(`/api/qna/answers/${answerId}?userId=${sessionUserId}`, {
-            content: editingAnswerContent
-        }, { withCredentials: true });
-        setEditingAnswerId(null);
-        setEditingAnswerContent('');
-        fetchAnswers();
+    const openConfirmEditAnswerModal = (answerId: number, content: string) => {
+        setModalMessage('답변을 수정하시겠습니까?');
+        setShowCancelButton(true); // 취소 버튼 표시
+        setModalOnConfirm(() => async () => {
+            startEditAnswer(answerId, content);
+            setShowModal(false);
+        });
+        setShowModal(true);
     };
 
-    const deleteAnswer = async (answerId: number) => {
-        if (!window.confirm("답변을 삭제할까요?")) return;
-        await axios.delete(`/api/qna/answers/${answerId}?userId=${sessionUserId}`, { withCredentials: true });
-        fetchAnswers();
+    const confirmEditAnswer = async (answerId: number) => {
+        if (!editingAnswerContent.trim()) return;
+        try {
+            await axios.patch(`/api/qna/answers/${answerId}?userId=${sessionUserId}`, {
+                content: editingAnswerContent
+            }, { withCredentials: true });
+            fetchAnswers();
+            setEditingAnswerId(null);
+            setEditingAnswerContent('');
+            setModalMessage('답변이 수정되었습니다.');
+        } catch {
+            setModalMessage('답변 수정 실패');
+        }
+        setShowCancelButton(false);
+        setModalOnConfirm(() => () => {});
+        setShowModal(true);
     };
+
+
+    const deleteAnswer = (answerId: number) => {
+        setModalMessage('답변을 삭제하시겠습니까?');
+        setModalOnConfirm(() => async () => {
+            await axios.delete(`/api/qna/answers/${answerId}?userId=${sessionUserId}`, { withCredentials: true });
+            fetchAnswers();
+        });
+        setShowCancelButton(true);
+        setShowModal(true);
+    };
+
 
     const handleUserClick = async (userId: string) => {
         const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
@@ -297,7 +324,7 @@ const QnaDetailPage = () => {
                                             <p className={styles.commentContent}>{answer.content}</p>
                                             {isLoggedIn && answer.userId.toString() === sessionUserId && (
                                                 <div className={styles.reviewActionBtns}>
-                                                    <button onClick={() => startEditAnswer(answer.id, answer.content)}>수정</button>
+                                                    <button onClick={() => openConfirmEditAnswerModal(answer.id, answer.content)}>수정</button>
                                                     <button onClick={() => deleteAnswer(answer.id)}>삭제</button>
                                                 </div>
                                             )}
@@ -318,17 +345,14 @@ const QnaDetailPage = () => {
             />
 
             <Modal
-                isOpen={confirmDeletePost}
-                onClose={() => setConfirmDeletePost(false)}
-                onConfirm={confirmDeletePostAction}
-                message="정말 삭제하시겠습니까?"
-            />
-            <Modal
-                isOpen={showInfoModal}
-                onClose={handleInfoModalClose}
-                onConfirm={handleInfoModalClose}
-                message={infoMessage}
-                showCancelButton={false}
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onConfirm={() => {
+                    modalOnConfirm();
+                    setShowModal(false);
+                }}
+                message={modalMessage} // 추가
+                showCancelButton={showCancelButton}
             />
         </div>
     );
