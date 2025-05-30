@@ -6,6 +6,7 @@ const AdminSidebar = () => {
     const location = useLocation();
 
     const menuItems = [
+        { path: "/admin/dashboard", label: "대시보드" }, // ✨ 대시보드 메뉴 추가 ✨
         { path: "/admin/wargames", label: "워게임 관리" },
         { path: "/admin/jobs", label: "커리어 관리" },
         { path: "/admin/users", label: "회원 관리" },
@@ -28,7 +29,8 @@ const AdminSidebar = () => {
             </h3>
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                 {menuItems.map((item) => {
-                    const isActive = location.pathname === item.path;
+                    const isActive = location.pathname === item.path ||
+                        (item.path === "/admin/dashboard" && location.pathname === "/admin"); // 기본 /admin도 대시보드로 간주
 
                     return (
                         <li key={item.path} style={{ marginBottom: "1rem" }}>

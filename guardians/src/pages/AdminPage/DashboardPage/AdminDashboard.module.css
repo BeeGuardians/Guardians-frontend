@@ -1,0 +1,120 @@
+/* AdminDashboardPage.module.css */
+.dashboardContainer {
+    padding: 20px;
+    background-color: #f9fafb; /* 약간 더 밝은 배경색 */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Admin 레이아웃에 따라 padding 조정 가능 */
+}
+
+.dashboardTitle {
+    /* text-align: center; */ /* 사이드바와 함께 있을 때는 왼쪽 정렬이 나을 수 있음 */
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 1.5rem; /* 제목 크기 조정 */
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.dashboardGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 카드 최소 너비 조정 */
+    gap: 20px;
+}
+
+.serviceCard {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb; /* 테두리 추가 */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.serviceCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 10px;
+}
+
+.serviceIcon {
+    font-size: 1.8em;
+    margin-right: 12px;
+    line-height: 1;
+}
+
+.serviceName {
+    font-size: 1.25em;
+    color: #1f2937;
+    font-weight: 600;
+    margin: 0;
+}
+
+.cardBody {
+    flex-grow: 1;
+}
+
+.serviceStatus {
+    font-size: 0.95em;
+    font-weight: 600; /* 글꼴 두께 변경 */
+    padding: 6px 10px; /* 패딩 조정 */
+    border-radius: 6px; /* 더 둥글게 */
+    display: inline-block;
+    margin-bottom: 12px;
+}
+
+.statusHealthy {
+    color: #059669; /* Tailwind Green 600 */
+    background-color: #d1fae5; /* Tailwind Green 100 */
+}
+
+.statusWarning {
+    color: #d97706; /* Tailwind Amber 600 */
+    background-color: #fef3c7; /* Tailwind Amber 100 */
+}
+
+.statusError {
+    color: #dc2626; /* Tailwind Red 600 */
+    background-color: #fee2e2; /* Tailwind Red 100 */
+}
+
+.statusInfo {
+    color: #2563eb; /* Tailwind Blue 600 */
+    background-color: #dbeafe; /* Tailwind Blue 100 */
+}
+
+.serviceDetails {
+    font-size: 0.85em;
+    color: #4b5563; /* Tailwind Gray 600 */
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.cardFooter {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+    text-align: right;
+}
+
+.adminLink {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: color 0.2s ease;
+}
+
+.adminLink:hover {
+    color: #1d4ed8; /* Tailwind Blue 700 */
+    text-decoration: underline;
+}

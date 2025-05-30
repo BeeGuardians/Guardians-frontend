@@ -42,7 +42,7 @@ const AdminLoginPage = () => {
             login(adminUserData); // AuthContext에 로그인 상태 전달
 
             // 로그인 성공 후 /admin/wargames로 새로고침 없이 이동
-            navigate("/admin/wargames");
+            navigate("/admin/dashboard");
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 setErrorMsg(err.response?.data?.message || "관리자 로그인 실패");

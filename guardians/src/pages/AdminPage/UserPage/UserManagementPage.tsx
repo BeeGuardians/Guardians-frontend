@@ -68,7 +68,7 @@ const UserManagementPage = () => {
                 <AdminSidebar />
 
                 <div style={{ flex: 1 }}>
-                    <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "2rem" }}>👤 회원 관리</h2>
+                    <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "2rem" }}>👤 회원 관리</h2>
 
                     <h3 style={{ marginBottom: "0.5rem", fontWeight: 400 }}>• 관리자 ({adminList.length}명)</h3>
                     <UserTable users={adminCurrent} handleDelete={handleDelete} formatDateTime={formatDateTime} />

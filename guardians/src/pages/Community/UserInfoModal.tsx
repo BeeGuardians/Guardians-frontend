@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from './UserInfoModal.module.css'; // CSS 모듈 임포트
+import styles from './UserInfoModal.module.css';
 
 interface User {
     id: string;
@@ -33,7 +33,6 @@ const UserInfoModal = ({ isOpen, onClose, userInfo }: UserInfoModalProps) => {
         SILVER: "/badges/SILVER.png",
         GOLD: "/badges/GOLD.png",
         PLATINUM: "/badges/PLATINUM.png",
-        // 추가 티어가 있다면 여기에 계속 추가
     };
 
     const getTierBadgeUrl = (tier: string | undefined): string => {
@@ -55,10 +54,10 @@ const UserInfoModal = ({ isOpen, onClose, userInfo }: UserInfoModalProps) => {
         console.log("  - userInfo:", userInfo);
         console.log("  - userInfo?.id:", userInfo?.id);
 
-        if (isOpen && userInfo?.id) {
+        if (isOpen && userInfo?.id) { // 이 조건이 true가 되도록 하는 것이 핵심!
             console.log("UserInfoModal: Condition met. Attempting to fetch user stats for ID:", userInfo.id);
             setLoadingStats(true);
-            setErrorStats(null); // 새로운 fetch 시 에러 상태 초기화
+            setErrorStats(null);
 
             axios.get(`/api/users/${userInfo.id}/stats`, { withCredentials: true })
                 .then(res => {
@@ -71,12 +70,16 @@ const UserInfoModal = ({ isOpen, onClose, userInfo }: UserInfoModalProps) => {
                     setUserStats(null);
                 })
                 .finally(() => {
-                    setLoadingStats(false);
+                    // 👇 여기를 수정해야 합니다!
+                    // setLoadingStats(true); // 이전 코드
+                    setLoadingStats(false); // 수정된 코드: 로딩 상태를 false로 변경
                 });
         } else {
             console.log("UserInfoModal: Condition not met (modal closed or userInfo missing). Resetting stats.");
             setUserStats(null);
             setErrorStats(null);
+            // isOpen이 false이거나 userInfo.id가 없을 때는 로딩 상태가 아니므로 false로 설정
+            setLoadingStats(false); // 추가: 여기서도 로딩 상태를 명확히 false로 설정
         }
     }, [isOpen, userInfo?.id]);
 

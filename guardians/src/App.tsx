@@ -39,6 +39,7 @@ import BoardEdit from "./pages/Community/BoardEdit.tsx";
 
 import AdminLoginPage from "./pages/AdminPage/AdminLoginPage.tsx";
 import WargameListPage from "./pages/AdminPage/WargamePage/WargameListPage.tsx";
+import AdminDashboardPage from "./pages/AdminPage/DashboardPage/AdminDashboard.tsx";
 import JobListPage from "./pages/AdminPage/JobPage/JobListPage";
 import UserManagementPage from "./pages/AdminPage/UserPage/UserManagementPage";
 import WargameCreatePage from "./pages/AdminPage/WargamePage/WargameCreatePage.tsx";
@@ -163,6 +164,7 @@ function App() {
                     <Route path="/admin/*" element={<AdminPrivateRoute />}>
                         <Route index element={<Navigate to="/admin/login" replace />} />
                         <Route path="login" element={<AdminLoginPage />} />
+                        <Route path="dashboard" element={<AdminDashboardPage />} />
                         <Route path="wargames" element={<WargameListPage />} />
                         <Route path="wargames/create" element={<WargameCreatePage />} /> {/* ✨ 워게임 생성 페이지 추가 ✨ */}
                         <Route path="jobs" element={<JobListPage />} />
