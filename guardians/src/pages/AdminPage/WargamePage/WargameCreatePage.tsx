@@ -1,8 +1,7 @@
-// src/pages/AdminPage/WargamePage/WargameCreatePage.tsx
-// 기존 코드는 그대로 유지하고, URL 변경만 적용하면 됩니다.
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import styles from "./WargameCreatePage.module.css"
 import Select from "react-select";
 
 const WargameCreatePage = () => {

@@ -145,7 +145,7 @@ const AdminDashboardPage: React.FC = () => {
 
         fetchInitialStatuses();
 
-        const intervalId = setInterval(fetchInitialStatuses, 5000); // 5초마다 상태 업데이트
+        const intervalId = setInterval(fetchInitialStatuses, 7000); // 7초마다 상태 업데이트
 
         return () => clearInterval(intervalId);
     }, []);

@@ -44,6 +44,29 @@ const UserManagementPage = () => {
         }
     };
 
+// 회원 권한 변경 함수
+    const handleRoleChange = async (userId: number, newRole: string) => {
+        try {
+            await axios.put(
+                `${API_BASE}/api/users/admin/update-role/${userId}`,
+                { role: newRole },
+                { withCredentials: true }
+            );
+
+            setUsers(prevUsers =>
+                prevUsers.map(user =>
+                    user.id === userId ? { ...user, role: newRole } : user
+                )
+            );
+
+            alert("회원 권한이 변경되었습니다.");
+        } catch (err) {
+            console.error("회원 권한 변경 실패:", err);
+            alert("회원 권한 변경에 실패했습니다.");
+        }
+    };
+
+
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -71,11 +94,21 @@ const UserManagementPage = () => {
                     <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "2rem" }}>👤 회원 관리</h2>
 
                     <h3 style={{ marginBottom: "0.5rem", fontWeight: 400 }}>• 관리자 ({adminList.length}명)</h3>
-                    <UserTable users={adminCurrent} handleDelete={handleDelete} formatDateTime={formatDateTime} />
+                    <UserTable
+                        users={adminCurrent}
+                        handleDelete={handleDelete}
+                        handleRoleChange={handleRoleChange} // Pass the new handler
+                        formatDateTime={formatDateTime}
+                    />
                     <Pagination page={adminPage} setPage={setAdminPage} totalPages={adminTotalPages} />
 
                     <h3 style={{ marginTop: "2rem", marginBottom: "0.5rem", fontWeight: 400 }}>• 일반 사용자 ({userList.length}명)</h3>
-                    <UserTable users={userCurrent} handleDelete={handleDelete} formatDateTime={formatDateTime} />
+                    <UserTable
+                        users={userCurrent}
+                        handleDelete={handleDelete}
+                        handleRoleChange={handleRoleChange} // Pass the new handler
+                        formatDateTime={formatDateTime}
+                    />
                     <Pagination page={userPage} setPage={setUserPage} totalPages={userTotalPages} />
                 </div>
             </div>
@@ -86,18 +119,21 @@ const UserManagementPage = () => {
 const UserTable = ({
                        users,
                        handleDelete,
+                       handleRoleChange, // Receive the new handler
                        formatDateTime,
                    }: {
     users: User[];
     handleDelete: (id: number) => void;
+    handleRoleChange: (userId: number, newRole: string) => void; // Define its type
     formatDateTime: (raw: string) => string;
 }) => (
     <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: "1rem" }}>
         <colgroup>
             <col style={{ width: "5%" }} />
+            <col style={{ width: "15%" }} /> {/* Adjusted width */}
+            <col style={{ width: "25%" }} /> {/* Adjusted width */}
             <col style={{ width: "20%" }} />
-            <col style={{ width: "30%" }} />
-            <col style={{ width: "25%" }} />
+            <col style={{ width: "15%" }} /> {/* New column for role */}
             <col style={{ width: "20%" }} />
         </colgroup>
         <thead>
@@ -106,6 +142,7 @@ const UserTable = ({
             <th style={thStyle}>이름</th>
             <th style={thStyle}>이메일</th>
             <th style={thStyle}>마지막 로그인</th>
+            <th style={thStyle}>권한</th> {/* New column header */}
             <th style={thStyle}>관리</th>
         </tr>
         </thead>
@@ -116,6 +153,20 @@ const UserTable = ({
                 <td style={tdStyle}>{user.username}</td>
                 <td style={tdStyle}>{user.email}</td>
                 <td style={tdStyle}>{formatDateTime(user.lastLoginAt)}</td>
+                <td style={tdStyle}>
+                    <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                        style={{
+                            padding: "0.3rem",
+                            borderRadius: "4px",
+                            border: "1px solid #ccc",
+                        }}
+                    >
+                        <option value="ADMIN">관리자</option>
+                        <option value="USER">일반 사용자</option>
+                    </select>
+                </td>
                 <td style={tdStyle}>
                     <button
                         onClick={() => handleDelete(user.id)}

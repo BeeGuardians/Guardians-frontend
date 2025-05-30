@@ -1,8 +1,7 @@
-// src/pages/AdminPage/JobPage/JobCreatePage.tsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// InfoModal 임포트 추가
+import styles from './JobCreatePage.module.css';
 import InfoModal from "../Components/InfoModal";
 
 

@@ -3,18 +3,16 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import styles from "./Header.module.css";
-// useNavigate는 이제 handleAdminPageMove에서 사용되지 않으므로 제거할 수 있습니다.
-// 하지만 handleLogout에서 여전히 사용되므로 그대로 둡니다.
 import { useLocation, useNavigate } from "react-router-dom";
 
 
 function Header() {
     const { user, logout } = useAuth();
-    const isAdmin = user?.role === 'ADMIN'; // user?.role이 'ADMIN'이면 isAdmin을 true로 설정
+    const isAdmin = user?.role === 'ADMIN';
     const isLoggedIn = !!user;
     const location = useLocation();
     const isActive = (path: string) => location.pathname.startsWith(path);
-    const navigate = useNavigate(); // handleLogout에서 여전히 사용됨
+    const navigate = useNavigate();
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -39,8 +37,6 @@ function Header() {
                 .then((res) => {
                     const data = res.data.result.data;
                     setProfileUrl(data.profileImageUrl);
-                    // user 객체에 role 정보가 업데이트되도록 AuthContext의 login 함수를 호출할 수 있습니다.
-                    // 예: if (data.role) login({ ...user, role: data.role });
                 })
                 .catch((err) => {
                     console.error("⚠️ 유저 정보 가져오기 실패", err);
@@ -115,14 +111,13 @@ function Header() {
                                             <strong>{user.email}</strong>
                                         </p>
                                         <a href="/mypage" className={styles.dropdownLink}>마이페이지</a>
-                                        {/* ✨ 관리자일 경우에만 '관리자 페이지 이동' 링크를 새 탭으로 열도록 수정 ✨ */}
                                         {isAdmin && (
                                             <a
-                                                href="/admin/wargames" // 관리자 페이지의 시작 경로
-                                                target="_blank"     // 새 탭에서 열기
-                                                rel="noopener noreferrer" // 보안을 위한 권장 속성
-                                                className={styles.dropdownLink} // 기존 버튼 스타일 재활용
-                                                onClick={() => setDropdownOpen(false)} // 클릭 후 드롭다운 닫기
+                                                href="/admin/dashboard"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={styles.dropdownLink}
+                                                onClick={() => setDropdownOpen(false)}
                                             >
                                                 관리자 페이지 이동
                                             </a>
