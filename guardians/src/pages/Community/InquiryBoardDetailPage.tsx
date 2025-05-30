@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import styles from './components/FreeBoardDetailPage.module.css'; // CSS 파일 경로 확인
 import Modal from "./components/Modal.tsx"; // Modal import
 import UserInfoModal from './UserInfoModal.tsx'; // UserInfoModal import
+import styles from './components/BoardDetailPage.module.css';
+
 
 interface Board {
     boardId: number;
@@ -47,8 +48,16 @@ const InquiryBoardDetailPage = () => {
     const [infoMessage, setInfoMessage] = useState('');
 
     // 유저 정보 모달 관련 상태
-    const [userInfo, setUserInfo] = useState<any | null>(null); // User 타입이거나, stats도 받을 수 있게 any
+    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
     const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
+
+
+    const [showActions, setShowActions] = useState(false);
+    const actionsRef = useRef<HTMLDivElement | null>(null);
+    const actionMenuBtnRef = useRef<HTMLButtonElement | null>(null);
+
+
+
 
     useEffect(() => {
         if (!id) return;
@@ -56,6 +65,22 @@ const InquiryBoardDetailPage = () => {
         fetchComments();
         checkLoginStatus();
     }, [id]);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                actionsRef.current &&
+                !actionsRef.current.contains(event.target as Node) &&
+                actionMenuBtnRef.current &&
+                !actionMenuBtnRef.current.contains(event.target as Node)
+            ) {
+                setShowActions(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
 
     const fetchBoard = () => {
         axios.get(`/api/boards/${id}`, { withCredentials: true })
@@ -100,9 +125,8 @@ const InquiryBoardDetailPage = () => {
             .catch(err => console.error("Failed to toggle like:", err));
     };
 
-    const handleDelete = () => {
-        setConfirmDeletePost(true);
-    };
+    const handleDelete = () => setConfirmDeletePost(true);
+
 
     const confirmDeletePostAction = () => {
         if (!board) return;
@@ -222,16 +246,34 @@ const InquiryBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '2rem',
-                            textDecoration: 'none'
+                            fontSize: '1.4rem',
+                            textDecoration: 'none',
+                            color: '#888888',
+                            outline: 'none',   // 🔥 포커스 테두리 제거
+                            border: 'none',    // 🔥 기본 border 제거
+                            background: 'transparent',  // 🔥 필요 시 배경 제거
+                            cursor: 'pointer'   // 🔥 클릭 커서 추가
                         }}
                     >
                         ←
                     </button>
-                    {isLoggedIn && String(sessionUserId) === String(board.userId) && (
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
-                            <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                    {isLoggedIn && sessionUserId === board.userId.toString() && (
+                        <div className={styles.actionsWrapper} ref={actionsRef}>
+                            <button
+                                className={styles.actionMenuBtn}
+                                ref={actionMenuBtnRef}
+                                onClick={() => setShowActions(prev => !prev)}
+                            >
+                                &#x22EE;
+                            </button>
+
+                            {showActions && (
+                                <div className={styles.actionButtons}>
+                                    <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
+                                    <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                                </div>
+                            )}
+
                         </div>
                     )}
                 </div>

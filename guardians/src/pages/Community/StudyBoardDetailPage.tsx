@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
-import styles from './components/FreeBoardDetailPage.module.css'; // FreeBoardDetailPage.module.css 스타일 사용
+import styles from './components/BoardDetailPage.module.css'; // BoardDetailPage.module.css 스타일 사용
 import Modal from "./components/Modal.tsx";
 import UserInfoModal from './UserInfoModal.tsx'; // 유저 정보 모달 임포트
 
@@ -49,6 +49,10 @@ const StudyBoardDetailPage = () => {
     // 유저 정보 모달 관련 상태
     const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
     const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
+
+    const [showActions, setShowActions] = useState(false);
+    const actionsRef = useRef<HTMLDivElement | null>(null);
+    const actionMenuBtnRef = useRef<HTMLButtonElement | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -195,16 +199,34 @@ const StudyBoardDetailPage = () => {
                         className={styles.backBtn}
                         onClick={() => navigate(-1)}
                         style={{
-                            fontSize: '1rem',
-                            textDecoration: 'none'
+                            fontSize: '1.4rem',
+                            textDecoration: 'none',
+                            color: '#888888',
+                            outline: 'none',   // 🔥 포커스 테두리 제거
+                            border: 'none',    // 🔥 기본 border 제거
+                            background: 'transparent',  // 🔥 필요 시 배경 제거
+                            cursor: 'pointer'   // 🔥 클릭 커서 추가
                         }}
                     >
                         ←
                     </button>
-                    {isLoggedIn && String(sessionUserId) === String(board.userId) && (
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
-                            <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                    {isLoggedIn && sessionUserId === board.userId.toString() && (
+                        <div className={styles.actionsWrapper} ref={actionsRef}>
+                            <button
+                                className={styles.actionMenuBtn}
+                                ref={actionMenuBtnRef}
+                                onClick={() => setShowActions(prev => !prev)}
+                            >
+                                &#x22EE;
+                            </button>
+
+                            {showActions && (
+                                <div className={styles.actionButtons}>
+                                    <button className={styles.deleteBtn} onClick={handleEdit}>수정하기</button>
+                                    <button className={styles.deleteBtn} onClick={handleDelete}>삭제하기</button>
+                                </div>
+                            )}
+
                         </div>
                     )}
                 </div>

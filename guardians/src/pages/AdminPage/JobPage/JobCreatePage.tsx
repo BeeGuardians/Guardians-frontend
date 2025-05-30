@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import styles from "../../Community/components/QnaDetailPage.module.css";
 // InfoModal 임포트 추가
 import InfoModal from "../Components/InfoModal";
 

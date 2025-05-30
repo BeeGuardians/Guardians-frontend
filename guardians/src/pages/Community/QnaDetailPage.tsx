@@ -45,7 +45,7 @@ const QnaDetailPage = () => {
     const [editedContent, setEditedContent] = useState('');
     const [showInfoModal, setShowInfoModal] = useState(false);
     const [infoMessage, setInfoMessage] = useState('');
-    const [userInfo, setUserInfo] = useState<null | any>(null); // 유저 정보
+    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
     const [userModalOpen, setUserModalOpen] = useState(false); // 모달 열기 상태
 
     const actionsRef = useRef<HTMLDivElement | null>(null);
@@ -111,7 +111,10 @@ const QnaDetailPage = () => {
         setShowInfoModal(true);
     };
 
-    const handleEdit = () => setEditingQuestion(true);
+    const handleEdit = () => {
+        if (!qna) return;
+        navigate(`/community/qna/edit/${qna.id}`);
+    };
 
     const handleSaveQuestionEdit = async () => {
         await axios.patch(`/api/qna/questions/${id}?userId=${sessionUserId}`, {
@@ -170,10 +173,10 @@ const QnaDetailPage = () => {
         <div className={styles.pageWrapper}>
             <div className={styles.mainContent}>
                 <div className={styles.topBar}>
-                    <button className={styles.backBtn} onClick={() => navigate(-1)} style={{ fontSize: '1.4rem' }}>←</button>
+                    <button className={styles.backBtn}
+                            onClick={() => navigate(-1)} style={{ fontSize: '1.4rem' }}>←</button>
                     {isLoggedIn && sessionUserId === qna.userId.toString() && (
                         <div className={styles.actionsWrapper} ref={actionsRef}>
-                            {/* 세로 점 3개 버튼 */}
                             <button
                                 className={styles.actionMenuBtn}
                                 ref={actionMenuBtnRef}

@@ -101,26 +101,23 @@ const JobPage = () => {
                         resetTrigger={resetTrigger}
                     />
                     <button
+                        className={styles.buttonFocus}
                         onClick={handleRefresh}
-                        style={{
-                            height: "40px",
-                            width: "40px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            border: "none",
-                            backgroundColor: "transparent", // 회색 배경 제거
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                        }}
                     >
                         <img
                             src={resetIcon}
                             alt="새로고침"
+                            className="resetIcon"
+
                             style={{
                                 width: 20,
                                 height: 20,
+                                outline: 'none',
+                                border: 'none',
+                                background: 'transparent',
+
                             }}
+                            tabIndex={-1}  // 포커스 방지
                         />
                     </button>
 
