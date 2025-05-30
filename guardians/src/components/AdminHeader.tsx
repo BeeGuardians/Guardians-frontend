@@ -24,7 +24,7 @@ const AdminHeader = () => {
                     {/* 로고 클릭 시 /admin 경로로 이동 (AdminPrivateRoute에 의해 다시 /admin/login으로 갈 수 있음) */}
                     <Link to="/admin" className={styles.logo}>
                         <img src="/logo_no_BG.png" alt="로고" className={styles.logoImg} />
-                        <span className={styles.logoText}>Guardians for Admin</span>
+                        <span className={styles.logoText}>Team Guardians</span>
                     </Link>
                 </div>
                 {/* user 객체가 존재할 때만 (로그인 상태일 때) 로그아웃 버튼 렌더링 */}
