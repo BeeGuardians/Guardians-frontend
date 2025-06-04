@@ -154,7 +154,7 @@ spec:
                         git config user.name "CI Bot"
                         git add ${DEPLOY_PATH}
                         git commit -m "release : update frontend image to guardians/frontend:${IMAGE_TAG}" || echo "No changes to commit"
-                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git ${BRANCH_NAME}
+                        git push https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git dev
                         """
                     }
                 }
