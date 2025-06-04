@@ -144,7 +144,7 @@ spec:
                     )]) {
                         sh """
                         echo "[CLONE] Guardians-Infra"
-                        git clone --single-branch --branch ${BRANCH_NAME} https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git infra
+                        git clone --single-branch --branch dev https://${GIT_USER}:${GIT_TOKEN}@github.com/BeeGuardians/Guardians-Infra.git infra
 
                         echo "[PATCH] Updating frontend deployment.yaml image tag"
                         sed -i "s|image: .*|image: ${FULL_IMAGE}|" infra/${DEPLOY_PATH}
