@@ -158,12 +158,14 @@ body {
     height: 100vh;
     width: 100%;
     overflow: hidden;
+    background: linear-gradient(135deg, #FCD7A2, #FF944D); /* ✨ 부드러운 주황 계열 그라데이션 */
 }
+
 
 /* 왼쪽 영역 */
 .left {
     flex: 1;
-    background-color: #ffaf59;
+    background: transparent;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -194,11 +196,10 @@ body {
     font-weight: 500;
 }
 
-
-/* 오른쪽 영역 */
 .right {
     flex: 1.2;
-    background-color: #ffaf59;
+    /* background-color: #ffaf59; ❌ 제거 */
+    background: transparent; /* ✅ 동일하게 투명 처리 */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -211,4 +212,9 @@ body {
     border: 1px solid #ddd;
     border-radius: 1rem;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+.left,
+.right {
+    background: var(--main-gradient); /* ✨ 완전 일치하게 */
 }

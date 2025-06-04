@@ -1,0 +1,306 @@
+/* ───────────────── Page Layout & General ───────────────── */
+.pageWrapper {
+    display: flex;
+    justify-content: center;
+    padding: 4rem 2rem;
+    background-color: #fafafa;
+}
+
+.mainContent {
+    width: 100%;
+    max-width: 900px;
+    margin-top: -4rem;
+}
+
+.leftColumn {
+    width: 100%;
+}
+
+/* ───────────────── Top Bar & Buttons ───────────────── */
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.actionMenuBtn{
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+}
+
+/* 수정/삭제 버튼 영역 */
+.actionsWrapper{
+    position: relative;
+    width: 10rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 버튼 메뉴 */
+.actionButtons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: absolute;
+    top: 25px;  /* 버튼 위치를 세로 점 버튼 아래로 */
+    right: 0;    /* 부모의 오른쪽 끝에 맞추기 */
+    background-color: #fff;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.actionMenuBtn:focus {
+    outline: none;
+}
+
+.actionButtons button {
+    font-size: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: background-color 0.3s;
+}
+.deleteBtn{
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.3rem 0.8rem;
+
+}
+
+/* ───────────────── Header Card ───────────────── */
+.header-card {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* ───────────────── Action Button (Like) ───────────────── */
+
+.actionButtons{
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: background-color 0.3s;
+    outline: none;
+    box-shadow: none;
+}
+
+
+/* 수정/삭제 버튼 토글 애니메이션 */
+.actionButtons{
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.actionsWrapper button:focus + .actionButtons,
+.actionsWrapper .actionButtons{
+    opacity: 1;
+    pointer-events: all;
+    margin-top: 1.2rem;
+}
+
+/* ───────────────── Content ───────────────── */
+.plainContent {
+    margin: 2rem 1rem;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+    min-height: 20rem;
+    white-space: pre-line;
+}
+
+/* ───────────────── Comment Section ───────────────── */
+.commentSection {
+    margin-top: 5rem; /* 기존에 있던 Comment Section의 margin-top: 3rem 대신 5rem 유지 */
+}
+
+.commentTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem; /* 기존에 있던 margin-bottom: 1rem 대신 0.75rem 유지 */
+    border-bottom: 2px solid #ffa94d;
+    padding-bottom: 0.4rem;
+    color: #333;
+}
+
+.commentList {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.commentItem {
+    background-color: #fffefc;
+    border: 1px solid #ffe0b3;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.commentHeader {
+    display: flex;
+    justify-content: flex-start; /* flex-start 유지 */
+    align-items: center;
+    font-size: 1.05rem;
+    margin-top: 0.5rem; /* margin-top 유지 */
+    margin-bottom: 0.5rem; /* 이 속성은 commentHeader에 중복으로 있었음, 제거 */
+}
+
+.commentProfileImageWrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-right: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.commentProfileImageWrapper:hover {
+    background-color: #e0e0e0;
+}
+
+.commentProfileImage {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.usernameRow {
+    display: flex; /* usernameLink와 created at을 같은 줄에 두기 위해 추가 */
+    align-items: baseline;
+    gap: 0.5rem; /* 간격 조절 */
+}
+
+.usernameLink {
+    color: #ffa94d;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-size: 1.05rem; /* commentUsername의 font-size 유지 */
+}
+
+.usernameLink:hover {
+    color: #e07c2a;
+}
+
+
+
+.createdAt {
+    color: #666;
+    font-size: 0.8rem; /* commentItem small의 font-size 유지 */
+}
+/* commentItem small 스타일 제거 (createdAt에서 직접 관리) */
+
+
+.commentContent {
+    white-space: pre-wrap;
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+}
+
+.commentForm {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.commentTextarea {
+    width: 100%; /* 97% 대신 100% 유지 */
+    height: 90px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+.submitBtn {
+    background-color: #FFA94D;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.noComment {
+    padding: 1rem;
+    color: #888;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* ───────────────── Review (Comment Actions - 동일한 용도로 통합) ───────────────── */
+.reviewActionBtns {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.reviewActionBtns button {
+    font-size: 0.8rem;
+    background-color: transparent;
+    border: 1px solid #ffa94d;
+    color: #ffa94d;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.reviewActionBtns button:hover {
+    background-color: #fff7ed;
+}

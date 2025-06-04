@@ -6,9 +6,7 @@ function Footer() {
             <div className={styles.sectionWrapper}>
                 <div className={styles.section}>
                     <h4>전체</h4>
-                    <a href="/community/inquiry" className={styles.link}>공지사항</a>
-                    <a href="/community/qna" className={styles.link}>자주 묻는 질문</a>
-                    <a href="/community/inquiry" className={styles.link}>1:1 문의</a>
+                    <a href="/community/inquiry" className={styles.link}>문의 게시판</a>
                     <a href="/terms" className={styles.link}>이용약관</a>
                     <a href="/privacy" className={styles.link}>개인정보 처리방침</a>
                 </div>
@@ -35,7 +33,7 @@ function Footer() {
             </div>
 
             <div className={styles.bottom}>
-                <p>© 2025 Guardians. All rights reserved.</p>
+                <p>Copyright © 2025 Guardians. All rights reserved.</p>
                 <p>문의: honeyguardians@gmail.com</p>
             </div>
         </footer>

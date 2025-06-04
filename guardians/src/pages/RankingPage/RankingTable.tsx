@@ -1,25 +1,36 @@
-import {useState} from "react";
+import { useState } from "react";
 
 interface UserRanking {
     rank: number;
     username: string;
     score: number;
     totalSolved: number;
+    userProfileUrl: string;
+    userId: string;
 }
 
 interface RankingTableProps {
     data: UserRanking[];
+    handleUserClick: (targetUserId: string) => Promise<void>;
 }
 
 const ITEMS_PER_PAGE = 20;
 
-const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
+const RankingTable: React.FC<RankingTableProps> = ({ data, handleUserClick }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
     const currentData = data.slice(
         (currentPage - 1) * ITEMS_PER_PAGE,
         currentPage * ITEMS_PER_PAGE
     );
+
+    const getTier = (score: number): string => {
+        if (score >= 5000) return "Platinum";
+        if (score >= 3000) return "Gold";
+        if (score >= 2000) return "Silver";
+        if (score >= 1000) return "Bronze";
+        return "Bronze";
+    };
 
     return (
         <div
@@ -36,20 +47,22 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                     width: "100%",
                     borderCollapse: "separate",
                     borderSpacing: "0 8px",
+                    tableLayout: "fixed",
                 }}
             >
                 <thead>
                 <tr
                     style={{
-                        textAlign: "left",
+                        textAlign: "center",
                         fontSize: "0.9rem",
                         color: "#555",
                     }}
                 >
-                    <th style={{ ...thStyle, width: "20%" }}>순위</th>
-                    <th style={{ ...thStyle, width: "30%" }}>닉네임</th>
-                    <th style={{ ...thStyle, width: "25%" }}>푼 문제</th>
-                    <th style={{ ...thStyle, width: "25%" }}>점수</th>
+                    <th style={{ ...thStyle, width: "15%" }}>순위</th>
+                    <th style={{ ...thStyle, width: "35%" }}>닉네임</th>
+                    <th style={{ ...thStyle, width: "10%" }}>티어</th>
+                    <th style={{ ...thStyle, width: "20%" }}>푼 문제</th>
+                    <th style={{ ...thStyle, width: "20%" }}>점수</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -61,6 +74,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                             boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
                             borderRadius: "6px",
                             transition: "background 0.2s",
+                            cursor: "pointer", // 클릭 가능함을 나타냄
                         }}
                         onMouseOver={(e) =>
                             (e.currentTarget.style.backgroundColor = "#fcddb6")
@@ -68,9 +82,35 @@ const RankingTable: React.FC<RankingTableProps> = ({ data }) => {
                         onMouseOut={(e) =>
                             (e.currentTarget.style.backgroundColor = "white")
                         }
+                        onClick={() => handleUserClick(user.userId)}
                     >
                         <td style={tdStyle}>{user.rank}</td>
-                        <td style={tdStyle}>{user.username}</td>
+                        <td style={{ ...tdStyle, display: "flex", alignItems: "center", gap: "1rem", justifyContent: "center" }}>
+                            <img
+                                src={user.userProfileUrl}
+                                alt="profile"
+                                style={{
+                                    width: "28px",
+                                    height: "28px",
+                                    borderRadius: "50%",
+                                    objectFit: "cover",
+                                }}
+                            />
+                            <span>{user.username}</span>
+                        </td>
+                        <td style={tdStyle}>
+                                <span
+                                    style={{
+                                        fontSize: "0.75rem",
+                                        backgroundColor: "#f5f5f5",
+                                        padding: "0.2rem 0.5rem",
+                                        borderRadius: "8px",
+                                        color: "#555",
+                                    }}
+                                >
+                                    {getTier(user.score)}
+                                </span>
+                        </td>
                         <td style={tdStyle}>{user.totalSolved}</td>
                         <td style={tdStyle}>{user.score}</td>
                     </tr>
@@ -113,7 +153,7 @@ const thStyle = {
 const tdStyle = {
     padding: "0.75rem 1rem",
     fontSize: "0.95rem",
-    textAlign: "left" as const,
+    textAlign: "center" as const,
 };
 
 export default RankingTable;

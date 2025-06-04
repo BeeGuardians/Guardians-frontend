@@ -1,24 +1,47 @@
-import searchIcon from "../../assets/search.png"; // 🔍 돋보기 아이콘
+import searchIcon from "../../assets/search.png";
+import {useState} from "react";
+import Modal from "../Community/components/Modal.tsx"; // 🔍 돋보기 아이콘
 
-// 🔸 컴포넌트 prop 타입 정의 (placeholder를 외부에서 전달받음)
-type Props = {
-    placeholder: string;
-};
+interface SearchBarProps {
+    onSearch: (keyword: string) => void;
+}
 
-const SearchBar = ({ placeholder }: Props) => {
+const SearchBar = ({ onSearch }: SearchBarProps) => {
+    const [keyword, setKeyword] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+
+    const handleSearch = () => {
+        const trimmed = keyword.trim();
+        if (trimmed.length > 0 && trimmed.length < 2) {
+            setModalMessage("검색어는 2자 이상 입력해주세요.");
+            setModalOpen(true);
+            return;
+        }
+        onSearch(trimmed);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
+
+
     return (
-        // ✅ 전체 검색창 wrapper (relative 기준으로 아이콘 배치)
         <div
             style={{
                 position: "relative",
-                width: "40%", //검색창 길이
+                width: "42%", //검색창 길이
                 marginBottom: "1.5rem",
             }}
         >
-            {/* 🔹 입력창 */}
             <input
                 type="text"
-                placeholder={placeholder}
+                placeholder="회사명을 입력해주세요"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={handleKeyDown}
                 style={{
                     width: "100%",
                     padding: "0.5rem 3rem 0.5rem 1rem", // 오른쪽은 아이콘 위치 확보
@@ -27,20 +50,35 @@ const SearchBar = ({ placeholder }: Props) => {
                     fontSize: "1rem",
                 }}
             />
-
-            {/* 🔹 검색 아이콘 (입력창 안 오른쪽 끝에 위치) */}
-            <img
-                src={searchIcon}
-                alt="검색"
+            <button
+                onClick={handleSearch}
                 style={{
                     position: "absolute",
                     top: "50%",
-                    right: "-3rem", // ✅ input 내부 기준으로 오른쪽 끝에
+                    right: "-3rem",
                     transform: "translateY(-50%)",
-                    width: "16px",
-                    height: "16px",
-                    pointerEvents: "none", // 클릭 막기
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
                 }}
+            >
+                <img
+                    src={searchIcon}
+                    alt="검색"
+                    style={{
+                        width: "16px",
+                        height: "16px",
+                    }}
+                />
+            </button>
+            <Modal
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                onConfirm={() => setModalOpen(false)}
+                confirmText="확인"
+                message={modalMessage}
+                showCancelButton={false}
             />
         </div>
     );

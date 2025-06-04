@@ -1,0 +1,328 @@
+/* 전체 화면을 덮는 오버레이 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);  /* 반투명 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 모달 내용 */
+.modalContent {
+    background-color: #f5f5f5;  /* 옅은 회색 배경 */
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* 모달 헤더 */
+.header {
+    width: 100%;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #d0d0d0;  /* 옅은 회색 선 */
+    margin-bottom: 2rem;
+}
+
+.header h2 {
+    font-size: 1.3rem;
+    color: #333;
+    font-weight: 600;
+}
+
+/* 프로필 이미지와 정보 */
+.profileInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profileImageContainer {
+    width: 100px;
+    height: 100px;
+    background-color: #d0d0d0;  /* 옅은 회색 배경 */
+    border-radius: 50%;  /* 원형 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    border: 3px solid #fff;  /* 흰색 테두리 */
+}
+
+.profileImage {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.info {
+    font-size: 1rem;
+    color: #333;
+    width: 100%;
+}
+
+.infoText {
+    margin: 8px 0;
+    font-weight: normal;
+    color: #444;
+}
+
+.infoText strong {
+    color: #333; /* 강조된 텍스트 */
+}
+
+/* 하단 확인 버튼 */
+.footer {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.confirmBtn {
+    background-color: #ffa94d;  /* 옅은 회색 버튼 */
+    border: none;
+    padding: 10px 1.5rem;
+    font-size: 1rem;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.confirmBtn:hover {
+    background-color: #e78f36;
+}
+
+.confirmBtn:focus {
+    outline: none;
+}
+
+/* UserInfoModal.module.css */
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 다른 요소 위에 뜨도록 */
+    backdrop-filter: blur(5px); /* 배경 블러 효과 */
+}
+
+.modalContent {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 450px; /* 적당한 최대 너비 설정 */
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInScale 0.3s ease-out forwards; /* 모달 등장 애니메이션 */
+    border: 1px solid #e0e0e0;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    background-color: #ffe5c4;
+    border-bottom: 1px solid #eee;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.header h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem; /* 뱃지와 닉네임 사이 간격 */
+    font-size: 1.3rem; /* 닉네임 글자 크기 조정 */
+    color: #222;
+}
+
+.tierBadge {
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+    color: #333;
+}
+
+.body {
+    padding: 1.5rem;
+    flex-grow: 1; /* 내용이 충분히 공간을 차지하도록 */
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profileSection {
+    display: flex;
+    flex-direction: column; /* 세로로 배치 */
+    align-items: center;
+    gap: 1.5rem; /* 프로필 이미지와 정보 사이 간격 */
+}
+
+.profileImageContainer {
+    width: 140px; /* 이미지 컨테이너 크기 조정 */
+    height: 140px;
+    border-radius: 50%;
+    border: 3px solid #ffa94d; /* 테두리 색상 강조 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 이미지 삐져나오는 것 방지 */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+}
+
+.profileImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.userInfoDetails {
+    width: 150%; /* 정보를 담는 컨테이너 너비 */
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem; /* 각 정보 항목 사이 간격 */
+}
+
+.detailItem {
+    display: flex;
+    justify-content: space-between; /* 라벨과 값 양 끝 정렬 */
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #f0f0f0; /* 점선 구분선 */
+}
+
+.detailItem:last-child {
+    border-bottom: none; /* 마지막 항목은 구분선 없음 */
+}
+
+.detailLabel {
+    font-weight: 500;
+    color: #777;
+    font-size: 0.95rem;
+}
+
+.detailValue {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+}
+
+.loadingText,
+.errorText,
+.noStatsText {
+    text-align: center;
+    padding: 1rem;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.errorText {
+    color: #e74c3c; /* 에러 메시지는 빨간색 */
+}
+
+.footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #f8f8f8;
+}
+
+.confirmBtn {
+    background-color: #ffa94d; /* 브랜드 컬러 사용 */
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.confirmBtn:hover {
+    background-color: #ffa94d;
+    transform: translateY(-1px);
+}
+
+.confirmBtn:active {
+    transform: translateY(0);
+}
+
+
+/* 모바일 반응형 (선택 사항) */
+@media (max-width: 600px) {
+    .modalContent {
+        width: 95%;
+        margin: 1rem;
+    }
+
+    .header h2 {
+        font-size: 1.1rem;
+    }
+
+    .closeButton {
+        font-size: 1.8rem;
+    }
+
+    .profileSection {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .profileImageContainer {
+        width: 120px;
+        height: 120px;
+    }
+
+    .detailLabel, .detailValue {
+        font-size: 0.9rem;
+    }
+}

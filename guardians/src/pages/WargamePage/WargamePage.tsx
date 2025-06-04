@@ -1,22 +1,77 @@
+import { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import SearchBar from "./SearchBar";
 import FilterBar from "./FilterBar";
 import WargameTable from "./WargameTable";
 import ProfileCard from "./ProfileCard";
 import PopularWargameList from "./PopularWargameList";
+import TopLikedWargameSlider from "./TopLikedWargameSlider";
+
+interface Challenge {
+    id: number;
+    title: string;
+    categoryName: string;
+    difficulty: string;
+    solved: boolean;
+    bookmarked: boolean;
+    likeCount: number;
+    score: number;
+}
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 function WargamePage() {
+    const [wargames, setWargames] = useState<Challenge[]>([]);
+    const [filters, setFilters] = useState({
+        category: [] as string[],
+        level: [] as string[],
+        status: [] as string[],
+        bookmarked: false,
+    });
+    const [searchKeyword, setSearchKeyword] = useState<string>("");
+
+    useEffect(() => {
+        axios.get(`${API_BASE}/api/wargames`, { withCredentials: true })
+            .then((res) => {
+                setWargames(res.data.result.data);
+            })
+            .catch((err) => {
+                console.error("워게임 목록 불러오기 실패:", err);
+            });
+    }, []);
+
+    const handleSearch = (keyword: string) => {
+        setSearchKeyword(keyword);
+    };
+
+    const filteredWargames = useMemo(() => {
+        return wargames.filter((w) => {
+            const categoryMatch =
+                filters.category.length === 0 || filters.category.includes(w.categoryName);
+            const levelMatch =
+                filters.level.length === 0 || filters.level.includes(w.difficulty);
+            const statusMatch =
+                filters.status.length === 0 ||
+                filters.status.includes(w.solved ? "SOLVED" : "UNSOLVED");
+            const bookmarkedMatch =
+                !filters.bookmarked || w.bookmarked === true;
+            const keywordMatch =
+                searchKeyword.trim().length === 0 ||
+                w.title.toLowerCase().includes(searchKeyword.toLowerCase());
+
+            return categoryMatch && levelMatch && statusMatch && bookmarkedMatch && keywordMatch;
+        });
+    }, [wargames, filters, searchKeyword]);
+
+    const topLikedWargames = useMemo(() => {
+        return [...wargames]
+            .sort((a, b) => b.likeCount - a.likeCount)
+            .slice(0, 10);
+    }, [wargames]);
+
     return (
-        <div style={{
-            padding: "2rem 1rem",
-            display: "flex",
-            justifyContent: "center",
-        }}>
-            <div style={{
-                display: "flex",
-                gap: "2rem",
-                maxWidth: "1200px",
-                width: "100%",
-            }}>
+        <div style={{ padding: "2rem 1rem", display: "flex", justifyContent: "center" }}>
+            <div style={{ display: "flex", gap: "2rem", maxWidth: "1200px", width: "100%" }}>
                 {/* 왼쪽 메인 */}
                 <div style={{ flex: 2.8, paddingRight: "1rem" }}>
                     <h3
@@ -31,7 +86,6 @@ function WargamePage() {
                         😎 취약점을 찾아내고, 문제를 해결하세요!
                     </h3>
 
-                    {/* ✨ 워게임 소개 영역 */}
                     <div
                         style={{
                             backgroundColor: "#fffbe6",
@@ -48,9 +102,12 @@ function WargamePage() {
                         취약점을 찾아내고 문제를 해결하면서, 재미있게 공부해보세요! 💪
                     </div>
 
-                    <SearchBar />
-                    <FilterBar />
-                    <WargameTable />
+                    <SearchBar onSearch={handleSearch} />
+                    <FilterBar onFilterChange={setFilters} />
+
+                    <TopLikedWargameSlider challenges={topLikedWargames} />
+
+                    <WargameTable data={filteredWargames} />
                 </div>
 
                 {/* 오른쪽 사이드바 */}

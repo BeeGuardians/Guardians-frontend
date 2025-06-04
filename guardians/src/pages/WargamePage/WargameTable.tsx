@@ -1,59 +1,19 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import axios from "axios";
-
-axios.defaults.withCredentials = true;
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type WargameRow = {
     id: number;
     title: string;
-    category: string;
-    level: string;
-    solved: boolean;
-};
-// 이 타입 추가
-type RawWargameItem = {
-    id: number;
-    title: string;
-    category: number;
+    categoryName: string;
     difficulty: string;
     solved: boolean;
+    score: number;
 };
 
-function WargameTable() {
-    const [data, setData] = useState<WargameRow[]>([]);
+function WargameTable({ data }: { data: WargameRow[] }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
-    const API_BASE = import.meta.env.VITE_API_BASE_URL;
     const navigate = useNavigate();
-
-    useEffect(() => {
-        axios.get(`${API_BASE}/api/wargames`)
-            .then((res) => {
-                const rawData = res.data.result.data;
-
-                const categoryMap: Record<number, string> = {
-                    1: "웹",
-                    2: "리버싱",
-                    3: "포렌식",
-                    4: "암호",
-                    5: "시스템",
-                };
-
-                const transformed: WargameRow[] = rawData.map((item: RawWargameItem) => ({
-                    id: item.id,
-                    title: item.title,
-                    category: categoryMap[item.category] || "기타",
-                    level: item.difficulty || "알 수 없음",
-                    solved: item.solved,
-                }));
-
-                setData(transformed);
-            })
-            .catch((err) => {
-                console.error("데이터 불러오기 실패:", err);
-            });
-    }, []);
 
     const totalPages = Math.ceil(data.length / itemsPerPage);
     const currentData = data.slice(
@@ -62,29 +22,24 @@ function WargameTable() {
     );
 
     return (
-        <div
-            style={{
-                backgroundColor: "white",
-                paddingBottom: "1rem",
-                paddingLeft: "1rem",
-                paddingRight: "1rem",
-                borderRadius: "8px",
-                border: "1px solid #ddd",
-            }}
-        >
-            <table
-                style={{
-                    width: "100%",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 8px",
-                }}
-            >
+        <div style={{
+            backgroundColor: "white",
+            padding: "1rem",
+            borderRadius: "8px",
+            border: "1px solid #ddd",
+        }}>
+            <table style={{
+                width: "100%",
+                borderCollapse: "separate",
+                borderSpacing: "0 8px",
+            }}>
                 <thead>
                 <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
-                    <th style={{ ...thStyle, width: "10%" }}>상태</th>
-                    <th style={{ ...thStyle, width: "55%" }}>문제</th>
-                    <th style={{ ...thStyle, width: "15%" }}>분야</th>
-                    <th style={{ ...thStyle, width: "20%" }}>난이도</th>
+                    <th style={{ width: "10%", padding: "0.75rem 1rem"}}>해결</th>
+                    <th style={{ width: "45%", padding: "0.75rem 1rem" }}>제목</th>
+                    <th style={{ width: "20%", padding: "0.75rem 1rem" }}>카테고리</th>
+                    <th style={{ width: "15%", padding: "0.75rem 1rem" }}>난이도</th>
+                    <th style={{ width: "10%", padding: "0.75rem 1rem" }}>배점</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -98,22 +53,30 @@ function WargameTable() {
                             transition: "background 0.2s",
                             cursor: "pointer",
                         }}
-                        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#fcddb6")}
-                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "white")}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#fcddb6"}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = "white"}
                         onClick={() => navigate(`/wargame/${row.id}`)}
                     >
                         <td style={{ ...tdStyle, color: "#0c8", fontWeight: 600 }}>
                             {row.solved ? "해결" : ""}
                         </td>
                         <td style={tdStyle}>{row.title}</td>
-                        <td style={tdStyle}>{row.category}</td>
-                        <td style={tdStyle}>{row.level}</td>
+                        <td style={tdStyle}>{row.categoryName}</td>
+                        <td style={tdStyle}>
+                            {row.difficulty === "EASY"
+                                ? "쉬움"
+                                : row.difficulty === "MEDIUM"
+                                    ? "보통"
+                                    : row.difficulty === "HARD"
+                                        ? "어려움"
+                                        : row.difficulty}
+                        </td>
+                        <td style={tdStyle}>{row.score}</td>
                     </tr>
                 ))}
                 </tbody>
             </table>
 
-            {/* 페이징 */}
             <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
                 {Array.from({ length: totalPages }, (_, i) => (
                     <button
@@ -137,13 +100,13 @@ function WargameTable() {
     );
 }
 
-const thStyle = {
-    padding: "0.75rem 1rem",
-    fontWeight: 600,
-    borderBottom: "2px solid #ddd",
-    color: "#888",
-    fontSize: "0.9rem",
-};
+// const thStyle = {
+//     padding: "0.75rem 1rem",
+//     fontWeight: 600,
+//     borderBottom: "2px solid #ddd",
+//     color: "#888",
+//     fontSize: "0.9rem",
+// };
 
 const tdStyle = {
     padding: "0.75rem 1rem",

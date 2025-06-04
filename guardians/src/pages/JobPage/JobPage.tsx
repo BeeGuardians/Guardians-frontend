@@ -1,97 +1,150 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import SearchBar from "./SearchBar";
 import JobFilterBar from "./JobFilterBar";
 import JobCard from "./JobCard";
+import styles from "./JobPage.module.css";
+import resetIcon from "../../assets/reset.png";
 
-// 🔹 더미 데이터 (20개)
-const dummyJobs = Array.from({ length: 20 }, (_, idx) => ({
-    id: idx + 1,
-    title: `000 직무 ${idx + 1}`,
-    company: `00 회사 ${idx + 1}`,
-    region: ["서울", "부산", "대전", "광주", "인천", "대구"][idx % 6],
-}));
+interface Job {
+    jobId: number;
+    title: string;
+    companyName: string;
+    location: string;
+    employmentType: string;
+    careerLevel: string;
+    salary: string;
+    deadline: string;
+    sourceUrl: string;
 
-const ITEMS_PER_PAGE = 9;
+}
+
+const ITEMS_PER_PAGE = 16;
 
 const JobPage = () => {
+    const [jobList, setJobList] = useState<Job[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const navigate = useNavigate();
+    const [resetTrigger, setResetTrigger] = useState(false);
 
-    // 🔸 현재 페이지의 job slice
+
+    useEffect(() => {
+        axios
+            .get(`${import.meta.env.VITE_API_BASE_URL}/api/jobs`)
+            .then((res) => {
+                setFullJobList(res.data.result?.data ?? []); // 전체 데이터 보관
+                setJobList(res.data.result?.data ?? []);     // 필터링된 데이터 표시용
+            })
+            .catch((err) => {
+                console.error("❌ 채용공고 불러오기 실패:", err);
+            });
+    }, []);
+
     const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentJobs = dummyJobs.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-    const totalPages = Math.ceil(dummyJobs.length / ITEMS_PER_PAGE);
+    const currentJobs = jobList.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(jobList.length / ITEMS_PER_PAGE);
+
+    const handleSearch = (keyword: string) => {
+        axios
+            .get(`/api/jobs`, { withCredentials: true })
+            .then((res) => {
+                const filtered = res.data.result.data.filter((job: Job) =>
+                    job.companyName.includes(keyword)
+                );
+                setJobList(filtered);
+                setCurrentPage(1);
+            });
+    };
+    const [fullJobList, setFullJobList] = useState<Job[]>([]);
+    const handleFilterChange = (filters: { type: string; employ: string; region: string }) => {
+        const filtered = fullJobList.filter((job) => {
+            const matchType = filters.type ? job.careerLevel === filters.type : true;
+            const matchEmploy = filters.employ ? job.employmentType === filters.employ : true;
+            const matchRegion = filters.region ? job.location === filters.region : true;
+            return matchType && matchEmploy && matchRegion;
+        });
+
+        setJobList(filtered);
+        setCurrentPage(1); // 첫 페이지로 리셋
+
+    };
+
+    const handleRefresh = () => {
+        axios
+            .get(`${import.meta.env.VITE_API_BASE_URL}/api/jobs`)
+            .then((res) => {
+                const all = res.data.result?.data ?? [];
+                setFullJobList(all);
+                setJobList(all);
+                setCurrentPage(1);
+                setResetTrigger(true); // 트리거 발생
+                setTimeout(() => setResetTrigger(false), 100); // 트리거 리셋
+            });
+    };
 
     return (
-        <div
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                padding: "2rem 1rem",
-                backgroundColor: "#fafafa",
-                minHeight: "100vh",
-            }}
-        >
-            <div style={{ maxWidth: "1200px", width: "100%" }}>
-                {/* 상단 안내 멘트 */}
-                <h3
-                    style={{
-                        marginTop: 0,
-                        marginBottom: "1rem",
-                        fontWeight: 400,
-                        fontSize: "1rem",
-                        color: "#666",
-                    }}
-                >
-                    🔐 보안 전문가로 나아갈 기회를 잡아보세요!
-                </h3>
-
-                {/* 노란 안내 박스 */}
-                <div
-                    style={{
-                        backgroundColor: "#fffbe6",
-                        border: "1px solid #ffe58f",
-                        borderRadius: "0.75rem",
-                        padding: "1.5rem",
-                        marginBottom: "3vh",
-                        color: "#664d03",
-                        fontSize: "0.95rem",
-                        lineHeight: "1.5rem",
-                    }}
-                >
+        <div className={styles.pageWrapper}>
+            <div className={styles.mainContent}>
+                {/* 상단 안내 */}
+                <h3 className={styles.pageTitle}>🔐 보안 전문가로 나아갈 기회를 잡아보세요!</h3>
+                <div className={styles.noticeBox}>
                     이 페이지는 보안 실무 능력을 채용 기회와 연결해주는 공간입니다. <br />
                     워게임을 통해 갈고닦은 실력으로, 실전 그 이상의 미래를 준비하세요. 🌈
                 </div>
 
-                <SearchBar placeholder="회사명 검색" />
-                <JobFilterBar />
+                <SearchBar onSearch={handleSearch} />
+                {/* 필터바 + 새로고침 버튼 */}
+                <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
+                    <JobFilterBar
+                        onFilterChange={handleFilterChange}
+                        resetTrigger={resetTrigger}
+                    />
+                    <button
+                        className={styles.buttonFocus}
+                        onClick={handleRefresh}
+                    >
+                        <img
+                            src={resetIcon}
+                            alt="새로고침"
+                            className="resetIcon"
 
-                {/* 카드 리스트 (3x3 그리드) */}
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(3, 1fr)",
-                        gap: "2rem",
-                        marginTop: "2rem",
-                    }}
-                >
+                            style={{
+                                width: 20,
+                                height: 20,
+                                outline: 'none',
+                                border: 'none',
+                                background: 'transparent',
+
+                            }}
+                            tabIndex={-1}  // 포커스 방지
+                        />
+                    </button>
+
+                </div>
+
+
+                {/* 카드 영역 */}
+                <div className={styles.cardGrid}>
                     {currentJobs.map((job) => (
                         <div
-                            key={job.id}
-                            onClick={() => navigate(`/job/${job.id}`)}
-                            style={{ cursor: "pointer" }}
+                            key={job.jobId}
+                            onClick={() => navigate(`/job/${job.jobId}`)}
+                            style={{ cursor: "pointer" }} // ✅ className 제거, 클릭만 유지
                         >
                             <JobCard
-                                id={job.id}
-                                region={job.region}
                                 title={job.title}
-                                company={job.company}
+                                company={job.companyName}
+                                region={job.location}
+                                careerLevel={job.careerLevel}
+                                employmentType={job.employmentType}
+                                deadline={job.deadline}
+                                sourceUrl={job.sourceUrl}
                             />
-
                         </div>
                     ))}
                 </div>
+
 
                 {/* 페이지네이션 */}
                 <div style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -100,7 +153,10 @@ const JobPage = () => {
                             key={i}
                             onClick={() => setCurrentPage(i + 1)}
                             style={{
-                                margin: "0 0.25rem",
+                                marginTop: "4rem",
+                                marginBottom: "2rem",
+                                marginLeft: "0.25rem",
+                                marginRight: "0.25rem",
                                 padding: "0.5rem 0.9rem",
                                 backgroundColor: currentPage === i + 1 ? "#FFC078" : "#eee",
                                 color: currentPage === i + 1 ? "white" : "black",

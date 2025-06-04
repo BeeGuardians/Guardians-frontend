@@ -1,15 +1,18 @@
+// src/components/Header.tsx
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import styles from "./Header.module.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 function Header() {
     const { user, logout } = useAuth();
+    const isAdmin = user?.role === 'ADMIN';
     const isLoggedIn = !!user;
     const location = useLocation();
     const isActive = (path: string) => location.pathname.startsWith(path);
+    const navigate = useNavigate();
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -49,9 +52,11 @@ function Header() {
         try {
             setIsLoading(true);
             await logout();
-            window.location.href = "/";
+            navigate("/");
         } catch (err) {
             console.error("❌ 로그아웃 실패", err);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -106,6 +111,17 @@ function Header() {
                                             <strong>{user.email}</strong>
                                         </p>
                                         <a href="/mypage" className={styles.dropdownLink}>마이페이지</a>
+                                        {isAdmin && (
+                                            <a
+                                                href="/admin/dashboard"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={styles.dropdownLink}
+                                                onClick={() => setDropdownOpen(false)}
+                                            >
+                                                관리자 페이지 이동
+                                            </a>
+                                        )}
                                         <button className={styles.dropdownLink} onClick={handleLogout}>
                                             로그아웃
                                         </button>

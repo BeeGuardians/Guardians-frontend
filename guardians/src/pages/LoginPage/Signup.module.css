@@ -6,17 +6,19 @@ body {
     display: flex;
     height: 100vh;
     width: 100vw;
+    background: linear-gradient(135deg, #FCD7A2, #FF944D); /* ✨ 부드러운 주황 계열 그라데이션 */
 }
 
 /* 왼쪽 영역 (이미지 + 텍스트) */
 .left {
     flex: 1;
-    background-color: #ffaf59;
+    background: transparent;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
+
 
 .textBox {
     margin-left: 10rem;
@@ -36,14 +38,16 @@ body {
     max-width: 100%;
 }
 
-/* 오른쪽 영역 (가입 폼) */
+
 .right {
     flex: 1.2;
-    background-color: #ffaf59;
+    /* background-color: #ffaf59; ❌ 제거 */
+    background: transparent; /* ✅ 동일하게 투명 처리 */
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 
 .signupBox {
     margin-top: 5rem;
@@ -200,4 +204,95 @@ body {
 
 .placeholder {
     /*visibility: hidden;*/
+}
+
+/* Signup.module.css 에 추가 */
+
+/* 약관/개인정보 모달 스타일 */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* 어두운 배경 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 다른 요소들 위에 표시 */
+}
+
+.modalContent {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 700px; /* 모달 최대 너비 */
+    max-height: 85vh; /* 모달 최대 높이 */
+    overflow-y: auto; /* 내용이 길면 스크롤 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.modalTitle {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.modalTextContent {
+    white-space: pre-wrap; /* 줄바꿈 및 공백 유지 */
+    word-wrap: break-word;
+    font-family: 'Noto Sans KR', sans-serif; /* 가독성 좋은 폰트 (예시) */
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #555;
+    flex-grow: 1; /* 내용이 적을 때도 버튼이 아래에 위치하도록 */
+    margin-bottom: 20px;
+}
+
+.modalCloseButton {
+    background-color: #FFA94D; /* 기본 버튼 색상 (예시) */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    align-self: flex-end; /* 버튼을 오른쪽 하단으로 */
+    transition: background-color 0.2s ease-in-out;
+}
+
+.modalCloseButton:hover {
+    background-color: #FFA94D; /* 호버 시 색상 변경 */
+}
+
+/* 클릭 가능한 텍스트 스타일 */
+.clickableText {
+    text-decoration: underline;
+    cursor: pointer;
+    color: #FFA94D;
+    margin-left: 0.1rem;
+}
+
+.clickableText:hover {
+    color: #0056b3;
+}
+
+/* 체크박스 레이블 정렬 개선 */
+.checkboxLabel {
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    margin-bottom: 10px; /* 각 항목 간 간격 */
+}
+
+.subChecks .checkboxLabel {
+    font-size: 0.9rem; /* 개별 약관 폰트 약간 작게 */
+}
+
+.customCheckbox {
+    margin-right: 8px; /* 커스텀 체크박스와 텍스트 사이 간격 */
 }

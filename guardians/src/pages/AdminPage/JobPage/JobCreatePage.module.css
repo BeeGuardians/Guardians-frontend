@@ -1,0 +1,76 @@
+.pageWrapper {
+    display: flex;
+    justify-content: center;
+    padding: 8rem 2rem;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+}
+
+.mainContent {
+    width: 100%;
+    max-width: 800px;
+}
+
+.headerCard {
+    background-color: #fff;
+    border: 1px solid #ffa94d;
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.headerCard h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #ff7e00;
+}
+
+.titleInput {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.titleInput:focus {
+    outline: none;
+    border-color: #ffa94d;
+    box-shadow: 0 0 0 3px rgba(255, 169, 77, 0.2);
+}
+
+.editContentArea {
+    height: 160px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    resize: vertical;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+.editContentArea:focus {
+    outline: none;
+    border-color: #ffa94d;
+    box-shadow: 0 0 0 3px rgba(255, 169, 77, 0.2);
+}
+
+.submitBtn {
+    background-color: #ffa94d;
+    color: white;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submitBtn:hover {
+    background-color: #ff922b;
+}
