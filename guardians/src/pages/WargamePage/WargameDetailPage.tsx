@@ -108,7 +108,7 @@ function WargameDetailPage() {
             setKaliUrl(res.data.result.data.url);
             setKaliStatus("Pending");
         } catch {
-            alert("칼리 인스턴스 시작 실패");
+            alert("로그인이 필요합니다.");
         } finally {
             setIsStartingKali(false);
         }
