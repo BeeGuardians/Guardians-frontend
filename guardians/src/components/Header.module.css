@@ -63,7 +63,7 @@
 .link {
     text-decoration: none;
     color: black;
-    font-weight: 650;
+    font-weight: 700;
 }
 
 .link:hover {
@@ -196,7 +196,7 @@
 
 .link {
     color: #555;
-    font-weight: 500;
+    font-weight: 600;
     text-decoration: none;
     padding: 0.5rem;
     transition: color 0.2s;
