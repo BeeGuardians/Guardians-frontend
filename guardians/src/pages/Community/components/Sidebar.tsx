@@ -4,12 +4,12 @@ const Sidebar = () => {
     const location = useLocation();
 
     const menuItems = [
-        { path: "/community", label: "전체 게시판" },
-        { path: "/community/hot", label: "핫 게시판" },
-        { path: "/community/qna", label: "워게임 Q&A" },
-        { path: "/community/free", label: "자유 게시판" },
-        { path: "/community/study", label: "스터디 모집" },
-        { path: "/community/inquiry", label: "문의 게시판" },
+        { path: "/community", label: "🗂️ 전체 게시판" },
+        { path: "/community/hot", label: "🔥 핫 게시판" },
+        { path: "/community/qna", label: "❓ 워게임 Q&A" },
+        { path: "/community/free", label: "💬 자유 게시판" },
+        { path: "/community/study", label: "📚 스터디 모집" },
+        { path: "/community/inquiry", label: "📨 문의 게시판" },
     ];
 
     return (
@@ -24,8 +24,8 @@ const Sidebar = () => {
                 height: "fit-content",
             }}
         >
-            <h3 style={{ fontSize: "1.1rem", marginBottom: "1.5rem", fontWeight: 700, color: "#444" }}>
-                📚 커뮤니티
+            <h3 style={{ fontSize: "1.1rem", marginLeft: "0.5rem",marginBottom: "1.7rem", fontWeight: 700, color: "#444" }}>
+                커뮤니티
             </h3>
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                 {menuItems.map((item) => {
