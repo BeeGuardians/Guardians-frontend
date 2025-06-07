@@ -129,7 +129,7 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                         isMulti
                         value={selectedCategories}
                         onChange={(selected) => setSelectedCategories(selected as OptionType[])}
-                        components={customComponents("분야 선택")}
+                        components={customComponents("카테고리 선택")}
                         placeholder=""
                         isSearchable={false}
                         {...selectCommonProps}

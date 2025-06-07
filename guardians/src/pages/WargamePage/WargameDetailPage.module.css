@@ -397,3 +397,33 @@
     color: #995c00;                    /* 진한 브라운 텍스트 */
     font-weight: 600;
 }
+
+/* WargameDetailPage.module.css 파일에 추가 */
+
+.guide-toggle-wrapper {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    margin: 2.5rem 0;
+    background-color: #fff;
+    overflow: hidden; /* 자식 컴포넌트의 radius를 맞춰주기 위함 */
+}
+
+.guide-toggle-header {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+    transition: background-color 0.2s ease;
+}
+
+.guide-toggle-header:hover {
+    background-color: #f8f9fa;
+}
+
+.guide-toggle-header > span:last-child {
+    font-size: 0.9rem; /* 아이콘(▲) 크기 조정 */
+}

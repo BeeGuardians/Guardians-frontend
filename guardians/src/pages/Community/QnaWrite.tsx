@@ -144,7 +144,7 @@ const QnaWrite = () => {
             )}
 
             {selected && (
-                <div style={{ marginTop: "0.5rem", fontSize: "0.9rem", color: "#666" }}>
+                <div style={{marginBottom: "1rem", marginLeft: "0.5rem", fontSize: "0.9rem", color: "#666" }}>
                     선택된 워게임: <strong>{selected.title}</strong>
                 </div>
             )}

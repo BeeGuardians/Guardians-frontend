@@ -6,13 +6,14 @@ interface RankCardProps {
     score: number;
     totalSolved: number;
     userProfileUrl: string;
-    userId: string; // <-- userId도 prop으로 받아야 합니다.
-    onClick: (userId: string) => void; // <-- 클릭 이벤트를 처리할 함수를 prop으로 받습니다.
+    userId: string;
+    onClick: (userId: string) => void;
 }
 
+// 티어 계산 로직을 요청하신 내용으로 수정했습니다.
 const getTier = (score: number): string => {
     if (score >= 5000) return "Platinum";
-    if (score >= 3500) return "Gold";
+    if (score >= 3000) return "Gold"; // Gold 점수 기준을 3000점으로 변경
     if (score >= 2000) return "Silver";
     if (score >= 1000) return "Bronze";
     return "Bronze";
@@ -24,8 +25,8 @@ const RankCard: React.FC<RankCardProps> = ({
                                                score,
                                                totalSolved,
                                                userProfileUrl,
-                                               userId, // 추가된 prop
-                                               onClick, // 추가된 prop
+                                               userId,
+                                               onClick,
                                            }) => {
     return (
         <div
@@ -36,10 +37,10 @@ const RankCard: React.FC<RankCardProps> = ({
                 backgroundColor: "#fff",
                 textAlign: "center",
                 boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-                cursor: "pointer", // 클릭 가능함을 시각적으로 나타냅니다.
-                transition: "transform 0.2s ease, box-shadow 0.2s ease", // 호버 효과 추가
+                cursor: "pointer",
+                transition: "transform 0.2s ease, box-shadow 0.2s ease",
             }}
-            onClick={() => onClick(userId)} // 카드 전체 클릭 시 onClick 함수 호출
+            onClick={() => onClick(userId)}
             onMouseOver={(e) => {
                 e.currentTarget.style.transform = "translateY(-5px)";
                 e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.15)";
