@@ -85,7 +85,7 @@ const RankingTable: React.FC<RankingTableProps> = ({ data, handleUserClick }) =>
                         onClick={() => handleUserClick(user.userId)}
                     >
                         <td style={tdStyle}>{user.rank}</td>
-                        <td style={{ ...tdStyle, display: "flex", alignItems: "center", gap: "1rem", justifyContent: "center" }}>
+                        <td style={{ ...tdStyle, display: "flex", alignItems: "left", gap: "1rem", justifyContent: "left", marginLeft:"7rem" }}>
                             <img
                                 src={user.userProfileUrl}
                                 alt="profile"
