@@ -242,9 +242,10 @@ const StudyBoardDetailPage = () => {
                                 style={{
                                     marginLeft: '1rem',
                                     cursor: isLoggedIn ? 'pointer' : 'not-allowed',
-                                    width: '60px',
+                                    width: '80px',
                                     height: '35px',
                                     whiteSpace: 'nowrap',
+                                    fontSize: '0.9rem'
                                 }}
                             >
                                 {isLiked ? "❤️" : "🤍"} {board.likeCount}

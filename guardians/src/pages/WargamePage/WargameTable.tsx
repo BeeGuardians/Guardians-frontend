@@ -10,6 +10,14 @@ type WargameRow = {
     score: number;
 };
 
+const categoryMap: Record<string, string> = {
+    Web: "웹",
+    Crypto: "암호",
+    Forensic: "포렌식",
+    BruteForce: "브루트포스",
+    SourceLeak: "소스리크",
+};
+
 function WargameTable({ data }: { data: WargameRow[] }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
@@ -34,9 +42,9 @@ function WargameTable({ data }: { data: WargameRow[] }) {
                 borderSpacing: "0 8px",
             }}>
                 <thead>
-                <tr style={{ textAlign: "left", fontSize: "0.9rem", color: "#555" }}>
-                    <th style={{ width: "10%", padding: "0.75rem 1rem"}}>해결</th>
-                    <th style={{ width: "45%", padding: "0.75rem 1rem" }}>제목</th>
+                <tr style={{ textAlign: "center", fontSize: "0.9rem", color: "#555" }}>
+                    <th style={{ width: "15%", padding: "0.75rem 1rem"}}>해결</th>
+                    <th style={{ width: "40%", padding: "0.75rem 1rem", textAlign: "left" }}>제목</th>
                     <th style={{ width: "20%", padding: "0.75rem 1rem" }}>카테고리</th>
                     <th style={{ width: "15%", padding: "0.75rem 1rem" }}>난이도</th>
                     <th style={{ width: "10%", padding: "0.75rem 1rem" }}>배점</th>
@@ -60,8 +68,8 @@ function WargameTable({ data }: { data: WargameRow[] }) {
                         <td style={{ ...tdStyle, color: "#0c8", fontWeight: 600 }}>
                             {row.solved ? "해결" : ""}
                         </td>
-                        <td style={tdStyle}>{row.title}</td>
-                        <td style={tdStyle}>{row.categoryName}</td>
+                        <td style={{ ...tdStyle, textAlign: "left" }}>{row.title}</td>
+                        <td style={tdStyle}>{categoryMap[row.categoryName] || row.categoryName}</td>
                         <td style={tdStyle}>
                             {row.difficulty === "EASY"
                                 ? "쉬움"
@@ -100,18 +108,10 @@ function WargameTable({ data }: { data: WargameRow[] }) {
     );
 }
 
-// const thStyle = {
-//     padding: "0.75rem 1rem",
-//     fontWeight: 600,
-//     borderBottom: "2px solid #ddd",
-//     color: "#888",
-//     fontSize: "0.9rem",
-// };
-
 const tdStyle = {
     padding: "0.75rem 1rem",
     fontSize: "0.95rem",
-    textAlign: "left" as const,
+    textAlign: "center" as const,
 };
 
 export default WargameTable;

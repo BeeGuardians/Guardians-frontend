@@ -4,12 +4,31 @@ import {motion} from "framer-motion";
 import dev1 from "../../assets/HJH.png";
 import dev2 from "../../assets/JH.png";
 import dev3 from "../../assets/YJ.png";
+import {FaTerminal, FaServer, FaShieldAlt, FaChartLine, FaUsers} from 'react-icons/fa';
 
 const reviews = [
     {quote: "가디언즈 덕분에 보안 공부가 진짜 재밌어졌어요!", author: "– gda1441, 대학생"},
     {quote: "처음엔 어려웠지만, 성장하는 게 눈에 보여서 계속 하게 돼요.", author: "– 냥냥이2, 취준생"},
     {quote: "대시보드 기능이 진짜 미쳤어요. 내 실력 곡선이 보여요.", author: "– 나홍박사님을아세요, 직장인"},
     {quote: "다른 플랫폼과 비교 불가. 랭킹 시스템이 몰입감 최고!", author: "– 햌엌, CTF 마니아"}
+];
+
+const coreFeatures = [
+    {
+        icon: <FaShieldAlt size="2.5rem" color="#FFA94D"/>,
+        title: "실전형 워게임",
+        description: "실제 서비스처럼 구성된 환경에서 실전 감각을 키웁니다."
+    },
+    {
+        icon: <FaChartLine size="2.5rem" color="#FFA94D"/>,
+        title: "성장 대시보드",
+        description: "나의 학습 현황과 실력 변화를 데이터로 한눈에 확인합니다."
+    },
+    {
+        icon: <FaUsers size="2.5rem" color="#FFA94D"/>,
+        title: "경쟁과 협력",
+        description: "랭킹 시스템과 커뮤니티를 통해 함께 성장하고 경쟁합니다."
+    }
 ];
 
 function InfiniteReviewSlider() {
@@ -31,7 +50,8 @@ function InfiniteReviewSlider() {
             requestAnimationFrame(animate);
         };
 
-        animate();
+        const animationId = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(animationId);
     }, []);
 
     return (
@@ -53,7 +73,7 @@ function InfiniteReviewSlider() {
                     maxWidth: "1100px",
                     margin: "0 auto",
                     position: "relative",
-                    marginBottom: " 10rem",
+                    marginBottom: " 12rem",
                 }}
             >
                 <div
@@ -96,7 +116,6 @@ function InfiniteReviewSlider() {
     );
 }
 
-// ✅ 메인 Intro 섹션 컴포넌트
 function HomeIntroSection() {
     const {user} = useAuth();
     const isLoggedIn = !!user;
@@ -125,7 +144,6 @@ function HomeIntroSection() {
     return (
         <>
             <div style={{backgroundColor: "#FFF7E8", padding: "5rem 10vw"}}>
-                {/* 고민 */}
                 <motion.h3
                     initial={{opacity: 0, y: 40}}
                     whileInView={{opacity: 1, y: 0}}
@@ -133,7 +151,7 @@ function HomeIntroSection() {
                     viewport={{once: true, amount: 0.7}}
                     style={{
                         fontSize: "2rem",
-                        marginBottom: "8rem",
+                        marginBottom: "9rem",
                         fontWeight: "650",
                         color: "#333",
                         textAlign: "center"
@@ -151,7 +169,7 @@ function HomeIntroSection() {
                     whileInView="visible"
                     transition={{duration: 0.6, ease: "easeOut"}}
                     viewport={{once: true, amount: 0.3}}
-                    style={{marginBottom: "10rem"}}
+                    style={{marginBottom: "12rem", display: 'flex', flexDirection: 'column', gap: '4rem'}}
                 >
                     {concerns.map(({img, alt, text, align}, idx) => (
                         <motion.div
@@ -169,18 +187,14 @@ function HomeIntroSection() {
                                 margin: "0 auto"
                             }}
                         >
-                            <img
-                                src={img}
-                                alt={alt}
-                                style={{
-                                    width: "140px",
-                                    height: "140px",
-                                    borderRadius: "50%",
-                                    objectFit: "cover",
-                                    backgroundColor: "#f1f3f5",
-                                    boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
-                                }}
-                            />
+                            <img src={img} alt={alt} style={{
+                                width: "140px",
+                                height: "140px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                                backgroundColor: "#f1f3f5",
+                                boxShadow: "0 4px 10px rgba(0,0,0,0.05)"
+                            }}/>
                             <div
                                 style={{
                                     background: "#fff",
@@ -262,18 +276,152 @@ function HomeIntroSection() {
                             fontSize: "1.8rem",
                             display: "inline-block",
                             marginTop: "1.5rem",
-                            marginBottom: "5.5rem"
+                            marginBottom: "12.5rem"
                         }}
                     >
-            지금, 당신의 보안 여정을 시작해보세요!
-          </span>
+                        지금, 당신의 보안 여정을 시작해보세요!
+                    </span>
                 </motion.p>
 
-                {/* 🔁 자동 무한 리뷰 캐러셀 */}
+                <div style={{textAlign: 'center', marginBottom: '15rem'}}>
+                    <motion.h3
+                        initial={{opacity: 0, y: 40}}
+                        whileInView={{opacity: 1, y: 0}}
+                        transition={{duration: 0.6}}
+                        viewport={{once: true, amount: 0.5}}
+                        style={{fontSize: "2rem", marginBottom: "3.5rem", fontWeight: "650", color: "#333"}}
+                    >
+                        👆클릭 한 번으로 완성되는 나만의 해킹 실습실
+                    </motion.h3>
+                    <motion.p
+                        initial={{opacity: 0, y: 20}}
+                        whileInView={{opacity: 1, y: 0}}
+                        transition={{delay: 0.1, duration: 0.6}}
+                        viewport={{once: true, amount: 0.5}}
+                        style={{
+                            fontSize: "1.1rem",
+                            color: "#555",
+                            lineHeight: "1.8",
+                            maxWidth: '600px',
+                            margin: '0 auto 4rem auto'
+                        }}
+                    >
+                        가디언즈는 복잡한 설치 과정 없이 클릭 한 번으로<br/>
+                        워게임 문제와 개인용 칼리 리눅스 공격 환경을 동시에 제공합니다.
+                    </motion.p>
+
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{once: true, amount: 0.3}}
+                        variants={{
+                            visible: {transition: {staggerChildren: 0.2}}
+                        }}
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            gap: '2rem',
+                            flexWrap: 'wrap'
+                        }}
+                    >
+                        <motion.div
+                            variants={{hidden: {y: 20, opacity: 0}, visible: {y: 0, opacity: 1}}}
+                            style={{
+                                background: 'white', padding: '2rem', borderRadius: '16px',
+                                boxShadow: '0 8px 30px rgba(0,0,0,0.07)', width: '320px', textAlign: 'center'
+                            }}
+                        >
+                            <FaServer size="3rem" color="#FFA94D"/>
+                            <h4 style={{fontSize: '1.3rem', margin: '1rem 0 0.5rem 0'}}>1. 타겟 서버 생성</h4>
+                            <p style={{color: '#666', lineHeight: 1.6}}>
+                                실제 취약점을 가진 웹 서버가<br/>당신의 공격을 기다립니다.
+                            </p>
+                        </motion.div>
+                        <div style={{fontSize: '2rem', color: '#ffc078', fontWeight: 'bold'}}>+</div>
+                        <motion.div
+                            variants={{hidden: {y: 20, opacity: 0}, visible: {y: 0, opacity: 1}}}
+                            style={{
+                                background: 'white', padding: '2rem', borderRadius: '16px',
+                                boxShadow: '0 8px 30px rgba(0,0,0,0.07)', width: '320px', textAlign: 'center'
+                            }}
+                        >
+                            <FaTerminal size="3rem" color="#FFA94D"/>
+                            <h4 style={{fontSize: '1.3rem', margin: '1rem 0 0.5rem 0'}}>2. 나의 공격 환경</h4>
+                            <p style={{color: '#666', lineHeight: 1.6}}>
+                                모든 해킹 도구가 설치된<br/>개인용 웹 터미널이 제공됩니다.
+                            </p>
+                        </motion.div>
+                    </motion.div>
+                </div>
+
+                <div style={{marginBottom: "20.5rem"}}>
+                    <motion.h3
+                        initial={{opacity: 0, y: 40}}
+                        whileInView={{opacity: 1, y: 0}}
+                        transition={{duration: 0.6}}
+                        viewport={{once: true, amount: 0.5}}
+                        style={{
+                            fontSize: "2rem",
+                            marginBottom: "7.5rem",
+                            fontWeight: "650",
+                            color: "#333",
+                            textAlign: "center"
+                        }}
+                    >
+                        🚀 당신의 성장을 위한 모든 것
+                    </motion.h3>
+
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{once: true, amount: 0.3}}
+                        variants={{visible: {transition: {staggerChildren: 0.15}}}}
+                        style={{display: 'flex', justifyContent: 'space-around', gap: '2rem', flexWrap: 'wrap'}}
+                    >
+                        {coreFeatures.map((feature, index) => (
+                            <motion.div
+                                key={index}
+                                variants={{hidden: {y: 20, opacity: 0}, visible: {y: 0, opacity: 1}}}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '1.5rem',
+                                    maxWidth: '400px',
+                                }}
+                            >
+                                <div style={{
+                                    background: 'white',
+                                    borderRadius: '50%',
+                                    padding: '1rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.06)'
+                                }}>
+                                    {feature.icon}
+                                </div>
+                                <div>
+                                    <h4 style={{
+                                        fontSize: '1.2rem',
+                                        fontWeight: 600,
+                                        color: '#333',
+                                        margin: '0 0 0.25rem 0'
+                                    }}>
+                                        {feature.title}
+                                    </h4>
+                                    <p style={{fontSize: '0.95rem', color: '#666', lineHeight: 1.6, margin: 0}}>
+                                        {feature.description}
+                                    </p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+
                 <InfiniteReviewSlider/>
             </div>
 
-            {/* CTA 섹션은 바깥으로 뺌 */}
             <section
                 style={{
                     backgroundColor: "#ffe5c4",
@@ -290,7 +438,7 @@ function HomeIntroSection() {
                         fontSize: "1.8rem",
                         fontWeight: "650",
                         color: "#333",
-                        marginBottom: "1.5rem",
+                        marginBottom: "2.5rem",
                     }}
                 >
                     지금 바로 출발해보세요!
@@ -343,7 +491,6 @@ function HomeIntroSection() {
                     {isLoggedIn ? "내 대시보드로 🧭" : "회원가입하고 시작하기 🚀"}
                 </motion.button>
             </section>
-
         </>
     );
 }

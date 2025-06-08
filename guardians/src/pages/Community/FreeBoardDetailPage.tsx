@@ -282,6 +282,7 @@ const FreeBoardDetailPage = () => {
                                     width: '60px',
                                     height: '35px',
                                     whiteSpace: 'nowrap',
+                                    fontSize: '0.9rem'
                                 }}
                             >
                                 {isLiked ? "❤️" : "🤍"} {board.likeCount}

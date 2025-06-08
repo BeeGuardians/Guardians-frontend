@@ -94,7 +94,7 @@ const WargameCreatePage = () => {
                         isClearable
                     />
                     <input
-                        type="text"
+                        type="number"
                         name="score"
                         placeholder="점수"
                         value={wargameData.score}

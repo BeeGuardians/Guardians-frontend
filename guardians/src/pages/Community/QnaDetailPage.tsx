@@ -15,7 +15,7 @@ interface Qna {
     userId: string;
     wargameId: number;
     wargameTitle: string;
-    profileImageUrl: string;  // 프로필 이미지 URL 추가
+    profileImageUrl: string;
 }
 
 interface Answer {
@@ -26,6 +26,13 @@ interface Answer {
     userId: string;
     profileImageUrl?: string;
     tier?: string;
+}
+
+interface UserForModal {
+    id: string;
+    username: string;
+    profileImageUrl: string;
+    email: string;
 }
 
 const QnaDetailPage = () => {
@@ -42,15 +49,12 @@ const QnaDetailPage = () => {
     const [editingQuestion, setEditingQuestion] = useState(false);
     const [editedTitle, setEditedTitle] = useState('');
     const [editedContent, setEditedContent] = useState('');
-    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
-    const [userModalOpen, setUserModalOpen] = useState(false); // 모달 열기 상태
-
-    // 모달 상태
+    const [userInfo, setUserInfo] = useState<UserForModal | null>(null);
+    const [userModalOpen, setUserModalOpen] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [showCancelButton, setShowCancelButton] = useState(false);
     const [modalOnConfirm, setModalOnConfirm] = useState<() => void>(() => {});
     const [showModal, setShowModal] = useState(false);
-
 
     const actionsRef = useRef<HTMLDivElement | null>(null);
     const actionMenuBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -76,7 +80,7 @@ const QnaDetailPage = () => {
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-        }, []);
+    }, []);
 
     const fetchQna = async () => {
         const res = await axios.get(`/api/qna/questions/${id}`, { withCredentials: true });
@@ -106,19 +110,17 @@ const QnaDetailPage = () => {
 
     const handleDelete = () => {
         setModalMessage('정말 질문을 삭제하시겠습니까?');
-        setShowCancelButton(true); // 취소 버튼 표시
+        setShowCancelButton(true);
         setModalOnConfirm(() => async () => {
             try {
-                await axios.delete(`/api/qna/questions/${id}?userId=${sessionUserId}`, {withCredentials: true});
-                navigate('/community/qna');  // 삭제 성공 시 이동
+                await axios.delete(`/api/qna/questions/${id}?userId=${sessionUserId}`, { withCredentials: true });
+                navigate('/community/qna');
             } catch (err) {
                 console.error('질문 삭제 실패', err);
             }
         });
         setShowModal(true);
-    }
-
-
+    };
 
     const handleEdit = () => {
         if (!qna) return;
@@ -143,6 +145,7 @@ const QnaDetailPage = () => {
         setNewAnswer('');
         fetchAnswers();
     };
+
     const startEditAnswer = (id: number, content: string) => {
         setEditingAnswerId(id);
         setEditingAnswerContent(content);
@@ -150,7 +153,7 @@ const QnaDetailPage = () => {
 
     const openConfirmEditAnswerModal = (answerId: number, content: string) => {
         setModalMessage('답변을 수정하시겠습니까?');
-        setShowCancelButton(true); // 취소 버튼 표시
+        setShowCancelButton(true);
         setModalOnConfirm(() => async () => {
             startEditAnswer(answerId, content);
             setShowModal(false);
@@ -176,7 +179,6 @@ const QnaDetailPage = () => {
         setShowModal(true);
     };
 
-
     const deleteAnswer = (answerId: number) => {
         setModalMessage('답변을 삭제하시겠습니까?');
         setModalOnConfirm(() => async () => {
@@ -187,11 +189,36 @@ const QnaDetailPage = () => {
         setShowModal(true);
     };
 
-
     const handleUserClick = async (userId: string) => {
-        const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
-        setUserInfo(res.data.result.data);
-        setUserModalOpen(true); // 유저 정보 모달 열기
+        try {
+            const res = await axios.get(`/api/users/${userId}`, { withCredentials: true });
+            const userDataFromApi = res.data.result.data;
+
+            if (!userDataFromApi) {
+                console.error('API responded successfully, but user data is missing.');
+                setModalMessage('사용자 정보를 찾을 수 없습니다.');
+                setShowCancelButton(false);
+                setShowModal(true);
+                return;
+            }
+
+            const newUserInfoForModal: UserForModal = {
+                id: String(userDataFromApi.userId),
+                username: userDataFromApi.username,
+                profileImageUrl: userDataFromApi.profileImageUrl,
+                email: userDataFromApi.email,
+            };
+
+            setUserInfo(newUserInfoForModal);
+            setUserModalOpen(true);
+
+        } catch (error) {
+            console.error('Failed to fetch user info:', error);
+            setModalMessage('사용자 정보를 불러오는 데 실패했습니다.');
+            setShowCancelButton(false);
+            setModalOnConfirm(() => {});
+            setShowModal(true);
+        }
     };
 
     if (!qna) return <div style={{ textAlign: 'center', marginTop: '2rem' }}>로딩 중...</div>;
@@ -207,12 +234,11 @@ const QnaDetailPage = () => {
                             <button
                                 className={styles.actionMenuBtn}
                                 ref={actionMenuBtnRef}
-                                onClick={() => setShowActions(prev => !prev)}  // 버튼 클릭 시 토글
+                                onClick={() => setShowActions(prev => !prev)}
                             >
-                                &#x22EE; {/* 세로 점 3개 */}
+                                &#x22EE;
                             </button>
 
-                            {/* 수정/삭제 버튼 토글 */}
                             {showActions && (
                                 <div className={styles.actionButtons}>
                                     {!editingQuestion ? (
@@ -254,10 +280,10 @@ const QnaDetailPage = () => {
                                     </div>
                                     <span
                                         className={styles.usernameLink}
-                                        onClick={() => handleUserClick(qna.userId)} // 글쓴이 이름 클릭 시 유저 정보 모달 열기
+                                        onClick={() => handleUserClick(qna.userId)}
                                     >
-                {qna.username}
-            </span>
+                                        {qna.username}
+                                    </span>
                                 </div>
                                 <span>{new Date(qna.createdAt).toLocaleDateString()}</span>
                                 <span>조회 {qna.viewCount}</span>
@@ -300,7 +326,7 @@ const QnaDetailPage = () => {
                                             <div className={styles.usernameRow}>
                                                 <span
                                                     className={styles.usernameLink}
-                                                    onClick={() => handleUserClick(answer.userId)} // 댓글 작성자 이름 클릭 시 유저 정보 모달 열기
+                                                    onClick={() => handleUserClick(answer.userId)}
                                                 >
                                                     {answer.username}
                                                 </span>
@@ -337,7 +363,6 @@ const QnaDetailPage = () => {
                 </div>
             </div>
 
-            {/* 유저 정보 모달 */}
             <UserInfoModal
                 isOpen={userModalOpen}
                 onClose={() => setUserModalOpen(false)}
@@ -351,7 +376,7 @@ const QnaDetailPage = () => {
                     modalOnConfirm();
                     setShowModal(false);
                 }}
-                message={modalMessage} // 추가
+                message={modalMessage}
                 showCancelButton={showCancelButton}
             />
         </div>

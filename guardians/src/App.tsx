@@ -15,6 +15,7 @@ import JobPage from "./pages/JobPage/JobPage";
 import JobDetailPage from "./pages/JobPage/JobDetailPage";
 
 import CommunityPage from "./pages/Community/CommunityPage";
+import HotBoardPage from "./pages/Community/HotBoardPage";
 import FreeBoardPage from "./pages/Community/FreeBoardPage";
 import QnaBoardPage from "./pages/Community/QnaBoardPage";
 import StudyBoardPage from "./pages/Community/StudyBoardPage";
@@ -146,6 +147,7 @@ function App() {
 
                     {/* 커뮤니티 페이지들 (일반 공개) */}
                     <Route path="/community" element={<CommunityPage />} />
+                    <Route path="/community/hot" element={<HotBoardPage />} />
                     <Route path="/community/free" element={<FreeBoardPage />} />
                     <Route path="/community/free/write" element={<BoardWrite type="FREE" />} />
                     <Route path="/community/free/:id" element={<FreeBoardDetailPage />} />
@@ -163,8 +165,9 @@ function App() {
                     <Route path="/community/inquiry/:id" element={<InquiryBoardDetailPage />} />
                     <Route path="/community/inquiry/edit/:id" element={<BoardEdit />} />
 
+                    {/* 관리자 페이지 라우트 */}
                     <Route path="/admin/*" element={<AdminPrivateRoute />}>
-                        <Route index element={<Navigate to="/admin/login" replace />} />
+                        <Route index element={<Navigate to="/admin/login" replace />} /> {/* /admin 접속 시 /admin/login으로 리다이렉트 */}
                         <Route path="login" element={<AdminLoginPage />} />
                         <Route path="dashboard" element={<AdminDashboardPage />} />
                         <Route path="wargames" element={<WargameListPage />} />
@@ -172,8 +175,11 @@ function App() {
                         <Route path="jobs" element={<JobListPage />} />
                         <Route path="jobs/create" element={<JobCreatePage />} /> {/* ✨ 채용공고 생성 페이지 추가 ✨ */}
                         <Route path="users" element={<UserManagementPage />} />
+                        {/* 다른 관리자 페이지 라우트들 */}
                     </Route>
 
+                    {/* 정의되지 않은 경로에 대한 처리 (선택적) */}
+                    {/* <Route path="*" element={<NotFoundPage />} /> */}
                 </Routes>
                 {/* 관리자 페이지나 일반 인증 페이지가 아닐 때만 푸터 렌더링 */}
                 {!(isAdminPath || isAuthPage) && <Footer />}
