@@ -54,10 +54,10 @@ const ServiceCard: React.FC<ServiceStatus> = ({ name, icon, status, details, adm
 const AdminDashboardPage: React.FC = () => {
     const serviceUiUrls = {
         // ✨ 각 서비스 UI URL을 실제 환경에 맞게 정확히 설정해주세요 ✨
-        argocd: 'http://192.168.0.11:30101', // ArgoCD UI (이제 HTTP로 접근하신다고 가정)
-        jenkins: 'http://192.168.0.11:30501',
-        grafana: 'http://192.168.0.11:30601',
-        harbor: 'https://harbor.example.com:30443', // Harbor는 HTTPS 유지
+        argocd: 'https://argocd.admin.com:30101', // ArgoCD UI (이제 HTTP로 접근하신다고 가정)
+        jenkins: 'http://jenkins.admin.com:30501',
+        grafana: 'http://grafana.admin.com:30601',
+        harbor: 'https://harbor.example.com:31443', // Harbor는 HTTPS 유지
     };
 
     const initialServices: ServiceStatus[] = [
