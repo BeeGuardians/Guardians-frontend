@@ -5,6 +5,7 @@ import styles from "./WargameDetailPage.module.css";
 import QACard from "./QACard";
 import WargameUserStatusCard from "./WargameUserStatusCard";
 import {AiOutlineInfoCircle} from "react-icons/ai";
+import { IoIosArrowDown } from "react-icons/io";
 
 
 axios.defaults.withCredentials = true;
@@ -86,6 +87,8 @@ function WargameDetailPage() {
     const [isStoppingKali, setIsStoppingKali] = useState(false);
     const [showWargameTooltip, setShowWargameTooltip] = useState(false);
     const [showKaliTooltip, setShowKaliTooltip] = useState(false);
+    const [isKaliGuideOpen, setIsKaliGuideOpen] = useState(false);
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -427,14 +430,19 @@ function WargameDetailPage() {
                     <h2 className={styles["desc-title"]}>문제 설명</h2>
                     <div className={styles.desc}>{wargame.description}</div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", position: "relative" }}>
-                        <h2 className={styles["pod-title"]} style={{ flexShrink: 0, flexGrow: 1, borderBottom: "2px solid #FFA94D", paddingBottom: "0.25rem" }}>해킹 실습 환경</h2>
+                    <div style={{display: "flex", alignItems: "center", gap: "0.5rem", position: "relative"}}>
+                        <h2 className={styles["pod-title"]} style={{
+                            flexShrink: 0,
+                            flexGrow: 1,
+                            borderBottom: "2px solid #FFA94D",
+                            paddingBottom: "0.25rem"
+                        }}>가디언즈 노드</h2>
                         <AiOutlineInfoCircle
                             size={18}
                             color="#888"
                             onMouseEnter={() => setShowKaliTooltip(true)}
                             onMouseLeave={() => setShowKaliTooltip(false)}
-                            style={{ cursor: "pointer" }}
+                            style={{cursor: "pointer"}}
                         />
                         {showKaliTooltip && (
                             <div style={{
@@ -453,6 +461,54 @@ function WargameDetailPage() {
                                 실습용 리눅스 환경이에요. 환경이 준비되지 않았다면 이 버튼으로 바로 시작해보세요!
                             </div>
                         )}
+                    </div>
+
+                    <div className={styles.guideToggleContainer}>
+                        {/* 1. 토글 버튼 (이전의 '트렌디한' 스타일을 유지) */}
+                        <div onClick={() => setIsKaliGuideOpen(!isKaliGuideOpen)} className={styles.toggleButton}>
+                            <span className={styles.toggleTitle}>
+                                💡 칼리 리눅스, 왜 필요한가요?
+                            </span>
+                            <div className={styles.toggleAction}>
+                                <span>{isKaliGuideOpen ? '접기' : '자세히 보기'}</span>
+                                <IoIosArrowDown
+                                    className={`${styles.toggleIcon} ${isKaliGuideOpen ? styles.toggleIconOpen : ''}`}
+                                />
+                            </div>
+                        </div>
+
+                        {/* 2. 애니메이션을 적용할 컨텐츠 래퍼(Wrapper) */}
+                        <div style={{
+                            maxHeight: isKaliGuideOpen ? '1000px' : '0', // 열렸을 때 충분한 높이, 닫혔을 때 0
+                            overflow: 'hidden',
+                            transition: 'max-height 0.4s ease-in-out' // maxHeight 속성에 애니메이션 적용
+                        }}>
+                            {/* 실제 내용 부분 */}
+                            <div className={styles.guideContent}>
+                                <p>여러분의 성공적인 문제 해결을 돕기 위해 다음과 같은 기능을 제공해요!</p>
+                                <div className={styles.guideItem}>
+                                    <h4>🚀 1. 복잡한 설치 과정은 이제 그만!</h4>
+                                    <p>더 이상 가상머신(VM)을 설치하거나 듀얼 부팅을 설정할 필요가 없어요. 웹 브라우저만 있다면 언제 어디서든 즉시 해킹 및 보안 테스트에 필요한
+                                        모든 도구가 갖춰진 환경에 접속할 수 있어요. 문제 풀이에만 온전히 집중하세요.</p>
+                                </div>
+                                <div className={styles.guideItem}>
+                                    <h4>🛠️ 2. 모든 전문 도구가 한 곳에</h4>
+                                    <p>칼리 리눅스에는 정보 수집(Nmap), 웹 취약점 분석(Burp Suite), 익스플로잇(Metasploit), 리버싱(Ghidra) 등 600개
+                                        이상의 세계적인 보안 도구들이 미리 설치되어 있어요. 어떤 유형의 문제가 나오더라도, 필요한 도구를 찾아 헤맬 필요 없이 바로 사용할 수
+                                        있어요.</p>
+                                </div>
+                                <div className={styles.guideItem}>
+                                    <h4>🛡️ 3. 안전하고 독립된 나만의 공간</h4>
+                                    <p>각 사용자에게는 완벽하게 격리된 개인 전용 파드(Pod)가 제공돼요. 여러분의 실습은 다른 사용자나 개인 PC에 전혀 영향을 주지 않아요. 마음껏
+                                        테스트하고, 실험하고, 공격하며 실력을 키워나가세요.</p>
+                                </div>
+                                <div className={styles.guideItem}>
+                                    <h4>🌐 4. 모두에게 동일한 표준 환경</h4>
+                                    <p>모든 사용자가 동일한 버전의 운영체제와 도구를 사용하므로, "제 PC에서는 안 돼요"와 같은 환경 문제를 최소화할 수 있어요.
+                                        CTF(Capture The Flag)와 같은 대회 환경처럼, 모두에게 공정한 표준 실습 환경을 제공해요.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className={styles["pod-card"]}>
@@ -476,7 +532,7 @@ function WargameDetailPage() {
                             )}
                         </div>
                         {(isStartingKali || isStoppingKali) && (
-                            <p className={styles["pod-url"]} style={{ color: '#888' }}>
+                            <p className={styles["pod-url"]} style={{color: '#888'}}>
                                 최대 60초 정도 소요될 수 있어요.
                             </p>
                         )}
@@ -485,17 +541,22 @@ function WargameDetailPage() {
                                 접속 URL: <a href={kaliUrl} target="_blank" rel="noreferrer">{kaliUrl}</a>
                             </p>
                         )}
-                        <p style={{ color: "#aaa", marginTop: "0.5rem" }}>상태: {kaliStatus}</p>
+                        <p style={{color: "#aaa", marginTop: "0.5rem"}}>상태: {kaliStatus}</p>
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", position: "relative" }}>
-                        <h2 className={styles["pod-title"]} style={{ flexShrink: 0, flexGrow: 1, borderBottom: "2px solid #FFA94D", paddingBottom: "0.25rem" }}>워게임 인스턴스</h2>
+                    <div style={{display: "flex", alignItems: "center", gap: "0.5rem", position: "relative"}}>
+                        <h2 className={styles["pod-title"]} style={{
+                            flexShrink: 0,
+                            flexGrow: 1,
+                            borderBottom: "2px solid #FFA94D",
+                            paddingBottom: "0.25rem"
+                        }}>워게임 인스턴스</h2>
                         <AiOutlineInfoCircle
                             size={18}
                             color="#888"
                             onMouseEnter={() => setShowWargameTooltip(true)}
                             onMouseLeave={() => setShowWargameTooltip(false)}
-                            style={{ cursor: "pointer" }}
+                            style={{cursor: "pointer"}}
                         />
                         {showWargameTooltip && (
                             <div style={{
@@ -538,7 +599,7 @@ function WargameDetailPage() {
                             )}
                         </div>
                         {(isStartingPod || isStoppingPod) && (
-                            <p className={styles["pod-url"]} style={{ color: '#888' }}>
+                            <p className={styles["pod-url"]} style={{color: '#888'}}>
                                 최대 60초 정도 소요될 수 있어요.
                             </p>
                         )}
@@ -547,7 +608,7 @@ function WargameDetailPage() {
                                 접속 URL: <a href={podUrl} target="_blank" rel="noreferrer">{podUrl}</a>
                             </p>
                         )}
-                        <p style={{ color: "#aaa", marginTop: "0.5rem" }}>
+                        <p style={{color: "#aaa", marginTop: "0.5rem"}}>
                             상태: {podStatus === "Not Found" ? "Stopped" : podStatus}
                         </p>
                     </div>

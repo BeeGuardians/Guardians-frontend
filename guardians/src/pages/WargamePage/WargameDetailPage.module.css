@@ -399,31 +399,98 @@
 }
 
 /* WargameDetailPage.module.css 파일에 추가 */
-
-.guide-toggle-wrapper {
+.guideToggleContainer {
+    margin-bottom: 1rem;
     border: 1px solid #e9ecef;
     border-radius: 12px;
-    margin: 2.5rem 0;
     background-color: #fff;
-    overflow: hidden; /* 자식 컴포넌트의 radius를 맞춰주기 위함 */
+    overflow: hidden;
 }
 
-.guide-toggle-header {
-    padding: 1rem 1.5rem;
+.toggleButton {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid transparent; /* 닫혔을 때는 안보이게 */
     cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #495057;
-    transition: background-color 0.2s ease;
+}
+.toggleButton.open {
+    border-bottom-color: #e9ecef; /* 열렸을 때만 구분선 표시 */
 }
 
-.guide-toggle-header:hover {
+.toggleButton:hover {
     background-color: #f8f9fa;
 }
 
-.guide-toggle-header > span:last-child {
-    font-size: 0.9rem; /* 아이콘(▲) 크기 조정 */
+.toggleTitle {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.toggleAction {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-right: 2rem;
+    color: #868e96;
+}
+
+.toggleIcon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease-in-out;
+}
+
+.toggleIconOpen {
+    transform: rotate(180deg);
+}
+
+.guideContent {
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #495057;
+    background-color: #fff;
+}
+
+.guideItem {
+    margin-bottom: 1.25rem;
+}
+.guideItem:last-child {
+    margin-bottom: 0;
+}
+
+.guideItem h4 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.guideItem p {
+    margin: 0;
+    padding-left: 1.75rem; /* 아이콘과 줄 맞춤 */
+}
+
+/* .guideContent 스타일 바로 아래에 추가해주세요. */
+
+.guideContent > p:first-child {
+    font-size: 1.1rem; /* 요청하신 1.2rem은 전체 균형에 비해 조금 커서 1.1rem으로 조정했습니다. 원하시면 1.2rem으로 바꾸셔도 됩니다. */
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 1.5rem; /* 다음 내용과의 간격 추가 */
+    padding-bottom: 1rem; /* 아래에 얇은 구분선 추가 */
+    border-bottom: 1px solid #f1f3f5;
 }
