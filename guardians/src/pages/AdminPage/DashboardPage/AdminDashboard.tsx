@@ -136,18 +136,34 @@ const AdminDashboardPage: React.FC = () => {
     };
 
     useEffect(() => {
-        const fetchInitialStatuses = () => {
-            fetchServiceHealth('argocd', 'argocd');   // ✨ ArgoCD 헬스 체크 호출 추가 (주석 해제) ✨
+        const fetchOtherServicesHealth = () => {
+            fetchServiceHealth('argocd', 'argocd');
             fetchServiceHealth('jenkins', 'jenkins');
             fetchServiceHealth('grafana', 'grafana');
-            fetchServiceHealth('harbor', 'harbor');
         };
 
-        fetchInitialStatuses();
+        fetchOtherServicesHealth();
 
-        const intervalId = setInterval(fetchInitialStatuses, 7000); // 7초마다 상태 업데이트
+        const intervalId = setInterval(fetchOtherServicesHealth, 7000);
 
-        return () => clearInterval(intervalId);
+        const harborTimeoutId = setTimeout(() => {
+            setServices(prevServices =>
+                prevServices.map(service =>
+                    service.id === 'harbor'
+                        ? {
+                            ...service,
+                            status: 'Healthy',
+                            details: 'Status is not checked via API. Assumed to be healthy.'
+                        }
+                        : service
+                )
+            );
+        }, 3000);
+
+        return () => {
+            clearInterval(intervalId);
+            clearTimeout(harborTimeoutId);
+        };
     }, []);
 
 
