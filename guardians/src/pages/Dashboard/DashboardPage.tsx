@@ -505,7 +505,7 @@ const DashboardPage = () => {
                         {/* 점수 변화 추이 */}
                         <div style={{ flex: 1, minWidth: "300px" }}>
                             <div style={{ fontSize: "1rem", fontWeight: 500, color: "#666", marginBottom: "0.75rem" }}>
-                                • 점수 변화 추이
+                                • 일별 점수 기록
                             </div>
                             <div
                                 style={{
@@ -517,7 +517,7 @@ const DashboardPage = () => {
                                     boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                                 }}
                             >
-                                <ScoreTrendChart />
+                                {userInfo && <ScoreTrendChart userId={userInfo.id} />}
                             </div>
                         </div>
 
