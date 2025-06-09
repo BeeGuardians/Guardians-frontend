@@ -118,3 +118,31 @@
     color: #1d4ed8; /* Tailwind Blue 700 */
     text-decoration: underline;
 }
+
+/* AdminDashboard.module.css 파일에 추가/수정하세요 */
+
+/* 기본 상태 텍스트 스타일 (선택사항) */
+.serviceStatus {
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+/* Healthy 상태 (초록색) */
+.statusHealthy {
+    color: #28a745;
+}
+
+/* Degraded, Warning 상태 (주황색/노란색) */
+.statusWarning {
+    color: #fd7e14;
+}
+
+/* Unhealthy, Error 상태 (빨간색) */
+.statusError {
+    color: #dc3545;
+}
+
+/* Checking, Info 상태 (파란색) */
+.statusInfo {
+    color: #007bff;
+}
