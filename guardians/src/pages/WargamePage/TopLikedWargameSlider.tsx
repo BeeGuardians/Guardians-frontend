@@ -49,7 +49,7 @@ const TopLikedWargameSlider: React.FC<Props> = ({ challenges }) => {
                         paddingLeft: "0.5rem"
                     }}
                 >
-                    ❤️ 인기 워게임 Top 10
+                    ❤️ 인기 워게임
                 </h4>
 
                 <div
