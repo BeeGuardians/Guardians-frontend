@@ -20,6 +20,7 @@ interface BackendHealthResponse {
 }
 
 const ServiceCard: React.FC<ServiceStatus> = ({ name, icon, status, details, adminLink }) => {
+// ServiceCard 컴포넌트 내부
     const getStatusColor = () => {
         const lowerStatus = status.toLowerCase();
         if (lowerStatus.includes('healthy')) return styles.statusHealthy;
@@ -136,36 +137,55 @@ const AdminDashboardPage: React.FC = () => {
     };
 
     useEffect(() => {
-        const fetchOtherServicesHealth = () => {
+        // 1. 모든 서비스의 상태를 가져오는 함수 (Harbor 포함)
+        const fetchAllServiceHealth = () => {
             fetchServiceHealth('argocd', 'argocd');
             fetchServiceHealth('jenkins', 'jenkins');
             fetchServiceHealth('grafana', 'grafana');
+            // Harbor는 API 호출을 하지 않으므로 여기서 호출하지 않습니다.
         };
 
-        fetchOtherServicesHealth();
+        fetchAllServiceHealth();
+        const intervalId = setInterval(fetchAllServiceHealth, 7000);
 
-        const intervalId = setInterval(fetchOtherServicesHealth, 7000);
-
-        const harborTimeoutId = setTimeout(() => {
-            setServices(prevServices =>
-                prevServices.map(service =>
-                    service.id === 'harbor'
-                        ? {
-                            ...service,
-                            status: 'Healthy',
-                            details: 'Status is not checked via API. Assumed to be healthy.'
-                        }
-                        : service
-                )
-            );
-        }, 3000);
-
-        return () => {
-            clearInterval(intervalId);
-            clearTimeout(harborTimeoutId);
-        };
+        return () => clearInterval(intervalId);
     }, []);
 
+    useEffect(() => {
+        // 서비스들의 상태가 변경될 때마다 이 로직이 실행됩니다.
+        const argo = services.find(s => s.id === 'argocd');
+        const jenkins = services.find(s => s.id === 'jenkins');
+        const grafana = services.find(s => s.id === 'grafana');
+        const harbor = services.find(s => s.id === 'harbor');
+
+        if (!argo || !jenkins || !grafana || !harbor) return;
+
+        const isUnhealthy = (status: string) => {
+            const lower = status.toLowerCase();
+            return lower.includes('unhealthy') || lower.includes('error');
+        };
+
+        const areAllOthersUnhealthy = isUnhealthy(argo.status) && isUnhealthy(jenkins.status) && isUnhealthy(grafana.status);
+
+        if (areAllOthersUnhealthy) {
+            if (harbor.status !== 'error') {
+                setServices(prev => prev.map(s =>
+                    s.id === 'harbor'
+                        ? { ...s, status: 'Error Fetching', details: 'System-wide failure detected.' }
+                        : s
+                ));
+            }
+        } else {
+            // 그 외의 경우, Harbor가 이미 Healthy가 아니라면 상태 변경
+            if (harbor.status !== 'Healthy') {
+                setServices(prev => prev.map(s =>
+                    s.id === 'harbor'
+                        ? { ...s, status: 'Healthy', details: 'Status is not checked via API. Assumed to be healthy.' }
+                        : s
+                ));
+            }
+        }
+    }, [services]);
 
     return (
         <div style={{
@@ -185,6 +205,7 @@ const AdminDashboardPage: React.FC = () => {
                 <AdminSidebar />
                 <div style={{ flex: 1 }} className={styles.dashboardContentContainer}>
                     <h2 className={styles.dashboardTitle}>⚙️ DevOps 관리 현황</h2>
+                    <h3>[상태 조회는 내부망에서만 가능합니다]</h3>
                     <div className={styles.dashboardGrid}>
                         {services.map(service => (
                             <ServiceCard
