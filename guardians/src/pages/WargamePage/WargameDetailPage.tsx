@@ -6,6 +6,7 @@ import QACard from "./QACard";
 import WargameUserStatusCard from "./WargameUserStatusCard";
 import {AiOutlineInfoCircle} from "react-icons/ai";
 import { IoIosArrowDown } from "react-icons/io";
+import { IoCopyOutline } from "react-icons/io5";
 
 
 axios.defaults.withCredentials = true;
@@ -89,6 +90,22 @@ function WargameDetailPage() {
     const [showKaliTooltip, setShowKaliTooltip] = useState(false);
     const [isKaliGuideOpen, setIsKaliGuideOpen] = useState(false);
 
+    // --- ADMIN 기능: State 추가 ---
+    const [userRole, setUserRole] = useState<string | null>(null);
+    const [wargameFlag, setWargameFlag] = useState<string | null>(null);
+    const [isFlagVisible, setIsFlagVisible] = useState(false);
+    const handleCopyFlag = () => {
+        if (!wargameFlag) return;
+        navigator.clipboard.writeText(wargameFlag)
+            .then(() => {
+                alert('플래그가 클립보드에 복사되었습니다.');
+            })
+            .catch(err => {
+                console.error('플래그 복사 실패: ', err);
+                alert('복사에 실패했습니다.');
+            });
+    };
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -145,9 +162,17 @@ function WargameDetailPage() {
         }
     }, [id]);
 
+    // --- ADMIN 기능: 역할 변경 시 플래그 조회 ---
+    useEffect(() => {
+        if (userRole === 'ADMIN' && id) {
+            fetchFlagForAdmin(id);
+        }
+    }, [userRole, id]);
+    // --- 로직 추가 끝 ---
+
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.get(`/api/wargames/${id}/status`)
+            axios.get(`${API_BASE}/api/wargames/${id}/status`)
                 .then((res) => {
                     setPodStatus(res.data.result.data.status);
                     setPodUrl(res.data.result.data.url);
@@ -160,15 +185,28 @@ function WargameDetailPage() {
         return () => clearInterval(interval);
     }, [id]);
 
+    // --- ADMIN 기능: checkLoginStatus 함수 수정 ---
     const checkLoginStatus = async () => {
         try {
             const res = await axios.get(`${API_BASE}/api/users/me`);
             if (res.data.result.data) {
                 setIsLoggedIn(true);
                 setCurrentUserId(res.data.result.data.id);
+                setUserRole(res.data.result.data.role); // 역할 정보 저장
             }
         } catch {
             setIsLoggedIn(false); // 에러 나면 로그인 안 된 걸로 간주
+            setUserRole(null);
+        }
+    };
+
+    // --- ADMIN 기능: 플래그 조회 함수 추가 ---
+    const fetchFlagForAdmin = async (wargameId: string) => {
+        try {
+            const res = await axios.get(`${API_BASE}/api/wargames/admin/${wargameId}/flag`);
+            setWargameFlag(res.data.result.data.flag);
+        } catch (err) {
+            console.error("관리자용 플래그 조회 실패", err);
         }
     };
 
@@ -198,9 +236,6 @@ function WargameDetailPage() {
     const firstSolver: UserStatus | undefined = userStatuses.find((u) => u.isFirstSolver);
     const currentUsers: UserStatus[] = userStatuses.filter((u) => !u.isFirstSolver);
 
-
-    const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
     const categoryMap: Record<number, string> = {
         1: "웹",
         2: "리버싱",
@@ -208,13 +243,6 @@ function WargameDetailPage() {
         4: "암호",
         5: "시스템",
     };
-
-    useEffect(() => {
-        fetchWargame();
-        fetchQnA();
-        fetchUserStatus();
-        fetchReviews();
-    }, [id]);
 
     const fetchWargame = () => {
         axios.get(`${API_BASE}/api/wargames/${id}`)
@@ -260,19 +288,19 @@ function WargameDetailPage() {
             const status = res.data.result.data?.status;
             const url = res.data.result.data?.url;
 
-            setPodStatus(status); // 👈 여기!
+            setPodStatus(status);
 
             setIsPodRunning(status === "Running" || status === "Pending" || status === "Terminating");
             if (status === "Not Found") {
-                setIsPodRunning(false);     // 종료 완료 상태
-                setPodUrl(null);            // URL 제거
+                setIsPodRunning(false);
+                setPodUrl(null);
             }
             setPodUrl(status === "Running" ? url : null);
         } catch (err) {
             console.error("🔥 파드 상태 확인 실패", err);
             setIsPodRunning(false);
             setPodUrl(null);
-            setPodStatus("Unknown"); // 에러났을 땐 표시용 상태
+            setPodStatus("Unknown");
         }
     };
 
@@ -304,7 +332,7 @@ function WargameDetailPage() {
             setEditingReviewId(null);
             setEditingContent("");
             fetchReviews();
-            setConfirmEditDone(true); // 👈 요거
+            setConfirmEditDone(true);
         } catch {
             alert("리뷰 수정 실패");
         }
@@ -347,7 +375,7 @@ function WargameDetailPage() {
     const submitFlag = () => {
         axios.post(`${API_BASE}/api/wargames/${id}/submit`, {flag})
             .then((res) => {
-                setModalResult(res.data.result.data); // accessUrl 포함됨
+                setModalResult(res.data.result.data);
                 setIsModalOpen(true);
                 fetchWargame();
             })
@@ -436,7 +464,7 @@ function WargameDetailPage() {
                             flexGrow: 1,
                             borderBottom: "2px solid #FFA94D",
                             paddingBottom: "0.25rem"
-                        }}>가디언즈 노드</h2>
+                        }}>해킹 실습 환경</h2>
                         <AiOutlineInfoCircle
                             size={18}
                             color="#888"
@@ -464,7 +492,6 @@ function WargameDetailPage() {
                     </div>
 
                     <div className={styles.guideToggleContainer}>
-                        {/* 1. 토글 버튼 (이전의 '트렌디한' 스타일을 유지) */}
                         <div onClick={() => setIsKaliGuideOpen(!isKaliGuideOpen)} className={styles.toggleButton}>
                             <span className={styles.toggleTitle}>
                                 💡 칼리 리눅스, 왜 필요한가요?
@@ -477,13 +504,11 @@ function WargameDetailPage() {
                             </div>
                         </div>
 
-                        {/* 2. 애니메이션을 적용할 컨텐츠 래퍼(Wrapper) */}
                         <div style={{
-                            maxHeight: isKaliGuideOpen ? '1000px' : '0', // 열렸을 때 충분한 높이, 닫혔을 때 0
+                            maxHeight: isKaliGuideOpen ? '1000px' : '0',
                             overflow: 'hidden',
-                            transition: 'max-height 0.4s ease-in-out' // maxHeight 속성에 애니메이션 적용
+                            transition: 'max-height 0.4s ease-in-out'
                         }}>
-                            {/* 실제 내용 부분 */}
                             <div className={styles.guideContent}>
                                 <p>여러분의 성공적인 문제 해결을 돕기 위해 다음과 같은 기능을 제공해요!</p>
                                 <div className={styles.guideItem}>
@@ -493,8 +518,8 @@ function WargameDetailPage() {
                                 </div>
                                 <div className={styles.guideItem}>
                                     <h4>🛠️ 2. 모든 전문 도구가 한 곳에</h4>
-                                    <p>칼리 리눅스에는 정보 수집(Nmap), 웹 취약점 분석(Burp Suite), 익스플로잇(Metasploit), 리버싱(Ghidra) 등 600개
-                                        이상의 세계적인 보안 도구들이 미리 설치되어 있어요. 어떤 유형의 문제가 나오더라도, 필요한 도구를 찾아 헤맬 필요 없이 바로 사용할 수
+                                    <p>칼리 리눅스에는 정보 수집(Nmap), 웹 취약점 분석(Burp Suite), 익스플로잇(Metasploit), 리버싱(Ghidra) 등의
+                                        세계적인 보안 도구들이 미리 설치되어 있어요. 어떤 유형의 문제가 나오더라도, 필요한 도구를 찾아 헤맬 필요 없이 바로 사용할 수
                                         있어요.</p>
                                 </div>
                                 <div className={styles.guideItem}>
@@ -613,7 +638,52 @@ function WargameDetailPage() {
                         </p>
                     </div>
 
-                    {/* 플래그 제출 */}
+                    {userRole === 'ADMIN' && wargameFlag && (
+                        <div style={{ margin: '2rem 0', border: '1px dashed #e03131', padding: '0.5rem', borderRadius: '8px', backgroundColor: '#fff5f5' }}>
+                            <button
+                                onClick={() => setIsFlagVisible(!isFlagVisible)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: '#c92a2a',
+                                    fontWeight: '600',
+                                    fontSize: '0.9rem',
+                                    outline: 'none' // 포커스 아웃라인 제거
+                                }}
+                            >
+                                🏴 정답 보기 (관리자만 보여요!) {isFlagVisible ? '▲' : '▼'}
+                            </button>
+                            {isFlagVisible && (
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginTop: '1rem',
+                                    fontFamily: 'monospace',
+                                    backgroundColor: '#ffe3e3',
+                                    padding: '0.5rem 0.75rem',
+                                    borderRadius: '4px'
+                                }}>
+                                    <code>{wargameFlag}</code>
+                                    <button
+                                        onClick={handleCopyFlag}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            cursor: 'pointer',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            outline: 'none' // 포커스 아웃라인 제거
+                                        }}
+                                    >
+                                        <IoCopyOutline size={16} color="#555" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     <div className={styles["submit-box"]}>
                         <input
                             type="text"
@@ -627,7 +697,6 @@ function WargameDetailPage() {
                         </button>
                     </div>
 
-                    {/* 정답 모달 */}
                     {isModalOpen && modalResult && (
                         <div className={styles["modal-overlay"]} onClick={handleCloseModal}>
                             <div
@@ -653,14 +722,13 @@ function WargameDetailPage() {
                         </div>
                     )}
 
-                    {/* Q&A */}
                     <div className={styles["qa-section"]}>
                         <h2 className={styles["qa-title"]}>Q&A</h2>
                         {isLoggedIn && (
                             <button
                                 className={styles["submit-btn"]}
                                 style={{marginBottom: '1rem', marginLeft: 'auto', display: 'block'}}
-                                onClick={() => navigate("/community/qna/write")} // 클릭 시 이동 추가
+                                onClick={() => navigate("/community/qna/write")}
                             >
                                 질문하기
                             </button>
@@ -793,7 +861,7 @@ function WargameDetailPage() {
                             <button
                                 className={styles["submit-btn"]}
                                 onClick={() => {
-                                    handleDeleteReview(confirmDeleteId);
+                                    if(confirmDeleteId) handleDeleteReview(confirmDeleteId);
                                     setConfirmDeleteId(null);
                                 }}
                             >
@@ -822,7 +890,6 @@ function WargameDetailPage() {
                     </div>
                 </div>
             )}
-
         </div>
     );
 }
