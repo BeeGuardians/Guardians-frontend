@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import Select, {
     components,
     ValueContainerProps,
-} from "react-select";
-import resetIcon from "../../assets/reset.png";
-import { CSSObjectWithLabel } from "react-select";
-import {
     MultiValueProps,
-    GroupBase
+    GroupBase,
+    CSSObjectWithLabel
 } from "react-select";
+import styles from "./FilterBar.module.css";
+import resetIcon from "../../assets/reset.png";
 
 type OptionType = {
     value: string;
@@ -112,7 +111,6 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
         )
     });
 
-
     const getBadgeColor = (option: OptionType): string => {
         if (categoryOptions.find(o => o.value === option.value)) return badgeColors.category;
         if (levelOptions.find(o => o.value === option.value)) return badgeColors.level;
@@ -121,9 +119,9 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
     };
 
     return (
-        <div>
-            <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
-                <div style={{ minWidth: "180px" }}>
+        <div className={styles.wrapper}>
+            <div className={styles.filterContainer}>
+                <div className={styles.selectWrapper}>
                     <Select<OptionType, true>
                         options={categoryOptions}
                         isMulti
@@ -135,7 +133,7 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                         {...selectCommonProps}
                     />
                 </div>
-                <div style={{ minWidth: "180px" }}>
+                <div className={styles.selectWrapper}>
                     <Select<OptionType, true>
                         options={levelOptions}
                         isMulti
@@ -147,7 +145,7 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                         {...selectCommonProps}
                     />
                 </div>
-                <div style={{ minWidth: "180px" }}>
+                <div className={styles.selectWrapper}>
                     <Select<OptionType, true>
                         options={statusOptions}
                         isMulti
@@ -159,62 +157,33 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                         {...selectCommonProps}
                     />
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginLeft: "5rem" }}>
-                    <label htmlFor="bookmarkedOnly" style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-                        <div style={{
-                            position: "relative",
-                            width: "42px",
-                            height: "22px",
-                            background: bookmarkedOnly ? "#ffc107" : "#ccc",
-                            borderRadius: "9999px",
-                            transition: "background-color 0.3s",
-                        }}>
-                            <div style={{
-                                position: "absolute",
-                                top: "2px",
-                                left: bookmarkedOnly ? "22px" : "2px",
-                                width: "18px",
-                                height: "18px",
-                                background: "white",
-                                borderRadius: "50%",
-                                transition: "left 0.2s",
-                            }} />
-                            <input
-                                type="checkbox"
-                                id="bookmarkedOnly"
-                                checked={bookmarkedOnly}
-                                onChange={() => setBookmarkedOnly(prev => !prev)}
-                                style={{
-                                    opacity: 0,
-                                    width: 0,
-                                    height: 0,
-                                    position: "absolute",
-                                }}
-                            />
+                <div className={styles.bookmarkToggle}>
+                    <label htmlFor="bookmarkedOnly" className={styles.bookmarkLabel}>
+                        <div className={`${styles.toggleSwitch} ${bookmarkedOnly ? styles.toggleSwitchOn : ''}`}>
+                            <div className={`${styles.toggleKnob} ${bookmarkedOnly ? styles.toggleKnobOn : ''}`} />
                         </div>
-                        <span style={{ marginLeft: "0.5rem", fontSize: "0.9rem", color: "#333" }}>
-                            나의 북마크
-                        </span>
+                        <input
+                            type="checkbox"
+                            id="bookmarkedOnly"
+                            checked={bookmarkedOnly}
+                            onChange={() => setBookmarkedOnly(prev => !prev)}
+                            className={styles.hiddenCheckbox}
+                        />
+                        <span className={styles.bookmarkText}>나의 북마크</span>
                     </label>
                 </div>
             </div>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginBottom: "1rem", alignItems: "center" }}>
+            <div className={styles.selectedFiltersContainer}>
                 {[...selectedCategories, ...selectedLevels, ...selectedStatus].map(option => (
                     <div
                         key={option.value}
-                        style={{
-                            backgroundColor: getBadgeColor(option),
-                            color: "white",
-                            padding: "0.2rem 0.6rem",
-                            fontSize: "0.7rem",
-                            borderRadius: "9999px",
-                            display: "flex",
-                            alignItems: "center",
-                        }}
+                        className={styles.filterBadge}
+                        style={{ backgroundColor: getBadgeColor(option) }}
                     >
                         {option.label}
                         <button
+                            className={styles.removeButton}
                             onClick={() => {
                                 if (categoryOptions.find(o => o.value === option.value)) {
                                     removeOption(setSelectedCategories, option.value);
@@ -224,14 +193,6 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                                     removeOption(setSelectedStatus, option.value);
                                 }
                             }}
-                            style={{
-                                marginLeft: "0.5rem",
-                                background: "transparent",
-                                border: "none",
-                                color: "white",
-                                fontWeight: "bold",
-                                cursor: "pointer",
-                            }}
                         >
                             ×
                         </button>
@@ -239,21 +200,11 @@ function FilterBar({ onFilterChange }: { onFilterChange: (filters: Filter) => vo
                 ))}
 
                 {(selectedCategories.length + selectedLevels.length + selectedStatus.length > 0) && (
-                    <button
-                        onClick={resetFilters}
-                        style={{
-                            background: "transparent",
-                            padding: "0.1rem 0.75rem",
-                            border: "none",
-                            borderRadius: "9999px",
-                            cursor: "pointer",
-                            fontSize: "0.5rem",
-                        }}
-                    >
+                    <button onClick={resetFilters} className={styles.resetButton}>
                         <img
                             src={resetIcon}
                             alt="초기화"
-                            style={{ width: "18px", height: "18px" }}
+                            className={styles.resetIcon}
                         />
                     </button>
                 )}

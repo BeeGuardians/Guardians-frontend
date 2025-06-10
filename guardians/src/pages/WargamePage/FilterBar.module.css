@@ -1,0 +1,136 @@
+/* FilterBar.module.css */
+
+.wrapper {
+    margin-bottom: 2rem;
+}
+
+.filterContainer {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap; /* 창이 좁아질 때를 대비한 기본 설정 */
+}
+
+/* react-select 컴포넌트를 감싸는 div */
+.selectWrapper {
+    flex-grow: 1; /* 남는 공간을 차지 */
+    min-width: 180px; /* 최소 너비 */
+}
+
+/* 북마크 토글 영역 */
+.bookmarkToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto; /* 오른쪽에 붙도록 설정 */
+    padding-left: 1rem;
+}
+.bookmarkLabel {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.bookmarkText {
+    margin-left: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+}
+.toggleSwitch {
+    position: relative;
+    width: 42px;
+    height: 22px;
+    background: #ccc;
+    border-radius: 9999px;
+    transition: background-color 0.3s;
+}
+.toggleSwitchOn {
+    background: #ffa94d;
+}
+.toggleKnob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: left 0.2s;
+}
+.toggleKnobOn {
+    left: 22px;
+}
+.hiddenCheckbox {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+
+/* 선택된 필터 뱃지 영역 */
+.selectedFiltersContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    align-items: center;
+    min-height: 28px; /* 필터가 없을 때도 높이 유지 */
+}
+.filterBadge {
+    color: white;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+}
+.removeButton {
+    margin-left: 0.5rem;
+    background: transparent;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0;
+    line-height: 1;
+}
+.resetButton {
+    background: transparent;
+    padding: 0.1rem 0.75rem;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.resetIcon {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* --- ✨✨✨ 모바일 반응형 스타일 --- ✨✨✨ */
+@media (max-width: 768px) {
+    /* 필터들을 세로로 쌓음 */
+    .filterContainer {
+        flex-direction: column;
+        align-items: stretch; /* 아이템들을 꽉 채움 */
+        gap: 0.75rem;
+    }
+
+    /* 북마크 토글의 왼쪽 여백 제거 및 정렬 변경 */
+    .bookmarkToggle {
+        margin-left: 0;
+        padding-left: 0;
+        justify-content: flex-start;
+        padding-top: 0.5rem;
+    }
+
+    .selectedFiltersContainer {
+        margin-top: 1.5rem;
+    }
+}

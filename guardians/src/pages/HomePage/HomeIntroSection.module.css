@@ -1,0 +1,145 @@
+/* HomeIntroSection.module.css */
+
+/* --- 데스크탑 기본 스타일 --- */
+.pageWrapper {
+    background-color: #FFF7E8;
+    padding: 5rem 10vw;
+    overflow-x: hidden; /* 가로 스크롤 방지 */
+}
+
+/* 공통 섹션 제목 */
+.sectionTitle {
+    font-size: 2rem;
+    font-weight: 650;
+    color: #333;
+    text-align: center;
+}
+
+/* '고민' 섹션 */
+.concernsTitle {
+    composes: sectionTitle;
+    margin-bottom: 9rem;
+}
+.concernsContainer {
+    margin-bottom: 12rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+.concernItem {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+}
+.concernSpeechBubble {
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    font-size: 1.15rem;
+    color: #333;
+    position: relative;
+    max-width: 520px;
+    line-height: 1.8;
+}
+
+/* '해킹 실습실' 섹션 */
+.practiceLabContainer {
+    text-align: center;
+    margin-bottom: 15rem;
+}
+.practiceLabTitle {
+    composes: sectionTitle;
+    font-size: 2rem;
+    margin-bottom: 3.5rem;
+}
+.practiceLabCards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+/* '핵심 기능' 섹션 */
+.featuresContainer {
+    margin-bottom: 12.5rem;
+}
+.featuresTitle {
+    composes: sectionTitle;
+    margin-bottom: 7.5rem;
+}
+.featuresList {
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+.featureItem {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 400px;
+}
+
+/* --- ✨✨✨ 모바일 반응형 스타일 ✨✨✨ --- */
+@media (max-width: 992px) {
+    /* '고민' 섹션 모바일 */
+    .concernItem {
+        gap: 2rem;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .pageWrapper {
+        padding: 4rem 1.5rem;
+    }
+    .sectionTitle {
+        font-size: 1.6rem;
+    }
+
+    /* '고민' 섹션 모바일 */
+    .concernsTitle {
+        margin-bottom: 5rem;
+    }
+    .concernsContainer {
+        margin-bottom: 8rem;
+        gap: 3rem;
+    }
+    .concernItem {
+        flex-direction: column !important; /* JS의 row-reverse를 무시하고 세로로 강제 */
+    }
+
+    /* '해킹 실습실' 섹션 모바일 */
+    .practiceLabContainer {
+        margin-bottom: 8rem;
+    }
+    .practiceLabTitle {
+        margin-bottom: 2.5rem;
+    }
+    .practiceLabCards {
+        flex-direction: column;
+    }
+
+    /* '핵심 기능' 섹션 모바일 */
+    .featuresContainer {
+        margin-bottom: 8rem;
+    }
+    .featuresTitle {
+        margin-bottom: 4rem;
+    }
+    .featuresList {
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+    }
+    .featureItem {
+        max-width: 320px;
+        gap: 1rem;
+    }
+}

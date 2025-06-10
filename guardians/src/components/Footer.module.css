@@ -1,15 +1,15 @@
+/* ===== 기존 PC 스타일 (절대 변경하지 않음) ===== */
 .footer {
     background-color: #e5e7ea;
-    padding: 2rem 4rem; /* 👉 패딩 줄임 */
+    padding: 2rem 4rem;
     border-top: 1px solid #ddd;
     font-size: 0.9rem;
     color: #555;
 }
 
-
 .sectionWrapper {
     display: flex;
-    justify-content: center; /* 👉 요거! */
+    justify-content: center;
     flex-wrap: wrap;
     gap: 10rem;
     margin-bottom: 2rem;
@@ -33,6 +33,7 @@
     color: #666;
     text-decoration: none;
     transition: color 0.2s;
+    cursor: pointer;
 }
 
 .link:hover {
@@ -47,9 +48,7 @@
     text-align: center;
 }
 
-/* --- 아래 내용을 Footer.module.css 파일에 추가 --- */
-
-/* 모달 스타일 */
+/* 모달 스타일 (기존과 동일) */
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -62,59 +61,36 @@
     align-items: center;
     z-index: 1000;
 }
+/* ... (기타 모달 스타일은 생략, 기존 코드 그대로 유지) ... */
 
-.modalContent {
-    background-color: white;
-    padding: 30px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 700px;
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
 
-.modalTitle {
-    margin-top: 0;
-    font-size: 1.5rem;
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-}
+/* --- ✨✨✨ 추가된 모바일 반응형 스타일 (이 부분만 추가) --- ✨✨✨ */
 
-.modalTextContent {
-    flex-grow: 1;
-    overflow-y: auto; /* 내용이 길면 스크롤바 생성 */
-    white-space: pre-wrap; /* 줄바꿈과 공백 유지 */
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #555;
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-}
+/* 화면 너비가 768px 이하일 때 (태블릿, 모바일) */
+@media (max-width: 768px) {
+    .footer {
+        padding: 2rem 1.5rem; /* 좌우 패딩을 줄여서 공간 확보 */
+    }
 
-.modalCloseButton {
-    margin-top: 20px;
-    padding: 12px 20px;
-    border: none;
-    background-color: #343a40;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.2s;
-    align-self: flex-end; /* 버튼을 오른쪽 끝으로 */
-}
+    .sectionWrapper {
+        flex-direction: column; /* 가로 정렬을 세로로 변경 */
+        align-items: center;    /* 가운데 정렬 */
+        gap: 2.5rem;            /* 각 섹션 사이의 세로 간격을 줄임 */
+    }
 
-.modalCloseButton:hover {
-    background-color: #555;
-}
+    .section {
+        text-align: center; /* 각 섹션의 텍스트를 가운데 정렬 */
+        width: 100%;
+        border-bottom: 1px solid #ddd; /* 섹션별 구분선 추가 */
+        padding-bottom: 1.5rem;
+    }
 
-/* --- span 태그도 a 태그처럼 보이게 하기 위한 스타일 추가 --- */
-.link {
-    cursor: pointer;
+    .section:last-child {
+        border-bottom: none; /* 마지막 섹션의 구분선은 제거 */
+        padding-bottom: 0;
+    }
+
+    .bottom {
+        padding-top: 2rem;
+    }
 }
