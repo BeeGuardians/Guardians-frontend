@@ -50,3 +50,14 @@
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
 }
+
+@media (max-width: 768px) {
+    .container {
+        justify-content: left; /* 로고를 중앙으로 정렬 */
+        padding: 1rem;
+    }
+
+    .left {
+        padding-left: 0;
+    }
+}

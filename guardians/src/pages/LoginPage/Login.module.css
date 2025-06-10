@@ -1,220 +1,170 @@
 /* Login.module.css */
-body {
-    font-family: 'Pretendard', sans-serif;
-}
-/* ✅ 페이지 전체를 감싸는 배경 영역 */
-.fullPage {
-    width: 100vw;                          /* 전체 너비 */
-    height: 100vh;                         /* 전체 높이 */
-    display: flex;                         /* 내부 요소 가로 정렬 */
-    justify-content: flex-end;            /* 오른쪽 정렬 */
-    align-items: center;                  /* 수직 중앙 정렬 */
-    background-color: #FCD7A2;           /* 배경 색상 */
-    overflow-x: hidden;                   /* 수평 스크롤 제거 */
-    box-sizing: border-box;               /* 패딩 포함; */
-    margin-right: 15rem;                  /* ✅ 위치 조정 (로그인과 동일) */
-}
 
-/* ✅ 콘텐츠 박스를 정렬하는 wrapper */
-.wrapper {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 80vh;
-    margin-right: 15rem;                  /* 로그인 위치 기준 */
-}
-
-/* ✅ 로그인 박스 스타일 */
-.loginBox {
-    width: 350px;                          /* 고정 너비 */
-    padding: 1rem 2.5rem;                  /* 상하 1rem, 좌우 2.5rem 패딩 */
-    background-color: white;              /* 흰색 배경 */
-    border-radius: 1.2rem;                /* 모서리를 둥글게 */
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08); /* 은은한 그림자 */
-    border: 1px solid #ddd;               /* 연한 회색 테두리 */
-}
-
-/* ✅ 로그인 화면 배경에 로고 이미지 추가 */
-.bgLogo {
-    position: absolute;
-    right: 4rem;
-    bottom: 4rem;
-    width: 30%;
-    max-width: 400px;
-    opacity: 0.15; /* 자연스럽게 어울리게 투명도 적용 */
-    pointer-events: none; /* 클릭 방지 */
-    z-index: 0;
-}
-
-/* ✅ 제목 텍스트 */
-.title {
-    font-size: 1.4rem;                    /* 글씨 크기 */
-    font-weight: 600;                    /* 굵은 글씨 */
-    text-align: center;                  /* 가운데 정렬 */
-    margin-bottom: 2rem;                 /* 아래 여백 */
-}
-
-/* ✅ 입력 영역 그룹 (이메일, 비밀번호) */
-.inputSection {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;                          /* 입력창끼리 간격 */
-    margin-bottom: 2rem;                 /* 버튼 그룹과의 거리 */
-}
-
-/* ✅ 버튼 영역 그룹 */
-.buttonSection {
-    display: flex;
-    flex-direction: column;
-}
-
-/* ✅ 입력창(이메일, 비밀번호) 감싸는 그룹 */
-.inputGroup {
-    display: flex;                       /* 아이콘 + input을 가로 정렬 */
-    align-items: center;                /* 수직 가운데 정렬 */
-    border: 1px solid #ccc;             /* 테두리 */
-    padding: 0.8rem 1rem;               /* 위아래 0.8rem, 좌우 1rem */
-    border-radius: 0.5rem;              /* 둥근 테두리 */
-    background-color: #fff;             /* 흰 배경 */
-}
-
-/* ✅ 입력창 안의 아이콘 이미지 */
-.inputGroup img {
-    width: 20px;                         /* 너비 20px */
-    margin-right: 0.55rem;              /* 오른쪽 여백 */
-    opacity: 0.9;                        /* 살짝 흐릿하게 처리 */
-}
-
-/* ✅ input 자체 스타일 */
-.inputGroup input {
-    width: 100%;                         /* 남은 공간 전체 사용 */
-    border: none;                        /* 기본 테두리 제거 */
-    outline: none;                       /* 클릭 시 파란 테두리 제거 */
-    font-size: 1rem;                     /* 글씨 크기 */
-}
-
-/* ✅ 로그인 버튼 (오렌지) */
-.loginButton {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 0.8rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    background-color: #FFA94D;          /* ✅ 오렌지 */
-    color: white;                       /* ✅ 흰색 글자 */
-    font-weight: 600;
-}
-
-/* ✅ 로그인 버튼 hover */
-.loginButton:hover {
-    background-color: #ff9b30;          /* 오렌지 조금 더 진하게 */
-}
-
-/* ✅ 회원가입 버튼 (회색) */
-.signupButton {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 0.8rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border: 1px solid lightgray;
-    background-color: #f2f2f2;
-}
-
-/* ✅ 회원가입 버튼 hover */
-.signupButton:hover {
-    background-color: #e4e4e4;
-    outline-color: #e4e4e4;
-}
-
-/* ✅ 비밀번호 찾기 링크 스타일 */
-.findPassword {
-    text-align: center;
-    font-size: 0.85rem;
-    color: gray;
-    margin-top: 0.8rem;
-    margin-bottom: 0.8rem;
-    cursor: pointer;
-    text-decoration: underline;
-}
-/* Login.module.css or Signup.module.css */
-.match {
-    color: green;
-    font-size: 14px;
-    margin-top: 4px;
-}
-
-.mismatch {
-    color: red;
-    font-size: 14px;
-    margin-top: 4px;
-}
-/* 전체 컨테이너 (좌우 나누기) */
+/* --- 데스크탑 기본 스타일 (기존 스타일 유지) --- */
 .container {
     display: flex;
     height: 100vh;
     width: 100%;
     overflow: hidden;
-    background: linear-gradient(135deg, #FCD7A2, #FF944D); /* ✨ 부드러운 주황 계열 그라데이션 */
+    background: linear-gradient(135deg, #FCD7A2, #FF944D);
 }
 
-
-/* 왼쪽 영역 */
 .left {
     flex: 1;
-    background: transparent;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-.leftContent {
-    display: flex;
-    align-items: center;
-    padding-left: 1rem;
+    position: relative; /* 상대 위치 기준 */
 }
 
 .visual {
-    margin-left: 12rem;
-    margin-bottom: 6rem;
     width: 400px;
-    max-width: 100%;
+    max-width: 90%;
+    margin-bottom: 2rem;
 }
 
 .textBox {
-    margin-left: 10rem;
-    margin-bottom: 3rem;
     color: white;
     text-align: left;
     font-size: 1.6rem;
-    line-height: 0.7rem;
+    line-height: 1.5;
     max-width: 500px;
     font-weight: 500;
 }
 
 .right {
     flex: 1.2;
-    /* background-color: #ffaf59; ❌ 제거 */
-    background: transparent; /* ✅ 동일하게 투명 처리 */
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* 로그인 박스는 그대로 써도 됨 */
 .loginBox {
-    width: 350px;
-    padding: 2rem;
+    width: 400px;
+    padding: 2.5rem 3rem;
+    background-color: white;
+    border-radius: 1.2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     border: 1px solid #ddd;
-    border-radius: 1rem;
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
 }
 
-.left,
-.right {
-    background: var(--main-gradient); /* ✨ 완전 일치하게 */
+.title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+}
+
+.inputSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 0.9rem 1rem;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    transition: border-color 0.2s;
+}
+.inputGroup:focus-within {
+    border-color: #FFA94D;
+}
+.inputGroup img {
+    width: 20px;
+    margin-right: 0.75rem;
+    opacity: 0.8;
+}
+.inputGroup input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+}
+
+.buttonSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.loginButton {
+    width: 100%;
+    padding: 0.9rem;
+    margin-bottom: 0.8rem;
+    border-radius: 0.5rem;
+    font-size: 1.05rem;
+    cursor: pointer;
+    border: none;
+    background-color: #FFA94D;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.loginButton:hover {
+    background-color: #ff9b30;
+}
+.loginButton:disabled {
+    background-color: #fbdba7;
+    cursor: not-allowed;
+}
+
+.signupButton {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 0.5rem;
+    font-size: 1.05rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}
+.signupButton:hover {
+    background-color: #e9ecef;
+}
+
+.findPassword {
+    text-align: center;
+    font-size: 0.9rem;
+    color: gray;
+    margin-top: 1rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* --- ✨✨✨ 추가된 모바일 반응형 스타일 --- ✨✨✨ */
+
+/* 화면 너비가 768px 이하일 때 (태블릿, 모바일) */
+@media (max-width: 768px) {
+    .container {
+        /* 그라데이션 방향을 위에서 아래로 변경 */
+        background: linear-gradient(180deg, #FCD7A2, #FF944D);
+        /* 세로로 쌓기 */
+        flex-direction: column;
+    }
+
+    /* 왼쪽 영역은 모바일에서 숨김 */
+    .left {
+        display: none;
+    }
+
+    /* 오른쪽 영역이 화면 전체를 차지하도록 설정 */
+    .right {
+        flex: 1;
+        width: 100%;
+        padding: 1rem;
+        box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+    }
+
+    .loginBox {
+        width: 100%;
+        max-width: 400px; /* 너무 커지지 않도록 최대 너비 설정 */
+        padding: 2rem 1.5rem;
+    }
 }
