@@ -257,7 +257,9 @@ const Signup = () => {
 
                     <div className={styles.inputGroup} style={{ marginBottom: '0.5rem' }}>
                         <label>비밀번호</label>
-                        <div className={styles.inputField}>
+
+                        {/* 👇 첫 번째 비밀번호 필드: 여기에만 margin-bottom을 추가합니다. */}
+                        <div className={styles.inputField} style={{ marginBottom: '0.5rem' }}>
                             <img src={lockIcon} alt="password" />
                             <input
                                 type="password"
@@ -266,6 +268,8 @@ const Signup = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
+
+                        {/* 두 번째 비밀번호 필드는 수정하지 않습니다. */}
                         <div className={styles.inputField}>
                             <img src={lockIcon} alt="password" />
                             <input
@@ -275,6 +279,7 @@ const Signup = () => {
                                 onChange={(e) => setPasswordCheck(e.target.value)}
                             />
                         </div>
+
                         <div className={styles.feedbackBox}>
                             {passwordCheck ? (
                                 <p className={isPasswordMatch ? styles.match : styles.mismatch}>
