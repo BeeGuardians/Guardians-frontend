@@ -5,6 +5,7 @@ import dev2 from "../../assets/JH.png";
 import dev3 from "../../assets/YJ.png";
 import { FaTerminal, FaServer, FaShieldAlt, FaChartLine, FaUsers } from 'react-icons/fa';
 import styles from './HomeIntroSection.module.css';
+import {useAuth} from "../../context/AuthContext.tsx";
 
 const reviews = [
     { quote: "가디언즈 덕분에 보안 공부가 진짜 재밌어졌어요!", author: "– gda1441, 대학생" },
@@ -118,6 +119,8 @@ function InfiniteReviewSlider() {
 }
 
 function HomeIntroSection() {
+    const {user} = useAuth();
+    const isLoggedIn = !!user;
 
     const concerns = [
         { img: dev1, alt: "user1", text: "보안? 해킹? 도대체 어떻게 시작해야 될지...", align: "left" },
@@ -267,8 +270,74 @@ function HomeIntroSection() {
                 <InfiniteReviewSlider />
             </div>
 
-            <section style={{ backgroundColor: "#ffe5c4", padding: "6rem 10vw", textAlign: "center" }}>
-                {/* ... (CTA 섹션은 그대로) ... */}
+            <section
+                style={{
+                    backgroundColor: "#ffe5c4",
+                    padding: "6rem 10vw",
+                    textAlign: "center",
+                }}
+            >
+                <motion.h4
+                    initial={{opacity: 0, y: 20}}
+                    whileInView={{opacity: 1, y: 0}}
+                    transition={{duration: 0.6}}
+                    viewport={{once: true, amount: 0.5}}
+                    style={{
+                        fontSize: "1.8rem",
+                        fontWeight: "650",
+                        color: "#333",
+                        marginBottom: "1.5rem",
+                    }}
+                >
+                    지금 바로 출발해보세요!
+                </motion.h4>
+
+                <motion.p
+                    initial={{opacity: 0, y: 20}}
+                    whileInView={{opacity: 1, y: 0}}
+                    transition={{duration: 0.6, delay: 0.1}}
+                    viewport={{once: true, amount: 0.5}}
+                    style={{
+                        fontSize: "1.05rem",
+                        maxWidth: "520px",
+                        margin: "0 auto 3.5rem",
+                        color: "#555",
+                        lineHeight: "1.6",
+                    }}
+                >
+                    실습으로 배우고, 성장하고, 증명하는 <strong>진짜 여정</strong>이 시작됩니다.
+                </motion.p>
+
+                <motion.button
+                    whileHover={{
+                        scale: 1.05,
+                        y: -2,
+                        boxShadow: "0 12px 30px rgba(255,169,77,0.4)",
+                    }}
+                    animate={{scale: [1, 1.02, 1]}}
+                    transition={{
+                        repeat: Infinity,
+                        duration: 2,
+                        ease: "easeInOut",
+                        delay: 1,
+                    }}
+                    onClick={() =>
+                        window.location.href = isLoggedIn ? "/dashboard" : "/signup"
+                    }
+                    style={{
+                        backgroundColor: "#ffa94d",
+                        color: "white",
+                        padding: "1rem 2.4rem",
+                        border: "none",
+                        borderRadius: "12px",
+                        fontSize: "1.2rem",
+                        fontWeight: 650,
+                        boxShadow: "0 8px 20px rgba(255,169,77,0.3)",
+                        cursor: "pointer",
+                    }}
+                >
+                    {isLoggedIn ? "내 대시보드로 🧭" : "회원가입하고 시작하기 🚀"}
+                </motion.button>
             </section>
         </>
     );
