@@ -54,7 +54,7 @@ const CommunityPage = () => {
 
         const fetchQnaPreview = async () => {
             try {
-                const res = await axios.get("/api/qna/questions", { withCredentials: true });
+                const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/qna/questions`, { withCredentials: true });
                 const data = res.data.result?.data as QnaPost[] ?? [];
 
                 const latestFive = data

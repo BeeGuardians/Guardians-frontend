@@ -29,12 +29,14 @@ const JobPage = () => {
     const [resetTrigger, setResetTrigger] = useState(false);
 
 
+    const [fullJobList, setFullJobList] = useState<Job[]>([]);
+
     useEffect(() => {
         axios
             .get(`${import.meta.env.VITE_API_BASE_URL}/api/jobs`)
             .then((res) => {
-                setFullJobList(res.data.result?.data ?? []); // 전체 데이터 보관
-                setJobList(res.data.result?.data ?? []);     // 필터링된 데이터 표시용
+                setFullJobList(res.data.result?.data ?? []);
+                setJobList(res.data.result?.data ?? []);
             })
             .catch((err) => {
                 console.error("❌ 채용공고 불러오기 실패:", err);
@@ -46,17 +48,12 @@ const JobPage = () => {
     const totalPages = Math.ceil(jobList.length / ITEMS_PER_PAGE);
 
     const handleSearch = (keyword: string) => {
-        axios
-            .get(`/api/jobs`, { withCredentials: true })
-            .then((res) => {
-                const filtered = res.data.result.data.filter((job: Job) =>
-                    job.companyName.includes(keyword)
-                );
-                setJobList(filtered);
-                setCurrentPage(1);
-            });
+        const filtered = fullJobList.filter((job) =>
+            job.companyName.includes(keyword)
+        );
+        setJobList(filtered);
+        setCurrentPage(1);
     };
-    const [fullJobList, setFullJobList] = useState<Job[]>([]);
     const handleFilterChange = (filters: { type: string; employ: string; region: string }) => {
         const filtered = fullJobList.filter((job) => {
             const matchType = filters.type ? job.careerLevel === filters.type : true;
