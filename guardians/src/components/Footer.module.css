@@ -61,7 +61,51 @@
     align-items: center;
     z-index: 1000;
 }
-/* ... (기타 모달 스타일은 생략, 기존 코드 그대로 유지) ... */
+.modalContent {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modalTitle {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #333;
+    border-bottom: 2px solid #ffa94d;
+    padding-bottom: 0.5rem;
+}
+
+.modalTextContent {
+    font-size: 0.875rem;
+    color: #555;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modalCloseButton {
+    align-self: flex-end;
+    padding: 0.5rem 1.5rem;
+    background-color: #ffa94d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.modalCloseButton:hover {
+    background-color: #ff922b;
+}
 
 
 /* --- ✨✨✨ 추가된 모바일 반응형 스타일 (이 부분만 추가) --- ✨✨✨ */
