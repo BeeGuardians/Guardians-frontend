@@ -28,6 +28,13 @@ interface Comment {
     tier?: string; // 티어 정보 추가 (필요하다면)
 }
 
+interface UserForModal {
+    id: string;
+    username: string;
+    profileImageUrl: string;
+    email: string;
+}
+
 const StudyBoardDetailPage = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
@@ -47,7 +54,7 @@ const StudyBoardDetailPage = () => {
     const [infoMessage, setInfoMessage] = useState('');
 
     // 유저 정보 모달 관련 상태
-    const [userInfo, setUserInfo] = useState<null | never>(null); // 유저 정보
+    const [userInfo, setUserInfo] = useState<UserForModal | null>(null); // 유저 정보
     const [userModalOpen, setUserModalOpen] = useState(false); // 유저 정보 모달 열기 상태
 
     const [showActions, setShowActions] = useState(false);

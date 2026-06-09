@@ -9,17 +9,30 @@ import employeeIcon from "../../assets/employee.png";
 import careerIcon from "../../assets/career.png";
 import calendarIcon from "../../assets/calendar.png";
 
-interface ResJobDto {
-    id: number; // API 응답의 jobId와 매핑될 필드
+interface ApiJobDto {
+    jobId: string;
     companyName: string;
     title: string;
-    description: string; // 상세 API에는 있지만, 목록 API에는 없을 수 있음
+    description?: string;
     location: string;
     employmentType: string;
     careerLevel: string;
-    salary: string;      // 상세 API에는 있지만, 목록 API에는 없을 수 있음
+    salary?: string;
     deadline: string;
-    sourceUrl?: string;  // 회사 로고 URL
+    sourceUrl?: string;
+}
+
+interface ResJobDto {
+    id: number;
+    companyName: string;
+    title: string;
+    description: string;
+    location: string;
+    employmentType: string;
+    careerLevel: string;
+    salary: string;
+    deadline: string;
+    sourceUrl?: string;
 }
 
 const JobDetailPage = () => {
@@ -40,8 +53,8 @@ const JobDetailPage = () => {
             })
             .then((res) => {
                 if (res.data && res.data.result && Array.isArray(res.data.result.data)) {
-                    const mappedJobs = res.data.result.data.map((apiJob: any) => ({
-                        id: parseInt(apiJob.jobId, 10), // jobId를 숫자로 변환하여 id로 매핑
+                    const mappedJobs = res.data.result.data.map((apiJob: ApiJobDto) => ({
+                        id: parseInt(apiJob.jobId, 10),
                         companyName: apiJob.companyName,
                         title: apiJob.title,
                         description: apiJob.description || "", // 목록 API에 없을 경우 대비

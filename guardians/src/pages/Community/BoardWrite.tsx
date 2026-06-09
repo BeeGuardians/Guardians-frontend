@@ -93,14 +93,6 @@ const BoardWrite = ({ type }: BoardWriteProps) => {
                 message={modalMessage}
                 showCancelButton={false}
             />
-            <Modal
-                isOpen={modalOpen}
-                onClose={() => setModalOpen(false)}
-                onConfirm={() => setModalOpen(false)}
-                confirmText="확인"
-                message={modalMessage}
-                showCancelButton={false}
-            />
 
             {/* 등록/취소 확인용 모달 */}
             <Modal
