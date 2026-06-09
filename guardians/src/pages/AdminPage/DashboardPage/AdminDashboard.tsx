@@ -168,7 +168,7 @@ const AdminDashboardPage: React.FC = () => {
         const areAllOthersUnhealthy = isUnhealthy(argo.status) && isUnhealthy(jenkins.status) && isUnhealthy(grafana.status);
 
         if (areAllOthersUnhealthy) {
-            if (harbor.status !== 'error') {
+            if (harbor.status !== 'Error Fetching') {
                 setServices(prev => prev.map(s =>
                     s.id === 'harbor'
                         ? { ...s, status: 'Error Fetching', details: 'System-wide failure detected.' }

@@ -176,15 +176,6 @@ const QnaWrite = () => {
                     setShowModal(false);
                 }}
                 message={modalMessage}
-            />
-            <Modal
-                isOpen={showModal}
-                onClose={() => setShowModal(false)}
-                onConfirm={() => {
-                    modalOnConfirm();
-                    setShowModal(false);
-                }}
-                message={modalMessage}
                 showCancelButton={showCancelButton}
             />
 
