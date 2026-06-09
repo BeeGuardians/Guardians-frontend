@@ -1,4 +1,5 @@
 import {JSX, useEffect, useRef} from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import dev1 from "../../assets/HJH.png";
 import dev2 from "../../assets/JH.png";
@@ -121,6 +122,7 @@ function InfiniteReviewSlider() {
 function HomeIntroSection() {
     const {user} = useAuth();
     const isLoggedIn = !!user;
+    const navigate = useNavigate();
 
     const concerns = [
         { img: dev1, alt: "user1", text: "보안? 해킹? 도대체 어떻게 시작해야 될지...", align: "left" },
@@ -322,7 +324,7 @@ function HomeIntroSection() {
                         delay: 1,
                     }}
                     onClick={() =>
-                        window.location.href = isLoggedIn ? "/dashboard" : "/signup"
+                        navigate(isLoggedIn ? "/dashboard" : "/signup")
                     }
                     style={{
                         backgroundColor: "#ffa94d",

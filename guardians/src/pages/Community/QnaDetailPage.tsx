@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import UserInfoModal from './UserInfoModal';
 import styles from './components/QnaDetailPage.module.css';
 import Modal from './components/Modal.tsx';
@@ -41,8 +42,9 @@ const QnaDetailPage = () => {
     const [qna, setQna] = useState<Qna | null>(null);
     const [answers, setAnswers] = useState<Answer[]>([]);
     const [newAnswer, setNewAnswer] = useState('');
-    const [sessionUserId, setSessionUserId] = useState<string | null>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { user } = useAuth();
+    const isLoggedIn = user !== null;
+    const sessionUserId = user ? String(user.id) : null;
     const [editingAnswerId, setEditingAnswerId] = useState<number | null>(null);
     const [editingAnswerContent, setEditingAnswerContent] = useState('');
     const [showActions, setShowActions] = useState(false);
@@ -63,7 +65,6 @@ const QnaDetailPage = () => {
         if (!id) return;
         fetchQna();
         fetchAnswers();
-        checkLoginStatus();
     }, [id]);
 
     useEffect(() => {
@@ -93,19 +94,6 @@ const QnaDetailPage = () => {
     const fetchAnswers = async () => {
         const res = await axios.get(`/api/qna/answers/${id}`, { withCredentials: true });
         setAnswers(res.data.result.data);
-    };
-
-    const checkLoginStatus = () => {
-        axios.get('/api/users/me', { withCredentials: true })
-            .then(res => {
-                const id = res.data.result.data.id;
-                setIsLoggedIn(true);
-                setSessionUserId(String(id));
-            })
-            .catch(() => {
-                setIsLoggedIn(false);
-                setSessionUserId(null);
-            });
     };
 
     const handleDelete = () => {

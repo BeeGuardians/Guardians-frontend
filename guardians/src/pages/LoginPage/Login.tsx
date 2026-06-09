@@ -33,7 +33,7 @@ const Login = () => {
             );
             const userData = res.data.result.data;
             login(userData);
-            window.location.href = "/";
+            navigate("/");
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 setErrorMsg(err.response?.data?.message || "로그인 실패");

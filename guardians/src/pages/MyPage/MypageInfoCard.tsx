@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styles from "./MypagePage.module.css";
 import EditUsernameModal from "./components/EditUsernameModal";
@@ -26,6 +27,7 @@ const MypageInfoCard = () => {
 
     const { user } = useAuth();
     const userId = user?.id;
+    const navigate = useNavigate();
 
     const fetchUserInfo = useCallback(async () => {
         if (!userId) return;
@@ -192,9 +194,9 @@ const MypageInfoCard = () => {
                     onClose={() => {
                         setShowSuccessModal(false);
                         if (successMessage.includes("탈퇴")) {
-                            window.location.href = "/";
+                            navigate("/");
                         } else {
-                            window.location.reload();
+                            fetchUserInfo();
                         }
                     }}
                 />

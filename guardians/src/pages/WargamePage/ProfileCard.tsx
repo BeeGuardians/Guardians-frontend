@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ProfileCard() {
+    const navigate = useNavigate();
     const [info, setInfo] = useState({
         nickname: "",
         profileImageUrl: "",
@@ -109,7 +111,7 @@ function ProfileCard() {
                             fontWeight: 500,
                             cursor: "pointer",
                         }}
-                        onClick={() => (window.location.href = "/login")}
+                        onClick={() => navigate("/login")}
                     >
                         로그인하러 가기
                     </button>
