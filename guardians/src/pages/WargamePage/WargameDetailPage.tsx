@@ -58,6 +58,7 @@ type Review = {
 
 function WargameDetailPage() {
     const {id} = useParams();
+    const navigate = useNavigate();
     const [wargame, setWargame] = useState<Wargame | null>(null);
     const [flag, setFlag] = useState("");
     const [qaList, setQaList] = useState<QuestionWithAnswers[]>([]);
@@ -397,14 +398,11 @@ function WargameDetailPage() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         if (modalResult?.message === "로그인이 되지 않았습니다. 로그인을 해주세요.") {
-            window.location.href = "/login";
+            navigate("/login");
         } else {
-            window.location.reload();
+            fetchWargame();
         }
     };
-
-    const navigate = useNavigate();
-
 
     if (!wargame) return <p style={{padding: "3rem"}}>로딩 중...</p>;
 

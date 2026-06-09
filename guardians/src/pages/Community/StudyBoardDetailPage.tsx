@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import styles from './components/BoardDetailPage.module.css'; // BoardDetailPage.module.css 스타일 사용
 import Modal from "./components/Modal.tsx";
 import UserInfoModal from './UserInfoModal.tsx'; // 유저 정보 모달 임포트
@@ -41,8 +42,9 @@ const StudyBoardDetailPage = () => {
     const [board, setBoard] = useState<Board | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
     const [isLiked, setIsLiked] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [sessionUserId, setSessionUserId] = useState<string | null>(null);
+    const { user } = useAuth();
+    const isLoggedIn = user !== null;
+    const sessionUserId = user ? String(user.id) : null;
     const [newComment, setNewComment] = useState('');
 
     const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
@@ -65,7 +67,6 @@ const StudyBoardDetailPage = () => {
         if (!id) return;
         fetchBoard();
         fetchComments();
-        checkLoginStatus();
     }, [id]);
 
     const fetchBoard = () => {
@@ -80,19 +81,6 @@ const StudyBoardDetailPage = () => {
     const fetchComments = () => {
         axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
             .then(res => setComments(res.data.result.data));
-    };
-
-    const checkLoginStatus = () => {
-        axios.get('/api/users/me', { withCredentials: true })
-            .then(res => {
-                const id = res.data.result.data.id;
-                setIsLoggedIn(true);
-                setSessionUserId(String(id));
-            })
-            .catch(() => {
-                setIsLoggedIn(false);
-                setSessionUserId(null);
-            });
     };
 
     const toggleLike = () => {

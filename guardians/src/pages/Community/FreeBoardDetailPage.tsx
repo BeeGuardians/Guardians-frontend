@@ -1,6 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import UserInfoModal from './UserInfoModal.tsx';
 import Modal from './components/Modal.tsx';
 import styles from './components/BoardDetailPage.module.css';
@@ -42,8 +43,9 @@ const FreeBoardDetailPage = () => {
     const [board, setBoard] = useState<Board | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
     const [isLiked, setIsLiked] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [sessionUserId, setSessionUserId] = useState<string | null>(null);
+    const { user } = useAuth();
+    const isLoggedIn = user !== null;
+    const sessionUserId = user ? String(user.id) : null;
     const [newComment, setNewComment] = useState('');
 
     const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
@@ -66,7 +68,6 @@ const FreeBoardDetailPage = () => {
         if (!id) return;
         fetchBoard();
         fetchComments();
-        checkLoginStatus();
     }, [id]);
 
     const fetchBoard = () => {
@@ -83,19 +84,6 @@ const FreeBoardDetailPage = () => {
         axios.get(`/api/boards/${id}/comments`, { withCredentials: true })
             .then(res => setComments(res.data.result.data))
             .catch(err => console.error("Failed to fetch comments:", err));
-    };
-
-    const checkLoginStatus = () => {
-        axios.get('/api/users/me', { withCredentials: true })
-            .then(res => {
-                const id = res.data.result.data.id;
-                setIsLoggedIn(true);
-                setSessionUserId(String(id));
-            })
-            .catch(() => {
-                setIsLoggedIn(false);
-                setSessionUserId(null);
-            });
     };
 
     const toggleLike = () => {
